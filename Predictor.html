@@ -769,42 +769,54 @@
     return [`${goalsA}-${goalsB}`, `${Math.min(5,goalsA+1)}-${goalsB}`];
   }
   
-  // ========== MEILLEUR PRONOSTIC INTELLIGENT ==========
+  // ========== MEILLEUR PRONOSTIC CORRIGÉ ==========
   function getBestPronostic(goalsA, goalsB, teamA, teamB) {
     const total = goalsA + goalsB;
     const diff = Math.abs(goalsA - goalsB);
     
-    // VICTOIRE SÈCHE (écart net)
-    if (goalsA >= 4 && goalsB <= 1) return `Victoire ${teamA} (score probable ${goalsA}-${goalsB})`;
-    if (goalsB >= 4 && goalsA <= 1) return `Victoire ${teamB} (score probable ${goalsB}-${goalsA})`;
-    if (goalsA === 3 && goalsB === 0) return `Victoire ${teamA} sans encaisser`;
-    if (goalsB === 3 && goalsA === 0) return `Victoire ${teamB} sans encaisser`;
-    if (goalsA === 3 && goalsB === 1) return `Victoire ${teamA}`;
-    if (goalsB === 3 && goalsA === 1) return `Victoire ${teamB}`;
+    // Cas 1 : VICTOIRE CLAIRE (écart d'au moins 2 buts OU victoire 3-0, 3-1)
+    if (goalsA >= 3 && goalsB <= 1) {
+      if (goalsB === 0) return `${teamA} gagne sans encaisser`;
+      return `Victoire ${teamA}`;
+    }
+    if (goalsB >= 3 && goalsA <= 1) {
+      if (goalsA === 0) return `${teamB} gagne sans encaisser`;
+      return `Victoire ${teamB}`;
+    }
+    if (goalsA >= 2 && goalsB === 0) return `${teamA} gagne sans encaisser`;
+    if (goalsB >= 2 && goalsA === 0) return `${teamB} gagne sans encaisser`;
+    if (goalsA - goalsB >= 2) return `Victoire ${teamA}`;
+    if (goalsB - goalsA >= 2) return `Victoire ${teamB}`;
     
-    // DOUBLE CHANCE + UNDER (sécurité)
-    if (diff <= 1 && total <= 2) return `Double chance ${teamA} ou nul et moins de 2,5 buts`;
-    if (diff <= 1 && total === 3) return `Double chance ${teamB} ou nul et moins de 3,5 buts`;
-    if (diff === 1 && total === 2) return `Double chance ${goalsA > goalsB ? teamA : teamB} ou nul`;
+    // Cas 2 : MATCH NUL PROBABLE
+    if (goalsA === goalsB) {
+      if (total === 0) return `Match nul 0-0`;
+      if (total === 2) return `Match nul et moins de 2,5 buts`;
+      if (total >= 4) return `Match nul et plus de 2,5 buts`;
+      return `Match nul`;
+    }
     
-    // UNDER spécifiques
+    // Cas 3 : DOUBLE CHANCE (match serré, écart d'1 but)
+    if (diff === 1) {
+      if (total <= 2) return `Double chance ${goalsA > goalsB ? teamA : teamB} ou nul et moins de 2,5 buts`;
+      if (total === 3) return `Double chance ${goalsA > goalsB ? teamA : teamB} ou nul et moins de 3,5 buts`;
+      return `Double chance ${goalsA > goalsB ? teamA : teamB} ou nul`;
+    }
+    
+    // Cas 4 : OVER / UNDER spécifiques
     if (total === 0) return `Moins de 0,5 but dans le match`;
     if (total === 1) return `Moins de 1,5 but dans le match`;
     if (total === 2) return `Moins de 2,5 buts dans le match`;
-    
-    // OVER spécifiques
     if (total === 3) return `Plus de 2,5 buts dans le match`;
     if (total === 4) return `Plus de 3,5 buts dans le match`;
     if (total === 5) return `Plus de 4,5 buts dans le match`;
     if (total >= 6) return `Plus de 5,5 buts dans le match`;
     
-    // BTTS
-    if (goalsA >= 1 && goalsB >= 1 && total <= 3) return `BTTS oui et moins de 3,5 buts`;
-    if (goalsA >= 1 && goalsB >= 1 && total >= 4) return `BTTS oui et plus de 3,5 buts`;
+    // Cas 5 : BTTS
     if (goalsA >= 1 && goalsB >= 1) return `BTTS oui`;
     if (goalsA === 0 || goalsB === 0) return `BTTS non`;
     
-    return `Match équilibré, peu de buts`;
+    return `Match équilibré`;
   }
   
   // ========== HISTORIQUE ==========
@@ -853,38 +865,13 @@
               <option value="">-- Résultat réel --</option>
       `;
       
-      // Ajouter les options en fonction du type de pronostic
-      if (h.bestPronostic.includes('Victoire') || h.bestPronostic.includes('gagne')) {
-        html += `<option value="${h.teamA}">Victoire ${h.teamA}</option>`;
-        html += `<option value="NUL">Nul</option>`;
-        html += `<option value="${h.teamB}">Victoire ${h.teamB}</option>`;
-      } else if (h.bestPronostic.includes('Double chance')) {
-        if (h.bestPronostic.includes(h.teamA)) {
-          html += `<option value="${h.teamA}">Victoire ${h.teamA}</option>`;
-          html += `<option value="NUL">Nul</option>`;
-        } else if (h.bestPronostic.includes(h.teamB)) {
-          html += `<option value="${h.teamB}">Victoire ${h.teamB}</option>`;
-          html += `<option value="NUL">Nul</option>`;
-        }
-        html += `<option value="AUCUN">Aucun des deux</option>`;
-      } else if (h.bestPronostic.includes('BTTS')) {
-        html += `<option value="BTTS_OUI">BTTS : OUI (les deux marquent)</option>`;
-        html += `<option value="BTTS_NON">BTTS : NON (au moins une équipe ne marque pas)</option>`;
-      } else if (h.bestPronostic.includes('Plus de')) {
-        const seuil = h.bestPronostic.match(/\d+[,.]?\d?/);
-        const val = seuil ? parseFloat(seuil[0].replace(',', '.')) : 2.5;
-        html += `<option value="OVER">Over ${val} : OUI (plus de ${val} buts)</option>`;
-        html += `<option value="UNDER">Over ${val} : NON (moins de ${val} buts)</option>`;
-      } else if (h.bestPronostic.includes('Moins de')) {
-        const seuil = h.bestPronostic.match(/\d+[,.]?\d?/);
-        const val = seuil ? parseFloat(seuil[0].replace(',', '.')) : 2.5;
-        html += `<option value="UNDER">Under ${val} : OUI (moins de ${val} buts)</option>`;
-        html += `<option value="OVER">Under ${val} : NON (plus de ${val} buts)</option>`;
-      } else {
-        html += `<option value="${h.teamA}">Victoire ${h.teamA}</option>`;
-        html += `<option value="NUL">Nul</option>`;
-        html += `<option value="${h.teamB}">Victoire ${h.teamB}</option>`;
-      }
+      // Options simplifiées : toujours victoire A, Nul, victoire B
+      // car le pronostic est déjà clair
+      html += `
+        <option value="${h.teamA}">Victoire ${h.teamA}</option>
+        <option value="NUL">Nul</option>
+        <option value="${h.teamB}">Victoire ${h.teamB}</option>
+      `;
       
       html += `
             </select>
@@ -901,7 +888,6 @@
     const select = document.getElementById(`resultSelect_${index}`);
     if (select && select.value) {
       history[index].resultatReel = select.value;
-      history[index].vainqueurPredict = select.value;
       saveHistory();
       showToast('✅ Résultat enregistré ! Les stats sont mises à jour.');
     } else {
