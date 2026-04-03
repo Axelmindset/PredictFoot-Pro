@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>⚽ Mata Pro - Analyseur de matchs</title>
+  <title>⚽ PrédictFoot Pro - Analyseur de matchs</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -14,18 +14,18 @@
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto;
     }
     body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+      background: #0f0f13;
       padding: 16px;
       min-height: 100vh;
     }
     .container {
-      max-width: 800px;
+      max-width: 1200px;
       margin: 0 auto;
     }
     h1 {
       font-size: 1.6rem;
       text-align: center;
-      color: #1e293b;
+      color: white;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -34,84 +34,105 @@
     }
     .sub {
       text-align: center;
-      color: #64748b;
+      color: #94a3b8;
       font-size: 0.8rem;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     
     /* Onglets */
     .tabs {
       display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
     }
     .tab-btn {
       flex: 1;
-      background: white;
+      background: #1e1e2a;
       border: none;
       padding: 12px;
       border-radius: 16px;
       font-weight: bold;
-      color: #64748b;
+      color: #94a3b8;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .tab-btn.active {
-      background: #2563eb;
+      background: #3b82f6;
       color: white;
     }
     .tab-content {
       display: none;
-      background: white;
+      background: #1a1a24;
       border-radius: 24px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #2d2d3a;
     }
     .tab-content.active {
       display: block;
     }
     
-    /* Groupes de champs */
+    /* Sections */
     .section-title {
       font-size: 1rem;
       font-weight: 700;
-      color: #1e293b;
-      margin: 16px 0 12px 0;
-      padding-bottom: 6px;
-      border-bottom: 2px solid #e2e8f0;
+      color: #cbd5e1;
+      margin: 20px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #2d2d3a;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .section-title i {
-      color: #2563eb;
+      color: #3b82f6;
     }
-    .input-row {
-      margin-bottom: 12px;
+    
+    /* GRILLE pour les champs */
+    .grid-2cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
     }
-    .input-row label {
+    .grid-3cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .input-group {
+      margin-bottom: 0;
+    }
+    .input-group label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      color: #475569;
-      margin-bottom: 4px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .input-row input {
+    .input-group input {
       width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #cbd5e1;
+      padding: 12px 14px;
+      border: 1px solid #2d2d3a;
       border-radius: 14px;
       font-size: 1rem;
-      background: #f8fafc;
+      background: #0f0f13;
+      color: white;
       transition: all 0.2s;
     }
-    .input-row input:focus {
+    .input-group input:focus {
       outline: none;
-      border-color: #2563eb;
-      background: white;
+      border-color: #3b82f6;
+      background: #1a1a24;
+    }
+    .full-width {
+      grid-column: span 2;
+    }
+    .full-width input {
+      font-weight: bold;
+      font-size: 1.1rem;
     }
     
     /* Boutons */
@@ -135,45 +156,56 @@
       transform: scale(0.97);
     }
     .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
       color: white;
     }
     .btn-secondary {
-      background: #334155;
+      background: #2d2d3a;
       color: white;
     }
     .btn-outline {
-      background: white;
-      border: 1px solid #cbd5e1;
-      color: #334155;
+      background: transparent;
+      border: 1px solid #3b82f6;
+      color: #3b82f6;
     }
     
     /* Résultats */
     .result-card {
-      background: white;
+      background: #1a1a24;
       border-radius: 24px;
       padding: 20px;
       margin-top: 20px;
+      border: 1px solid #2d2d3a;
+    }
+    .result-card h3 {
+      color: white;
+      margin-bottom: 16px;
     }
     .result-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin: 16px 0;
     }
     .result-item {
-      background: #f1f5f9;
+      background: #0f0f13;
       border-radius: 16px;
       padding: 12px;
       text-align: center;
+      border: 1px solid #2d2d3a;
+    }
+    .result-item div:first-child {
+      color: #94a3b8;
+      font-size: 0.7rem;
+      margin-bottom: 6px;
     }
     .result-value {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 800;
-      color: #2563eb;
+      color: #3b82f6;
     }
     .whatsapp-btn {
-      background: #dcfce7;
+      background: #0f0f13;
       padding: 14px;
       border-radius: 40px;
       text-align: center;
@@ -181,6 +213,7 @@
       font-weight: bold;
       margin-top: 16px;
       border-left: 4px solid #22c55e;
+      color: #22c55e;
     }
     .toast {
       position: fixed;
@@ -198,12 +231,24 @@
       transition: opacity 0.3s;
       pointer-events: none;
     }
+    @media (max-width: 700px) {
+      .grid-2cols, .grid-3cols {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .full-width {
+        grid-column: span 1;
+      }
+      .result-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1><i class="fas fa-futbol"></i> PrédictFoot Pro</h1>
-  <div class="sub">Analyse avancée • Pronostics • BTTS • Over/Under</div>
+  <div class="sub">Analyse avancée • Thème sombre • Sauvegarde locale</div>
 
   <!-- Onglets -->
   <div class="tabs">
@@ -214,47 +259,65 @@
 
   <!-- Équipe A -->
   <div id="tab1" class="tab-content active">
-    <input type="text" id="teamA" class="input-row" style="width:100%; padding:12px; border-radius:16px; border:1px solid #cbd5e1; margin-bottom:16px; font-size:1rem;" placeholder="Nom de l'équipe A" value="Paris SG">
+    <div class="grid-2cols">
+      <div class="input-group full-width">
+        <label><i class="fas fa-tag"></i> NOM DE L'ÉQUIPE A</label>
+        <input type="text" id="teamA" placeholder="Nom équipe A" value="Paris SG">
+      </div>
+    </div>
     
-    <div class="section-title"><i class="fas fa-chart-line"></i> 📊 STATISTIQUES OFFENSIVES</div>
-    <div class="input-row"><label>Tirs (par match)</label><input type="number" id="a_tirs" value="12.4" step="0.1"></div>
-    <div class="input-row"><label>Tirs cadrés</label><input type="number" id="a_tc" value="5.2" step="0.1"></div>
-    <div class="input-row"><label>xG (Expected Goals)</label><input type="number" id="a_xg" value="1.6" step="0.1"></div>
-    <div class="input-row"><label>Corners obtenus</label><input type="number" id="a_corners" value="5.8" step="0.1"></div>
+    <div class="section-title"><i class="fas fa-chart-line"></i> STATISTIQUES OFFENSIVES</div>
+    <div class="grid-2cols">
+      <div class="input-group"><label>Tirs / match</label><input type="number" id="a_tirs" value="12.4" step="0.1"></div>
+      <div class="input-group"><label>Tirs cadrés</label><input type="number" id="a_tc" value="5.2" step="0.1"></div>
+      <div class="input-group"><label>xG (Expected Goals)</label><input type="number" id="a_xg" value="1.6" step="0.1"></div>
+      <div class="input-group"><label>Corners obtenus</label><input type="number" id="a_corners" value="5.8" step="0.1"></div>
+    </div>
     
-    <div class="section-title"><i class="fas fa-shield-alt"></i> 🛡️ STATISTIQUES DÉFENSIVES</div>
-    <div class="input-row"><label>Tirs concédés</label><input type="number" id="a_tirs_con" value="10.2" step="0.1"></div>
-    <div class="input-row"><label>Tirs cadrés concédés</label><input type="number" id="a_tc_con" value="4.1" step="0.1"></div>
-    <div class="input-row"><label>xGA (Expected Against)</label><input type="number" id="a_xga" value="1.2" step="0.1"></div>
-    <div class="input-row"><label>Corners concédés</label><input type="number" id="a_corners_con" value="4.9" step="0.1"></div>
+    <div class="section-title"><i class="fas fa-shield-alt"></i> STATISTIQUES DÉFENSIVES (concédées)</div>
+    <div class="grid-2cols">
+      <div class="input-group"><label>Tirs concédés</label><input type="number" id="a_tirs_con" value="10.2" step="0.1"></div>
+      <div class="input-group"><label>Tirs cadrés conc.</label><input type="number" id="a_tc_con" value="4.1" step="0.1"></div>
+      <div class="input-group"><label>xGA (Expected Against)</label><input type="number" id="a_xga" value="1.2" step="0.1"></div>
+      <div class="input-group"><label>Corners concédés</label><input type="number" id="a_corners_con" value="4.9" step="0.1"></div>
+    </div>
   </div>
 
   <!-- Équipe B -->
   <div id="tab2" class="tab-content">
-    <input type="text" id="teamB" class="input-row" style="width:100%; padding:12px; border-radius:16px; border:1px solid #cbd5e1; margin-bottom:16px; font-size:1rem;" placeholder="Nom de l'équipe B" value="Olympique Marseille">
+    <div class="grid-2cols">
+      <div class="input-group full-width">
+        <label><i class="fas fa-tag"></i> NOM DE L'ÉQUIPE B</label>
+        <input type="text" id="teamB" placeholder="Nom équipe B" value="Olympique Marseille">
+      </div>
+    </div>
     
-    <div class="section-title"><i class="fas fa-chart-line"></i> 📊 STATISTIQUES OFFENSIVES</div>
-    <div class="input-row"><label>Tirs (par match)</label><input type="number" id="b_tirs" value="10.8" step="0.1"></div>
-    <div class="input-row"><label>Tirs cadrés</label><input type="number" id="b_tc" value="4.5" step="0.1"></div>
-    <div class="input-row"><label>xG (Expected Goals)</label><input type="number" id="b_xg" value="1.3" step="0.1"></div>
-    <div class="input-row"><label>Corners obtenus</label><input type="number" id="b_corners" value="5.1" step="0.1"></div>
+    <div class="section-title"><i class="fas fa-chart-line"></i> STATISTIQUES OFFENSIVES</div>
+    <div class="grid-2cols">
+      <div class="input-group"><label>Tirs / match</label><input type="number" id="b_tirs" value="10.8" step="0.1"></div>
+      <div class="input-group"><label>Tirs cadrés</label><input type="number" id="b_tc" value="4.5" step="0.1"></div>
+      <div class="input-group"><label>xG (Expected Goals)</label><input type="number" id="b_xg" value="1.3" step="0.1"></div>
+      <div class="input-group"><label>Corners obtenus</label><input type="number" id="b_corners" value="5.1" step="0.1"></div>
+    </div>
     
-    <div class="section-title"><i class="fas fa-shield-alt"></i> 🛡️ STATISTIQUES DÉFENSIVES</div>
-    <div class="input-row"><label>Tirs concédés</label><input type="number" id="b_tirs_con" value="11.5" step="0.1"></div>
-    <div class="input-row"><label>Tirs cadrés concédés</label><input type="number" id="b_tc_con" value="4.7" step="0.1"></div>
-    <div class="input-row"><label>xGA (Expected Against)</label><input type="number" id="b_xga" value="1.5" step="0.1"></div>
-    <div class="input-row"><label>Corners concédés</label><input type="number" id="b_corners_con" value="5.3" step="0.1"></div>
+    <div class="section-title"><i class="fas fa-shield-alt"></i> STATISTIQUES DÉFENSIVES (concédées)</div>
+    <div class="grid-2cols">
+      <div class="input-group"><label>Tirs concédés</label><input type="number" id="b_tirs_con" value="11.5" step="0.1"></div>
+      <div class="input-group"><label>Tirs cadrés conc.</label><input type="number" id="b_tc_con" value="4.7" step="0.1"></div>
+      <div class="input-group"><label>xGA (Expected Against)</label><input type="number" id="b_xga" value="1.5" step="0.1"></div>
+      <div class="input-group"><label>Corners concédés</label><input type="number" id="b_corners_con" value="5.3" step="0.1"></div>
+    </div>
   </div>
 
   <!-- Sauvegarde -->
   <div id="tab3" class="tab-content">
-    <div class="section-title"><i class="fas fa-database"></i> 💾 GESTION DES DONNÉES</div>
+    <div class="section-title"><i class="fas fa-database"></i> GESTION DES DONNÉES</div>
     <div class="btn-group">
       <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i> Sauvegarder</button>
       <button class="btn btn-secondary" id="loadBtn"><i class="fas fa-folder-open"></i> Charger</button>
       <button class="btn btn-outline" id="resetBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
     </div>
-    <div style="background:#f1f5f9; border-radius:16px; padding:16px; text-align:center; margin-top:16px;">
+    <div style="background:#0f0f13; border-radius:16px; padding:16px; text-align:center; margin-top:16px; border:1px solid #2d2d3a;">
       <i class="fas fa-shield-alt"></i> Vos données sont sauvegardées <strong>localement</strong> sur votre téléphone.<br>
       <span style="font-size:0.75rem; color:#64748b;">Personne d'autre n'y a accès.</span>
     </div>
@@ -270,7 +333,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  // Liste des champs
+  // Liste de TOUS les champs
   const allFields = [
     'teamA', 'teamB',
     'a_tirs', 'a_tc', 'a_xg', 'a_corners', 'a_tirs_con', 'a_tc_con', 'a_xga', 'a_corners_con',
@@ -285,7 +348,7 @@
     setTimeout(() => { toast.style.opacity = '0'; }, 2000);
   }
 
-  // Sauvegarde
+  // Sauvegarde FORCE avec localStorage
   function sauvegarder() {
     try {
       const data = {};
@@ -293,20 +356,22 @@
         const el = document.getElementById(id);
         if (el) data[id] = el.value;
       });
-      localStorage.setItem('PredictorFootPro', JSON.stringify(data));
+      localStorage.setItem('PredictorFootPro_Save', JSON.stringify(data));
       showToast('✅ Données sauvegardées avec succès !');
+      return true;
     } catch(e) {
       showToast('❌ Erreur de sauvegarde', true);
+      return false;
     }
   }
 
   // Chargement
   function charger() {
     try {
-      const saved = localStorage.getItem('PredictorFootPro');
+      const saved = localStorage.getItem('PredictorFootPro_Save');
       if (!saved) {
         showToast('📭 Aucune sauvegarde trouvée', true);
-        return;
+        return false;
       }
       const data = JSON.parse(saved);
       let count = 0;
@@ -318,8 +383,10 @@
         }
       });
       showToast(`📂 ${count} valeurs chargées !`);
+      return true;
     } catch(e) {
       showToast('❌ Erreur de chargement', true);
+      return false;
     }
   }
 
@@ -358,14 +425,14 @@
     return reverse ? 100 - norm : norm;
   }
 
-  // Analyse
+  // Analyse principale
   function analyser() {
     const nomA = document.getElementById('teamA').value.trim() || 'Équipe A';
     const nomB = document.getElementById('teamB').value.trim() || 'Équipe B';
     const statsA = getStats('a');
     const statsB = getStats('b');
 
-    // Calcul puissance
+    // Calcul des indices
     const offA = normaliser(statsA.tirs,18)*0.2 + normaliser(statsA.tc,7)*0.25 + normaliser(statsA.xg,2.5)*0.25 + normaliser(statsA.corners,9)*0.3;
     const offB = normaliser(statsB.tirs,18)*0.2 + normaliser(statsB.tc,7)*0.25 + normaliser(statsB.xg,2.5)*0.25 + normaliser(statsB.corners,9)*0.3;
     const defA = normaliser(statsA.tirs_con,16,true)*0.25 + normaliser(statsA.tc_con,6,true)*0.25 + normaliser(statsA.xga,2.2,true)*0.25 + normaliser(statsA.corners_con,8,true)*0.25;
@@ -393,41 +460,47 @@
     const tirsCadres = (statsA.tc + statsB.tc_con + statsB.tc + statsA.tc_con)/2;
     const double1X = finalA + finalNul;
     const doubleX2 = finalB + finalNul;
+    const double12 = finalA + finalB;
     
     // Meilleurs tips
     const tips = [];
-    if(finalA > 60) tips.push(`Victoire ${nomA} : ${finalA.toFixed(1)}%`);
-    if(finalB > 60) tips.push(`Victoire ${nomB} : ${finalB.toFixed(1)}%`);
-    if(btts > 62) tips.push(`BTTS OUI : ${btts.toFixed(1)}%`);
-    if(over25 > 65) tips.push(`Over 2.5 : ${over25.toFixed(1)}%`);
-    if(under25 > 65) tips.push(`Under 2.5 : ${under25.toFixed(1)}%`);
-    if(tips.length === 0) tips.push("Match équilibré");
+    if(finalA > 58) tips.push(`✅ Victoire ${nomA} : ${finalA.toFixed(1)}%`);
+    if(finalB > 58) tips.push(`✅ Victoire ${nomB} : ${finalB.toFixed(1)}%`);
+    if(btts > 60) tips.push(`✅ BTTS OUI : ${btts.toFixed(1)}%`);
+    if(over25 > 62) tips.push(`✅ Over 2.5 : ${over25.toFixed(1)}%`);
+    if(under25 > 62) tips.push(`✅ Under 2.5 : ${under25.toFixed(1)}%`);
+    if(double1X > 68) tips.push(`✅ Double chance 1X : ${double1X.toFixed(1)}%`);
+    if(doubleX2 > 68) tips.push(`✅ Double chance X2 : ${doubleX2.toFixed(1)}%`);
+    if(tips.length === 0) tips.push("⚖️ Match équilibré, peu de certitudes");
     
     // Texte WhatsApp
     const whatsText = `⚽ PRONOSTICS ${nomA} vs ${nomB} ⚽\n` +
-      `Victoire: ${nomA} ${finalA.toFixed(1)}% | Nul ${finalNul.toFixed(1)}% | ${nomB} ${finalB.toFixed(1)}%\n` +
-      `Double chance: 1X ${double1X.toFixed(1)}% | X2 ${doubleX2.toFixed(1)}%\n` +
-      `BTTS: ${btts.toFixed(1)}% (${btts>50?'OUI':'NON'})\n` +
-      `Over 2.5: ${over25.toFixed(1)}% | Under 2.5: ${under25.toFixed(1)}%\n` +
-      `Corners ~ ${corners.toFixed(1)} | Tirs cadrés ~ ${tirsCadres.toFixed(1)}`;
+      `🔮 Victoire: ${nomA} ${finalA.toFixed(1)}% | Nul ${finalNul.toFixed(1)}% | ${nomB} ${finalB.toFixed(1)}%\n` +
+      `🔄 Double chance: 1X ${double1X.toFixed(1)}% | X2 ${doubleX2.toFixed(1)}% | 12 ${double12.toFixed(1)}%\n` +
+      `🎯 BTTS: ${btts.toFixed(1)}% (${btts>50?'OUI':'NON'})\n` +
+      `📊 Over 2.5: ${over25.toFixed(1)}% | Under 2.5: ${under25.toFixed(1)}%\n` +
+      `🏅 ${tips.slice(0,3).join(' | ')}\n` +
+      `📐 Corners estimés: ${corners.toFixed(1)} | Tirs cadrés: ${tirsCadres.toFixed(1)}`;
     
     const html = `
       <div class="result-card">
-        <h3 style="margin-bottom:16px;">📊 PRONOSTICS</h3>
+        <h3><i class="fas fa-chart-pie"></i> RÉSULTATS DES PRÉDICTIONS</h3>
         <div class="result-grid">
           <div class="result-item"><div>🏆 ${nomA}</div><div class="result-value">${finalA.toFixed(1)}%</div></div>
           <div class="result-item"><div>🤝 NUL</div><div class="result-value">${finalNul.toFixed(1)}%</div></div>
           <div class="result-item"><div>🏆 ${nomB}</div><div class="result-value">${finalB.toFixed(1)}%</div></div>
           <div class="result-item"><div>🔄 1X</div><div class="result-value">${double1X.toFixed(1)}%</div></div>
           <div class="result-item"><div>🔄 X2</div><div class="result-value">${doubleX2.toFixed(1)}%</div></div>
+          <div class="result-item"><div>🔄 12</div><div class="result-value">${double12.toFixed(1)}%</div></div>
           <div class="result-item"><div>⚽ BTTS</div><div class="result-value">${btts.toFixed(1)}%</div><div style="font-size:0.7rem;">${btts>50?'OUI':'NON'}</div></div>
           <div class="result-item"><div>📈 Over 2.5</div><div class="result-value">${over25.toFixed(1)}%</div></div>
           <div class="result-item"><div>📉 Under 2.5</div><div class="result-value">${under25.toFixed(1)}%</div></div>
           <div class="result-item"><div>🚩 Corners</div><div class="result-value">${corners.toFixed(1)}</div></div>
           <div class="result-item"><div>🎯 Tirs cadrés</div><div class="result-value">${tirsCadres.toFixed(1)}</div></div>
         </div>
-        <div style="background:#eef2ff; border-radius:16px; padding:12px; margin:12px 0;">
-          <strong>⭐ MEILLEURS PRONOSTICS</strong><br>${tips.map(t=>`✅ ${t}`).join('<br>')}
+        <div style="background:#0f0f13; border-radius:16px; padding:14px; margin:12px 0; border:1px solid #2d2d3a;">
+          <strong style="color:#3b82f6;">⭐ MEILLEURS PRONOSTICS</strong><br>
+          ${tips.map(t => `<span style="color:#cbd5e1;">${t}</span><br>`).join('')}
         </div>
         <div class="whatsapp-btn" onclick="copierWhatsApp('${whatsText.replace(/'/g, "\\'")}')">
           📋 Cliquer ici pour copier le résumé WhatsApp
@@ -465,7 +538,7 @@
   
   window.copierWhatsApp = copierWhatsApp;
   
-  // Chargement auto au démarrage
+  // Chargement automatique au démarrage
   setTimeout(() => { charger(); }, 100);
 </script>
 </body>
