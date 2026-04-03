@@ -3,27 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PrédictFoot Pro</title>
+<title>PredictFoot Pro</title>
 
 <style>
 :root {
-  --bg: #0f0f13;
-  --card: #1a1a24;
-  --card-2: #1e1e2a;
-  --text: #ffffff;
-  --text-muted: #94a3b8;
-  --border: #2d2d3a;
+  --bg: #0b0f17;
+  --card: #111827;
+  --card-2: #1f2937;
+  --text: #f9fafb;
+  --muted: #9ca3af;
   --accent: #3b82f6;
   --success: #22c55e;
+  --radius: 16px;
 }
 
 body.light {
-  --bg: #f8fafc;
+  --bg: #f9fafb;
   --card: #ffffff;
-  --card-2: #f1f5f9;
-  --text: #0f172a;
-  --text-muted: #475569;
-  --border: #e2e8f0;
+  --card-2: #f3f4f6;
+  --text: #111827;
+  --muted: #6b7280;
   --accent: #2563eb;
   --success: #16a34a;
 }
@@ -33,105 +32,128 @@ body.light {
   padding: 0;
   box-sizing: border-box;
   font-family: system-ui;
-  transition: all 0.25s;
+  transition: all 0.25s ease;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  padding: 16px;
+  padding: 20px;
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 10px;
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
-.sub {
-  text-align: center;
-  color: var(--text-muted);
+.title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.theme-btn {
+  background: var(--card-2);
+  border: none;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+/* CARD */
+.card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.05);
   margin-bottom: 20px;
 }
 
-.tab-btn {
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* INPUT */
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-2);
   background: var(--card-2);
-  color: var(--text-muted);
-  padding: 10px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
+  color: var(--text);
+  font-size: 1rem;
 }
 
-.tab-btn.active {
-  background: var(--accent);
-  color: white;
-}
-
-.tab-content {
-  display: none;
-  background: var(--card);
-  padding: 20px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-}
-
-.tab-content.active {
-  display: block;
-}
-
-.profile-option {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 10px;
-  border-radius: 20px;
-  margin: 5px 0;
-  cursor: pointer;
-}
-
-.profile-option.selected {
-  background: var(--accent);
-  color: white;
-}
-
+/* BUTTON */
 .btn {
-  padding: 12px;
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
   border: none;
-  border-radius: 20px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .btn-primary {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent), #1d4ed8);
   color: white;
+  font-size: 1.1rem;
 }
 
-.btn-secondary {
-  background: var(--card-2);
-  color: var(--text);
-}
-
-.result-card {
-  background: var(--card);
-  padding: 20px;
-  border-radius: 20px;
-  margin-top: 20px;
-}
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  background: var(--card-2);
-  padding: 10px;
+/* RESULT */
+.result {
   text-align: center;
-  border-radius: 20px;
-  opacity: 0;
+  padding: 30px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(59,130,246,0.15), transparent);
+  border: 1px solid var(--accent);
+}
+
+.result h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.score {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--success);
+  color: white;
+  font-weight: bold;
+}
+
+/* ANIMATION */
+.fade {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform: translateY(10px);}
+  to {opacity:1; transform: translateY(0);}
+}
+
+/* MOBILE */
+@media(max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
@@ -140,54 +162,59 @@ h1 {
 
 <div class="container">
 
-<h1>⚽ PrédictFoot Pro</h1>
+  <div class="header">
+    <div class="title">⚽ PredictFoot Pro</div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+  </div>
 
-<div style="text-align:center;margin-bottom:10px;">
-<button onclick="toggleTheme()" class="btn btn-secondary">🌙 / ☀️</button>
+  <div class="card">
+    <div class="grid">
+      <input id="teamA" placeholder="Équipe A">
+      <input id="teamB" placeholder="Équipe B">
+    </div>
+  </div>
+
+  <button class="btn btn-primary" onclick="analyser()">
+    🔥 Lancer l’analyse
+  </button>
+
+  <div id="result"></div>
+
 </div>
-
-<div class="sub">Analyse intelligente</div>
-
-<button class="btn btn-primary" onclick="analyser()">Analyser</button>
-
-<div id="resultats"></div>
-
-</div>
-
-<div id="toast" class="toast"></div>
 
 <script>
 function toggleTheme() {
   document.body.classList.toggle("light");
-
-  if (document.body.classList.contains("light")) {
-    localStorage.setItem("theme", "light");
-  } else {
-    localStorage.setItem("theme", "dark");
-  }
+  localStorage.setItem("theme",
+    document.body.classList.contains("light") ? "light" : "dark"
+  );
 }
 
 (function () {
-  const saved = localStorage.getItem("theme");
-  if (saved === "light") {
+  if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light");
   }
 })();
 
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.innerText = msg;
-  t.style.opacity = "1";
-  setTimeout(()=>t.style.opacity="0",2000);
-}
-
 function analyser() {
-  document.getElementById("resultats").innerHTML = `
-    <div class="result-card">
-      🔥 Analyse terminée (mode pro actif)
+  const A = document.getElementById("teamA").value || "Équipe A";
+  const B = document.getElementById("teamB").value || "Équipe B";
+
+  // Simulation intelligente (placeholder)
+  const scoreA = Math.floor(Math.random()*4);
+  const scoreB = Math.floor(Math.random()*4);
+
+  let resultText = "Match équilibré";
+  if (scoreA > scoreB) resultText = A + " favori";
+  if (scoreB > scoreA) resultText = B + " favori";
+
+  document.getElementById("result").innerHTML = `
+    <div class="card result fade">
+      <h2>⭐ Meilleur pronostic</h2>
+      <div class="score">${scoreA} - ${scoreB}</div>
+      <div class="badge">${resultText}</div>
     </div>
   `;
-  showToast("Analyse faite !");
 }
 </script>
 
