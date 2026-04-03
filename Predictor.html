@@ -335,8 +335,8 @@
       <div class="profile-options" id="dominationA_options">
         <div class="profile-option" data-value="domine_efficace">🔥 Domine + efficace (+3)</div>
         <div class="profile-option" data-value="subit_dangereux">✅ Subit mais dangereux (+1)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="domine_inefficace">⚠️ Domine inefficace (0)</div>
+        <div class="profile-option" data-value="equilibre">➖ Équilibré (0)</div>
+        <div class="profile-option" data-value="domine_inefficace">⚠️ Domine inefficace (-1)</div>
       </div>
     </div>
     <div class="profile-group">
@@ -398,8 +398,8 @@
       <div class="profile-options" id="dominationB_options">
         <div class="profile-option" data-value="domine_efficace">🔥 Domine + efficace (+3)</div>
         <div class="profile-option" data-value="subit_dangereux">✅ Subit mais dangereux (+1)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="domine_inefficace">⚠️ Domine inefficace (0)</div>
+        <div class="profile-option" data-value="equilibre">➖ Équilibré (0)</div>
+        <div class="profile-option" data-value="domine_inefficace">⚠️ Domine inefficace (-1)</div>
       </div>
     </div>
     <div class="profile-group">
@@ -466,7 +466,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  // ========== PROFILS ET POINTS ==========
+  // ========== PROFILS ==========
   let profiles = {
     a: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' },
     b: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' }
@@ -474,12 +474,22 @@
 
   const categories = ['corners', 'possession', 'domination', 'reaction', 'adversaire', 'forme'];
   
+  // ========== POINTS MAP (DOMINATION MODIFIÉE) ==========
   const pointsMap = {
+    // Corners
     'bcp_efficace': 3, 'peu_efficace': 2, 'equilibre': 1, 'bcp_inefficace': 0, 'peu_inefficace': -1,
+    // Possession
     'bcp_dangereuse': 3, 'peu_tres_dangereuse': 2, 'peu_dangereuse': 0, 'pas_dangereuse': -1,
-    'domine_efficace': 3, 'subit_dangereux': 1, 'domine_inefficace': 0,
+    // Domination (MODIFIÉ SELON TA DEMANDE)
+    'domine_efficace': 3,
+    'subit_dangereux': 1,
+    'equilibre': 0,
+    'domine_inefficace': -1,
+    // Réaction
     'reagit_vite': 2, 'subit_reagit': 1, 'attaque_subit': 0, 'subit_apres_bon': -1, 'jamais': -2,
+    // Adversaire
     'perf_forts': 3, 'surperf_forts': 2, 'equilibre_adv': 0, 'perf_faibles': -1, 'contre_perf': -2,
+    // Forme
     'pleine_confiance': 2, 'neutre': 0, 'irregulier': -1, 'crise': -2
   };
   
@@ -527,10 +537,8 @@
     return { total, details };
   }
   
-  // ========== MEILLEUR PRONOSTIC : RÈGLE FINALE ==========
-  // Total points >= 16 → Over 2,5
-  // Total points <= 15 → Under 3,5
-  function getBestPronostic(pointsA, pointsB, teamA, teamB) {
+  // ========== MEILLEUR PRONOSTIC ==========
+  function getBestPronostic(pointsA, pointsB) {
     const totalPoints = pointsA + pointsB;
     if (totalPoints >= 16) return `Over 2,5 buts dans le match`;
     return `Under 3,5 buts dans le match`;
@@ -788,7 +796,7 @@
     
     const btts = goalsA >= 1 && goalsB >= 1;
     const scores = getPossibleScores(goalsA, goalsB);
-    const bestPronostic = getBestPronostic(pointsA.total, pointsB.total, teamA, teamB);
+    const bestPronostic = getBestPronostic(pointsA.total, pointsB.total);
     const vainqueurPredict = bestPronostic;
     
     // Style et dynamique
