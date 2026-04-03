@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>⚽ PrédictFoot Pro - Analyseur de matchs</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -13,18 +14,18 @@
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto;
     }
     body {
-      background: #0f0f13;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
       padding: 16px;
       min-height: 100vh;
     }
     .container {
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
     }
     h1 {
       font-size: 1.6rem;
       text-align: center;
-      color: white;
+      color: #1e293b;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -33,108 +34,82 @@
     }
     .sub {
       text-align: center;
-      color: #94a3b8;
+      color: #64748b;
       font-size: 0.8rem;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     
+    /* Onglets */
     .tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
     }
     .tab-btn {
       flex: 1;
-      background: #1e1e2a;
+      background: white;
       border: none;
-      padding: 12px 8px;
+      padding: 12px;
       border-radius: 16px;
       font-weight: bold;
-      font-size: 0.85rem;
-      color: #94a3b8;
+      color: #64748b;
       cursor: pointer;
       transition: all 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .tab-btn.active {
-      background: #3b82f6;
+      background: #2563eb;
       color: white;
     }
     .tab-content {
       display: none;
-      background: #1a1a24;
+      background: white;
       border-radius: 24px;
       padding: 20px;
       margin-bottom: 20px;
-      border: 1px solid #2d2d3a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .tab-content.active {
       display: block;
     }
     
     .section-title {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: #cbd5e1;
-      margin: 20px 0 16px 0;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #2d2d3a;
+      color: #1e293b;
+      margin: 16px 0 12px 0;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e2e8f0;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .section-title i {
-      color: #3b82f6;
+      color: #2563eb;
     }
-    
-    .profile-group {
-      margin-bottom: 20px;
+    .input-row {
+      margin-bottom: 12px;
     }
-    .profile-label {
-      color: #94a3b8;
-      font-size: 0.75rem;
-      margin-bottom: 10px;
+    .input-row label {
       display: block;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .profile-options {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .profile-option {
-      background: #0f0f13;
-      border: 1px solid #2d2d3a;
-      border-radius: 40px;
-      padding: 8px 16px;
       font-size: 0.8rem;
-      color: #cbd5e1;
-      cursor: pointer;
-      transition: all 0.2s;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 4px;
     }
-    .profile-option:hover {
-      background: #2d2d3a;
-    }
-    .profile-option.selected {
-      background: #3b82f6;
-      border-color: #3b82f6;
-      color: white;
-    }
-    
-    .full-width {
-      margin-bottom: 20px;
-    }
-    .full-width input {
+    .input-row input {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #2d2d3a;
-      border-radius: 16px;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
       font-size: 1rem;
-      background: #0f0f13;
-      color: white;
-      font-weight: bold;
+      background: #f8fafc;
+    }
+    .input-row input:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: white;
     }
     
     .btn-group {
@@ -157,133 +132,49 @@
       transform: scale(0.97);
     }
     .btn-primary {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: white;
     }
     .btn-secondary {
-      background: #2d2d3a;
+      background: #334155;
       color: white;
     }
-    .btn-success {
-      background: #22c55e;
-      color: white;
+    .btn-outline {
+      background: white;
+      border: 1px solid #cbd5e1;
+      color: #334155;
     }
     .btn-danger {
-      background: #ef4444;
+      background: #dc2626;
       color: white;
     }
     
+    /* Résultats */
     .result-card {
-      background: #1a1a24;
+      background: white;
       border-radius: 24px;
       padding: 20px;
       margin-top: 20px;
-      border: 1px solid #2d2d3a;
     }
-    .result-card h3 {
-      color: white;
-      margin-bottom: 16px;
-    }
-    .prediction-box {
-      background: #0f0f13;
-      border-radius: 20px;
-      padding: 20px;
-      margin: 16px 0;
-      text-align: center;
-      border: 2px solid #3b82f6;
-    }
-    .prediction-text {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #3b82f6;
-    }
-    .scores {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
       margin: 16px 0;
     }
-    .score-item {
-      background: #1e1e2a;
-      padding: 12px 24px;
-      border-radius: 20px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: white;
-    }
-    .points-detail {
-      background: #0f0f13;
-      border-radius: 16px;
-      padding: 16px;
-      margin: 16px 0;
-      border: 1px solid #2d2d3a;
-    }
-    .points-line {
-      display: flex;
-      justify-content: space-between;
-      margin: 8px 0;
-      color: #cbd5e1;
-      font-size: 0.85rem;
-    }
-    .points-total {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #3b82f6;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid #2d2d3a;
-    }
-    .history-item {
-      background: #0f0f13;
+    .result-item {
+      background: #f1f5f9;
       border-radius: 16px;
       padding: 12px;
-      margin-bottom: 12px;
-      border: 1px solid #2d2d3a;
-    }
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .history-date {
-      color: #64748b;
-      font-size: 0.7rem;
-    }
-    .history-match {
-      font-weight: bold;
-      color: white;
-    }
-    .history-result {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      font-size: 0.85rem;
-      color: #cbd5e1;
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: #0f0f13;
-      border-radius: 16px;
-      padding: 16px;
       text-align: center;
-      border: 1px solid #2d2d3a;
     }
-    .stat-value {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #3b82f6;
+    .result-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #2563eb;
     }
     .whatsapp-btn {
-      background: #0f0f13;
+      background: #dcfce7;
       padding: 14px;
       border-radius: 40px;
       text-align: center;
@@ -291,8 +182,59 @@
       font-weight: bold;
       margin-top: 16px;
       border-left: 4px solid #22c55e;
-      color: #22c55e;
     }
+    
+    /* Historique */
+    .history-item {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #2563eb;
+    }
+    .history-date {
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .history-teams {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .history-stats {
+      font-size: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 8px 0;
+    }
+    .history-stats span {
+      background: #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .history-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .history-actions button {
+      background: none;
+      border: none;
+      font-size: 0.7rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+    .history-actions .replay {
+      background: #2563eb20;
+      color: #2563eb;
+    }
+    .history-actions .delete {
+      background: #dc262620;
+      color: #dc2626;
+    }
+    
     .toast {
       position: fixed;
       bottom: 30px;
@@ -309,251 +251,215 @@
       transition: opacity 0.3s;
       pointer-events: none;
     }
-    @media (max-width: 700px) {
-      .scores {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-      }
-      .tab-btn {
-        font-size: 0.7rem;
-        padding: 10px 4px;
-      }
-    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1><i class="fas fa-futbol"></i> PrédictFoot Pro</h1>
-  <div class="sub">Analyse par points • Classement meilleur → pire • Pronostics clairs</div>
+  <div class="sub">Analyse avancée • Pronostics • Historique des matchs</div>
 
+  <!-- Onglets -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="tab1">🏆 Équipe A</button>
     <button class="tab-btn" data-tab="tab2">⚽ Équipe B</button>
-    <button class="tab-btn" data-tab="tab3">⚙️ Sauvegarde</button>
-    <button class="tab-btn" data-tab="tab4">📜 Historique & Stats</button>
+    <button class="tab-btn" data-tab="tab3">💾 Sauvegarde</button>
+    <button class="tab-btn" data-tab="tab4">📜 Historique</button>
   </div>
 
-  <!-- Équipe A (inchangé) -->
+  <!-- Équipe A -->
   <div id="tab1" class="tab-content active">
-    <div class="full-width">
-      <input type="text" id="teamA" placeholder="Nom de l'équipe A" value="Paris SG">
-    </div>
+    <input type="text" id="teamA" style="width:100%; padding:12px; border-radius:16px; border:1px solid #cbd5e1; margin-bottom:16px; font-size:1rem;" placeholder="Nom équipe A" value="Paris SG">
     
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-flag"></i> CORNERS (meilleur → pire)</div>
-      <div class="profile-options" id="cornersA_options">
-        <div class="profile-option" data-value="bcp_efficace">🔥 Beaucoup de corners et efficace (+3)</div>
-        <div class="profile-option" data-value="peu_efficace">✅ Peu de corners mais efficace (+2)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="bcp_inefficace">⚠️ Beaucoup de corners mais inefficace (0)</div>
-      </div>
-    </div>
+    <div class="section-title"><i class="fas fa-chart-line"></i> 📊 STATISTIQUES OFFENSIVES</div>
+    <div class="input-row"><label>Tirs (par match)</label><input type="number" id="a_tirs" value="12.4" step="0.1"></div>
+    <div class="input-row"><label>Tirs cadrés</label><input type="number" id="a_tc" value="5.2" step="0.1"></div>
+    <div class="input-row"><label>xG (Expected Goals)</label><input type="number" id="a_xg" value="1.6" step="0.1"></div>
+    <div class="input-row"><label>Corners obtenus</label><input type="number" id="a_corners" value="5.8" step="0.1"></div>
     
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-futbol"></i> POSSESSION (meilleur → pire)</div>
-      <div class="profile-options" id="possessionA_options">
-        <div class="profile-option" data-value="bcp_dangereuse">🔥 Possède le ballon et dangereuse (+3)</div>
-        <div class="profile-option" data-value="peu_tres_dangereuse">✅ Possède peu mais très dangereuse (+2)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="peu_dangereuse">⚠️ Possède le ballon mais peu dangereuse (0)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-chart-line"></i> DOMINATION GLOBALE (meilleur → pire)</div>
-      <div class="profile-options" id="dominationA_options">
-        <div class="profile-option" data-value="domine_efficace">🔥 Domine et efficace (+3)</div>
-        <div class="profile-option" data-value="subit_dangereux">✅ Subit mais dangereux (+1)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="domine_inefficace">⚠️ Domine mais inefficace (0)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-brain"></i> PROFIL DE RÉACTION (meilleur → pire)</div>
-      <div class="profile-options" id="reactionA_options">
-        <div class="profile-option" data-value="reagit_vite">🔥 Réagit vite après un mauvais résultat (+2)</div>
-        <div class="profile-option" data-value="subit_reagit">✅ Subit d'abord, réagit après (+1)</div>
-        <div class="profile-option" data-value="attaque_subit">➖ Attaque d'abord, puis subit (0)</div>
-        <div class="profile-option" data-value="subit_apres_bon">⚠️ Subit après un bon résultat (-1)</div>
-        <div class="profile-option" data-value="jamais">💀 Ne réagit jamais (-2)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-trophy"></i> ADVERSAIRE TYPE (meilleur → pire)</div>
-      <div class="profile-options" id="adversaireA_options">
-        <div class="profile-option" data-value="perf_forts">🔥 Performe contre les forts (+3)</div>
-        <div class="profile-option" data-value="surperf_forts">✅ Surperforme contre les forts (+2)</div>
-        <div class="profile-option" data-value="equilibre_adv">➖ Équilibré (0)</div>
-        <div class="profile-option" data-value="perf_faibles">⚠️ Performe contre les faibles (-1)</div>
-        <div class="profile-option" data-value="contre_perf">💀 Contre-performe contre les forts (-2)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-chart-simple"></i> FORME RÉCENTE (meilleur → pire)</div>
-      <div class="profile-options" id="formeA_options">
-        <div class="profile-option" data-value="pleine_confiance">🔥 En pleine confiance, marque beaucoup (+2)</div>
-        <div class="profile-option" data-value="neutre">➖ Neutre / Équilibré (0)</div>
-        <div class="profile-option" data-value="irregulier">⚠️ Irrégulier (-1)</div>
-        <div class="profile-option" data-value="crise">💀 En crise, zone rouge relégable (-2)</div>
-      </div>
-    </div>
+    <div class="section-title"><i class="fas fa-shield-alt"></i> 🛡️ STATISTIQUES DÉFENSIVES</div>
+    <div class="input-row"><label>Tirs concédés</label><input type="number" id="a_tirs_con" value="10.2" step="0.1"></div>
+    <div class="input-row"><label>Tirs cadrés concédés</label><input type="number" id="a_tc_con" value="4.1" step="0.1"></div>
+    <div class="input-row"><label>xGA (Expected Against)</label><input type="number" id="a_xga" value="1.2" step="0.1"></div>
+    <div class="input-row"><label>Corners concédés</label><input type="number" id="a_corners_con" value="4.9" step="0.1"></div>
   </div>
 
-  <!-- Équipe B (inchangé) -->
+  <!-- Équipe B -->
   <div id="tab2" class="tab-content">
-    <div class="full-width">
-      <input type="text" id="teamB" placeholder="Nom de l'équipe B" value="Toulouse">
-    </div>
+    <input type="text" id="teamB" style="width:100%; padding:12px; border-radius:16px; border:1px solid #cbd5e1; margin-bottom:16px; font-size:1rem;" placeholder="Nom équipe B" value="Olympique Marseille">
     
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-flag"></i> CORNERS (meilleur → pire)</div>
-      <div class="profile-options" id="cornersB_options">
-        <div class="profile-option" data-value="bcp_efficace">🔥 Beaucoup de corners et efficace (+3)</div>
-        <div class="profile-option" data-value="peu_efficace">✅ Peu de corners mais efficace (+2)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="bcp_inefficace">⚠️ Beaucoup de corners mais inefficace (0)</div>
-      </div>
-    </div>
+    <div class="section-title"><i class="fas fa-chart-line"></i> 📊 STATISTIQUES OFFENSIVES</div>
+    <div class="input-row"><label>Tirs (par match)</label><input type="number" id="b_tirs" value="10.8" step="0.1"></div>
+    <div class="input-row"><label>Tirs cadrés</label><input type="number" id="b_tc" value="4.5" step="0.1"></div>
+    <div class="input-row"><label>xG (Expected Goals)</label><input type="number" id="b_xg" value="1.3" step="0.1"></div>
+    <div class="input-row"><label>Corners obtenus</label><input type="number" id="b_corners" value="5.1" step="0.1"></div>
     
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-futbol"></i> POSSESSION (meilleur → pire)</div>
-      <div class="profile-options" id="possessionB_options">
-        <div class="profile-option" data-value="bcp_dangereuse">🔥 Possède le ballon et dangereuse (+3)</div>
-        <div class="profile-option" data-value="peu_tres_dangereuse">✅ Possède peu mais très dangereuse (+2)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="peu_dangereuse">⚠️ Possède le ballon mais peu dangereuse (0)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-chart-line"></i> DOMINATION GLOBALE (meilleur → pire)</div>
-      <div class="profile-options" id="dominationB_options">
-        <div class="profile-option" data-value="domine_efficace">🔥 Domine et efficace (+3)</div>
-        <div class="profile-option" data-value="subit_dangereux">✅ Subit mais dangereux (+1)</div>
-        <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
-        <div class="profile-option" data-value="domine_inefficace">⚠️ Domine mais inefficace (0)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-brain"></i> PROFIL DE RÉACTION (meilleur → pire)</div>
-      <div class="profile-options" id="reactionB_options">
-        <div class="profile-option" data-value="reagit_vite">🔥 Réagit vite après un mauvais résultat (+2)</div>
-        <div class="profile-option" data-value="subit_reagit">✅ Subit d'abord, réagit après (+1)</div>
-        <div class="profile-option" data-value="attaque_subit">➖ Attaque d'abord, puis subit (0)</div>
-        <div class="profile-option" data-value="subit_apres_bon">⚠️ Subit après un bon résultat (-1)</div>
-        <div class="profile-option" data-value="jamais">💀 Ne réagit jamais (-2)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-trophy"></i> ADVERSAIRE TYPE (meilleur → pire)</div>
-      <div class="profile-options" id="adversaireB_options">
-        <div class="profile-option" data-value="perf_forts">🔥 Performe contre les forts (+3)</div>
-        <div class="profile-option" data-value="surperf_forts">✅ Surperforme contre les forts (+2)</div>
-        <div class="profile-option" data-value="equilibre_adv">➖ Équilibré (0)</div>
-        <div class="profile-option" data-value="perf_faibles">⚠️ Performe contre les faibles (-1)</div>
-        <div class="profile-option" data-value="contre_perf">💀 Contre-performe contre les forts (-2)</div>
-      </div>
-    </div>
-    
-    <div class="profile-group">
-      <div class="profile-label"><i class="fas fa-chart-simple"></i> FORME RÉCENTE (meilleur → pire)</div>
-      <div class="profile-options" id="formeB_options">
-        <div class="profile-option" data-value="pleine_confiance">🔥 En pleine confiance, marque beaucoup (+2)</div>
-        <div class="profile-option" data-value="neutre">➖ Neutre / Équilibré (0)</div>
-        <div class="profile-option" data-value="irregulier">⚠️ Irrégulier (-1)</div>
-        <div class="profile-option" data-value="crise">💀 En crise, zone rouge relégable (-2)</div>
-      </div>
-    </div>
+    <div class="section-title"><i class="fas fa-shield-alt"></i> 🛡️ STATISTIQUES DÉFENSIVES</div>
+    <div class="input-row"><label>Tirs concédés</label><input type="number" id="b_tirs_con" value="11.5" step="0.1"></div>
+    <div class="input-row"><label>Tirs cadrés concédés</label><input type="number" id="b_tc_con" value="4.7" step="0.1"></div>
+    <div class="input-row"><label>xGA (Expected Against)</label><input type="number" id="b_xga" value="1.5" step="0.1"></div>
+    <div class="input-row"><label>Corners concédés</label><input type="number" id="b_corners_con" value="5.3" step="0.1"></div>
   </div>
 
-  <!-- Sauvegarde (inchangé) -->
+  <!-- Sauvegarde -->
   <div id="tab3" class="tab-content">
-    <div class="section-title"><i class="fas fa-database"></i> GESTION DES DONNÉES</div>
+    <div class="section-title"><i class="fas fa-database"></i> 💾 GESTION DES DONNÉES</div>
     <div class="btn-group">
-      <button class="btn btn-secondary" id="saveBtn"><i class="fas fa-save"></i> Sauvegarder</button>
-      <button class="btn btn-secondary" id="loadBtn"><i class="fas fa-folder-open"></i> Charger</button>
-      <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
+      <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i> Sauvegarder stats</button>
+      <button class="btn btn-secondary" id="loadBtn"><i class="fas fa-folder-open"></i> Charger stats</button>
+      <button class="btn btn-outline" id="resetBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
     </div>
-    <div style="background:#0f0f13; border-radius:16px; padding:16px; text-align:center; margin-top:16px; border:1px solid #2d2d3a;">
-      <i class="fas fa-shield-alt"></i> Vos profils sont sauvegardés localement.<br>
-      <span style="font-size:0.75rem; color:#64748b;">Personne d'autre n'y a accès.</span>
-    </div>
-  </div>
-
-  <!-- Historique & Stats (NOUVEAU) -->
-  <div id="tab4" class="tab-content">
-    <div class="section-title"><i class="fas fa-chart-line"></i> STATISTIQUES GLOBALES</div>
-    <div class="stats-grid" id="statsContainer">
-      <div class="stat-card"><div>📊 Total pronostics</div><div class="stat-value" id="totalPronos">0</div></div>
-      <div class="stat-card"><div>✅ Pronostics justes</div><div class="stat-value" id="justesPronos">0</div></div>
-      <div class="stat-card"><div>❌ Pronostics faux</div><div class="stat-value" id="fauxPronos">0</div></div>
-      <div class="stat-card"><div>📈 Taux de réussite</div><div class="stat-value" id="tauxReussite">0%</div></div>
-    </div>
-    
     <div class="btn-group">
       <button class="btn btn-danger" id="clearHistoryBtn"><i class="fas fa-trash"></i> Effacer tout l'historique</button>
-      <button class="btn btn-secondary" id="exportHistoryBtn"><i class="fas fa-download"></i> Exporter en CSV</button>
     </div>
-    
-    <div class="section-title"><i class="fas fa-history"></i> HISTORIQUE DES PRONOSTICS</div>
-    <div id="historyList" style="max-height: 500px; overflow-y: auto;">
-      <div style="text-align:center; color:#64748b; padding:20px;">Aucun pronostic sauvegardé. Analysez un match puis cliquez sur "Sauvegarder".</div>
+    <div style="background:#f1f5f9; border-radius:16px; padding:16px; text-align:center; margin-top:16px;">
+      <i class="fas fa-shield-alt"></i> Vos données sont sauvegardées localement<br>
+      <span style="font-size:0.7rem;">L'historique garde trace de toutes vos analyses</span>
     </div>
   </div>
 
-  <button class="btn btn-primary" id="analyserBtn"><i class="fas fa-chart-line"></i> ANALYSER LE MATCH</button>
+  <!-- Historique -->
+  <div id="tab4" class="tab-content">
+    <div class="section-title"><i class="fas fa-clock"></i> 📜 HISTORIQUE DES PRONOSTICS</div>
+    <div id="historyList" style="max-height: 500px; overflow-y: auto;">
+      <div style="text-align:center; padding:20px; color:#64748b;">Aucun historique pour le moment<br>Analysez un match pour le voir apparaître</div>
+    </div>
+  </div>
 
+  <!-- Bouton Analyser -->
+  <button class="btn btn-primary" id="analyserBtn" style="margin: 8px 0 16px 0;"><i class="fas fa-chart-line"></i> ANALYSER LE MATCH</button>
+
+  <!-- Zone des résultats -->
   <div id="resultats" style="display:none;"></div>
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
-  // ========== PARTIE EXISTANTE (INTACTE) ==========
-  let profiles = {
-    a: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' },
-    b: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' }
-  };
+  // Liste des champs
+  const allFields = [
+    'teamA', 'teamB',
+    'a_tirs', 'a_tc', 'a_xg', 'a_corners', 'a_tirs_con', 'a_tc_con', 'a_xga', 'a_corners_con',
+    'b_tirs', 'b_tc', 'b_xg', 'b_corners', 'b_tirs_con', 'b_tc_con', 'b_xga', 'b_corners_con'
+  ];
 
-  const categories = ['corners', 'possession', 'domination', 'reaction', 'adversaire', 'forme'];
-  
-  const pointsMap = {
-    'bcp_efficace': 3, 'peu_efficace': 2, 'equilibre': 1, 'bcp_inefficace': 0,
-    'bcp_dangereuse': 3, 'peu_tres_dangereuse': 2, 'peu_dangereuse': 0,
-    'domine_efficace': 3, 'subit_dangereux': 1, 'domine_inefficace': 0,
-    'reagit_vite': 2, 'subit_reagit': 1, 'attaque_subit': 0, 'subit_apres_bon': -1, 'jamais': -2,
-    'perf_forts': 3, 'surperf_forts': 2, 'equilibre_adv': 0, 'perf_faibles': -1, 'contre_perf': -2,
-    'pleine_confiance': 2, 'neutre': 0, 'irregulier': -1, 'crise': -2
-  };
-  
-  const categoryLabels = {
-    corners: 'CORNERS', possession: 'POSSESSION', domination: 'DOMINATION',
-    reaction: 'RÉACTION', adversaire: 'ADVERSAIRE', forme: 'FORME'
-  };
-  
-  function initProfileSelectors() {
-    for (let team of ['a', 'b']) {
-      for (let cat of categories) {
-        const container = document.getElementById(`${cat}${team.toUpperCase()}_options`);
-        if (container) {
-          const options = container.querySelectorAll('.profile-option');
-          options.forEach(opt => {
-            const val = opt.dataset.value;
-            opt.addEventListener('click', () => {
-              options.forEach(o => o.classList.remove('selected'));
-              opt.classList.add('selected');
-              profiles[team][cat] = val;
-            });
-            if (profiles[team][cat] === val) opt.classList.add('selected');
-          });
-        }
+  let historique = [];
+
+  // Charger l'historique depuis localStorage
+  function chargerHistorique() {
+    const saved = localStorage.getItem('PredictorHistorique');
+    if (saved) {
+      try {
+        historique = JSON.parse(saved);
+      } catch(e) { historique = []; }
+    }
+    afficherHistorique();
+  }
+
+  // Sauvegarder l'historique
+  function sauvegarderHistorique() {
+    localStorage.setItem('PredictorHistorique', JSON.stringify(historique));
+  }
+
+  // Ajouter une analyse à l'historique
+  function ajouterHistorique(analyse) {
+    const newItem = {
+      id: Date.now(),
+      date: new Date().toLocaleString(),
+      teamA: analyse.teamA,
+      teamB: analyse.teamB,
+      probA: analyse.probA,
+      probNul: analyse.probNul,
+      probB: analyse.probB,
+      btts: analyse.btts,
+      over25: analyse.over25,
+      corners: analyse.corners,
+      tirsCadres: analyse.tirsCadres,
+      statsA: analyse.statsA,
+      statsB: analyse.statsB
+    };
+    historique.unshift(newItem); // Ajouter au début
+    if (historique.length > 50) historique.pop(); // Garder max 50
+    sauvegarderHistorique();
+    afficherHistorique();
+  }
+
+  // Afficher l'historique
+  function afficherHistorique() {
+    const container = document.getElementById('historyList');
+    if (!container) return;
+    
+    if (historique.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">📭 Aucun historique pour le moment<br>Analysez un match pour le voir apparaître</div>';
+      return;
+    }
+    
+    let html = '';
+    historique.forEach(item => {
+      html += `
+        <div class="history-item">
+          <div class="history-date">📅 ${item.date}</div>
+          <div class="history-teams">🏆 ${item.teamA} vs ${item.teamB}</div>
+          <div class="history-stats">
+            <span>${item.teamA}: ${item.probA}%</span>
+            <span>Nul: ${item.probNul}%</span>
+            <span>${item.teamB}: ${item.probB}%</span>
+            <span>BTTS: ${item.btts}%</span>
+            <span>Over 2.5: ${item.over25}%</span>
+            <span>Corners: ${item.corners}</span>
+          </div>
+          <div class="history-actions">
+            <button class="replay" onclick="rejouerAnalyse(${item.id})">🔄 Rejouer cette analyse</button>
+            <button class="delete" onclick="supprimerAnalyse(${item.id})">🗑 Supprimer</button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  // Rejouer une analyse (restaurer les stats)
+  function rejouerAnalyse(id) {
+    const item = historique.find(h => h.id === id);
+    if (item) {
+      document.getElementById('teamA').value = item.teamA;
+      document.getElementById('teamB').value = item.teamB;
+      if (item.statsA) {
+        document.getElementById('a_tirs').value = item.statsA.tirs;
+        document.getElementById('a_tc').value = item.statsA.tc;
+        document.getElementById('a_xg').value = item.statsA.xg;
+        document.getElementById('a_corners').value = item.statsA.corners;
+        document.getElementById('a_tirs_con').value = item.statsA.tirs_con;
+        document.getElementById('a_tc_con').value = item.statsA.tc_con;
+        document.getElementById('a_xga').value = item.statsA.xga;
+        document.getElementById('a_corners_con').value = item.statsA.corners_con;
+        document.getElementById('b_tirs').value = item.statsB.tirs;
+        document.getElementById('b_tc').value = item.statsB.tc;
+        document.getElementById('b_xg').value = item.statsB.xg;
+        document.getElementById('b_corners').value = item.statsB.corners;
+        document.getElementById('b_tirs_con').value = item.statsB.tirs_con;
+        document.getElementById('b_tc_con').value = item.statsB.tc_con;
+        document.getElementById('b_xga').value = item.statsB.xga;
+        document.getElementById('b_corners_con').value = item.statsB.corners_con;
       }
+      showToast('✅ Stats restaurées depuis l\'historique');
+      // Optionnel : lancer l'analyse automatiquement
+      analyser();
+    }
+  }
+
+  function supprimerAnalyse(id) {
+    historique = historique.filter(h => h.id !== id);
+    sauvegarderHistorique();
+    afficherHistorique();
+    showToast('🗑 Analyse supprimée de l\'historique');
+  }
+
+  function clearHistory() {
+    if (confirm('⚠️ Effacer TOUT l\'historique ? Cette action est irréversible.')) {
+      historique = [];
+      sauvegarderHistorique();
+      afficherHistorique();
+      showToast('📜 Historique effacé');
     }
   }
 
@@ -565,426 +471,155 @@
     setTimeout(() => { toast.style.opacity = '0'; }, 2000);
   }
 
-  function sauvegarder() {
+  function sauvegarderStats() {
     try {
-      const data = {
-        teamA: document.getElementById('teamA').value,
-        teamB: document.getElementById('teamB').value,
-        profiles: profiles
-      };
-      localStorage.setItem('PredictorFootPro_Profiles', JSON.stringify(data));
-      showToast('✅ Profils sauvegardés !');
+      const data = {};
+      allFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      localStorage.setItem('PredictorFootPro', JSON.stringify(data));
+      showToast('✅ Données sauvegardées !');
     } catch(e) {
       showToast('❌ Erreur de sauvegarde', true);
     }
   }
 
-  function charger() {
+  function chargerStats() {
     try {
-      const saved = localStorage.getItem('PredictorFootPro_Profiles');
+      const saved = localStorage.getItem('PredictorFootPro');
       if (!saved) { showToast('📭 Aucune sauvegarde', true); return; }
       const data = JSON.parse(saved);
-      document.getElementById('teamA').value = data.teamA || 'Paris SG';
-      document.getElementById('teamB').value = data.teamB || 'Toulouse';
-      profiles = data.profiles || profiles;
-      
-      for (let team of ['a', 'b']) {
-        for (let cat of categories) {
-          const container = document.getElementById(`${cat}${team.toUpperCase()}_options`);
-          if (container) {
-            const options = container.querySelectorAll('.profile-option');
-            options.forEach(opt => {
-              if (opt.dataset.value === profiles[team][cat]) opt.classList.add('selected');
-              else opt.classList.remove('selected');
-            });
-          }
-        }
-      }
-      showToast('📂 Profils chargés !');
+      let count = 0;
+      allFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && data[id] !== undefined) { el.value = data[id]; count++; }
+      });
+      showToast(`📂 ${count} valeurs chargées !`);
     } catch(e) { showToast('❌ Erreur de chargement', true); }
   }
 
-  function reinitialiser() {
-    profiles = {
-      a: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' },
-      b: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' }
+  function reinitialiserStats() {
+    const defaults = {
+      teamA: 'Paris SG', teamB: 'Olympique Marseille',
+      a_tirs: '12.4', a_tc: '5.2', a_xg: '1.6', a_corners: '5.8',
+      a_tirs_con: '10.2', a_tc_con: '4.1', a_xga: '1.2', a_corners_con: '4.9',
+      b_tirs: '10.8', b_tc: '4.5', b_xg: '1.3', b_corners: '5.1',
+      b_tirs_con: '11.5', b_tc_con: '4.7', b_xga: '1.5', b_corners_con: '5.3'
     };
-    document.getElementById('teamA').value = 'Paris SG';
-    document.getElementById('teamB').value = 'Toulouse';
-    
-    for (let team of ['a', 'b']) {
-      for (let cat of categories) {
-        const container = document.getElementById(`${cat}${team.toUpperCase()}_options`);
-        if (container) {
-          const options = container.querySelectorAll('.profile-option');
-          options.forEach(opt => {
-            if (opt.dataset.value === profiles[team][cat]) opt.classList.add('selected');
-            else opt.classList.remove('selected');
-          });
-        }
-      }
-    }
+    allFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && defaults[id] !== undefined) el.value = defaults[id];
+    });
     showToast('🔄 Réinitialisé');
   }
 
-  function calculatePoints(profile) {
-    let total = 0;
-    const details = [];
-    for (let cat of categories) {
-      const value = profile[cat];
-      const points = pointsMap[value] || 0;
-      total += points;
-      details.push({ category: categoryLabels[cat], points: points });
-    }
-    return { total, details };
-  }
-  
-  function pointsToGoals(points) {
-    if (points >= 16) return 5;
-    if (points >= 13) return 4;
-    if (points >= 9) return 3;
-    if (points >= 6) return 2;
-    if (points >= 3) return 1;
-    return 0;
-  }
-  
-  function getPossibleScores(goalsA, goalsB) {
-    if (goalsA === 5 && goalsB === 4) return ['5-4', '4-4', '5-3'];
-    if (goalsA === 5 && goalsB === 3) return ['5-3', '4-3', '5-2'];
-    if (goalsA === 5 && goalsB === 2) return ['5-2', '4-2', '5-1'];
-    if (goalsA === 5 && goalsB === 1) return ['5-1', '4-1', '5-0'];
-    if (goalsA === 5 && goalsB === 0) return ['5-0', '4-0', '6-0'];
-    if (goalsA === 4 && goalsB === 4) return ['4-4', '5-4', '4-3'];
-    if (goalsA === 4 && goalsB === 3) return ['4-3', '3-3', '4-2'];
-    if (goalsA === 4 && goalsB === 2) return ['4-2', '3-2', '4-1'];
-    if (goalsA === 4 && goalsB === 1) return ['4-1', '3-1', '4-0'];
-    if (goalsA === 4 && goalsB === 0) return ['4-0', '3-0', '5-0'];
-    if (goalsA === 3 && goalsB === 3) return ['3-3', '4-3', '3-2'];
-    if (goalsA === 3 && goalsB === 2) return ['3-2', '2-2', '3-1'];
-    if (goalsA === 3 && goalsB === 1) return ['3-1', '2-1', '3-0'];
-    if (goalsA === 3 && goalsB === 0) return ['3-0', '2-0', '4-0'];
-    if (goalsA === 2 && goalsB === 2) return ['2-2', '3-2', '2-1'];
-    if (goalsA === 2 && goalsB === 1) return ['2-1', '3-1', '2-0'];
-    if (goalsA === 2 && goalsB === 0) return ['2-0', '3-0', '1-0'];
-    if (goalsA === 1 && goalsB === 1) return ['1-1', '2-1', '1-0'];
-    if (goalsA === 1 && goalsB === 0) return ['1-0', '2-0', '0-0'];
-    if (goalsA === 0 && goalsB === 0) return ['0-0', '1-0', '0-1'];
-    if (goalsA === 0 && goalsB === 1) return ['0-1', '0-2', '1-1'];
-    if (goalsA === 0 && goalsB === 2) return ['0-2', '1-2', '0-3'];
-    if (goalsA === 0 && goalsB === 3) return ['0-3', '1-3', '0-4'];
-    return [`${goalsA}-${goalsB}`, `${Math.min(5,goalsA+1)}-${goalsB}`];
-  }
-  
-  function getBestPronostic(goalsA, goalsB, teamA, teamB) {
-    const total = goalsA + goalsB;
-    if (goalsA >= 4 && goalsB === 0) return `${teamA} gagne sans encaisser et plus de 2,5 buts`;
-    if (goalsB >= 4 && goalsA === 0) return `${teamB} gagne sans encaisser et plus de 2,5 buts`;
-    if (goalsA >= 3 && goalsB <= 1) return `Victoire ${teamA} et plus de 2,5 buts`;
-    if (goalsB >= 3 && goalsA <= 1) return `Victoire ${teamB} et plus de 2,5 buts`;
-    if (goalsA >= 2 && goalsB >= 2) return `Plus de 2,5 buts et BTTS oui`;
-    if (goalsA >= 2 && goalsB === 0) return `${teamA} gagne sans encaisser`;
-    if (goalsB >= 2 && goalsA === 0) return `${teamB} gagne sans encaisser`;
-    if (total >= 3) return `Plus de 2,5 buts`;
-    if (goalsA >= 1 && goalsB >= 1) return `BTTS oui`;
-    return `Moins de 2,5 buts`;
+  function getStats(prefix) {
+    return {
+      tirs: parseFloat(document.getElementById(prefix+'_tirs').value) || 0,
+      tc: parseFloat(document.getElementById(prefix+'_tc').value) || 0,
+      xg: parseFloat(document.getElementById(prefix+'_xg').value) || 0,
+      corners: parseFloat(document.getElementById(prefix+'_corners').value) || 0,
+      tirs_con: parseFloat(document.getElementById(prefix+'_tirs_con').value) || 0,
+      tc_con: parseFloat(document.getElementById(prefix+'_tc_con').value) || 0,
+      xga: parseFloat(document.getElementById(prefix+'_xga').value) || 0,
+      corners_con: parseFloat(document.getElementById(prefix+'_corners_con').value) || 0,
+    };
   }
 
-  // ========== NOUVEAU : HISTORIQUE ET STATS ==========
-  let history = [];
-
-  function loadHistory() {
-    try {
-      const saved = localStorage.getItem('PredictorFootPro_History');
-      if (saved) {
-        history = JSON.parse(saved);
-      } else {
-        history = [];
-      }
-    } catch(e) {
-      history = [];
-    }
-    updateHistoryDisplay();
-    updateStats();
+  function normaliser(val, max, reverse = false) {
+    let norm = Math.min(100, Math.max(0, (val/max)*100));
+    return reverse ? 100 - norm : norm;
   }
-
-  function saveHistory() {
-    localStorage.setItem('PredictorFootPro_History', JSON.stringify(history));
-    updateHistoryDisplay();
-    updateStats();
-  }
-
-  function updateHistoryDisplay() {
-    const container = document.getElementById('historyList');
-    if (!container) return;
-    
-    if (history.length === 0) {
-      container.innerHTML = '<div style="text-align:center; color:#64748b; padding:20px;">Aucun pronostic sauvegardé. Analysez un match puis cliquez sur "Sauvegarder".</div>';
-      return;
-    }
-    
-    let html = '';
-    for (let i = 0; i < history.length; i++) {
-      const h = history[i];
-      const estJuste = h.resultatReel !== null ? (h.resultatReel === h.vainqueurPredict ? '✅' : '❌') : '⏳';
-      html += `
-        <div class="history-item">
-          <div class="history-header">
-            <span class="history-date">📅 ${h.date}</span>
-            <span class="history-match">${h.teamA} vs ${h.teamB}</span>
-            <span>${estJuste}</span>
-          </div>
-          <div class="history-result">
-            <span>🎯 Scores: ${h.scores}</span>
-            <span>🏆 Pronostic: ${h.bestPronostic}</span>
-            <span>⚽ BTTS: ${h.btts ? 'OUI' : 'NON'}</span>
-          </div>
-          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <select id="resultSelect_${i}" style="background:#0f0f13; border:1px solid #2d2d3a; border-radius: 40px; padding: 6px 12px; color: white;">
-              <option value="">-- Sélectionner le résultat réel --</option>
-              <option value="${h.teamA}">Victoire ${h.teamA}</option>
-              <option value="NUL">Nul</option>
-              <option value="${h.teamB}">Victoire ${h.teamB}</option>
-            </select>
-            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="updateResult(${i})">✅ Valider</button>
-            <button class="btn-danger" style="padding: 6px 12px; font-size: 0.8rem; background:#ef4444;" onclick="deleteHistoryItem(${i})">🗑️ Supprimer</button>
-          </div>
-        </div>
-      `;
-    }
-    container.innerHTML = html;
-  }
-
-  function updateResult(index) {
-    const select = document.getElementById(`resultSelect_${index}`);
-    if (select && select.value) {
-      history[index].resultatReel = select.value;
-      history[index].vainqueurPredict = history[index].bestPronostic.includes('Victoire') ? 
-        (history[index].bestPronostic.includes(history[index].teamA) ? history[index].teamA : 
-         (history[index].bestPronostic.includes(history[index].teamB) ? history[index].teamB : null)) : null;
-      saveHistory();
-      showToast('✅ Résultat enregistré !');
-    } else {
-      showToast('❌ Sélectionnez un résultat', true);
-    }
-  }
-
-  function deleteHistoryItem(index) {
-    history.splice(index, 1);
-    saveHistory();
-    showToast('🗑️ Pronostic supprimé');
-  }
-
-  function clearAllHistory() {
-    if (confirm('⚠️ Supprimer tout l\'historique ? Cette action est irréversible.')) {
-      history = [];
-      saveHistory();
-      showToast('📭 Historique effacé');
-    }
-  }
-
-  function exportHistoryCSV() {
-    if (history.length === 0) {
-      showToast('📭 Aucun historique à exporter', true);
-      return;
-    }
-    
-    let csv = 'Date,Equipe A,Equipe B,Scores,Meilleur Pronostic,BTTS,Résultat Réel,Juste\n';
-    for (const h of history) {
-      const estJuste = h.resultatReel !== null ? (h.resultatReel === h.vainqueurPredict ? 'OUI' : 'NON') : 'Non renseigné';
-      csv += `"${h.date}","${h.teamA}","${h.teamB}","${h.scores}","${h.bestPronostic}","${h.btts ? 'OUI' : 'NON'}","${h.resultatReel || 'Non renseigné'}","${estJuste}"\n`;
-    }
-    
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.setAttribute('download', 'pronostics_historique.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast('📥 Export CSV réussi !');
-  }
-
-  function updateStats() {
-    const total = history.length;
-    let justes = 0;
-    for (const h of history) {
-      if (h.resultatReel !== null && h.vainqueurPredict !== null && h.resultatReel === h.vainqueurPredict) {
-        justes++;
-      }
-    }
-    const faux = total - justes;
-    const taux = total > 0 ? Math.round((justes / total) * 100) : 0;
-    
-    const totalEl = document.getElementById('totalPronos');
-    const justesEl = document.getElementById('justesPronos');
-    const fauxEl = document.getElementById('fauxPronos');
-    const tauxEl = document.getElementById('tauxReussite');
-    
-    if (totalEl) totalEl.innerText = total;
-    if (justesEl) justesEl.innerText = justes;
-    if (fauxEl) fauxEl.innerText = faux;
-    if (tauxEl) tauxEl.innerText = `${taux}%`;
-  }
-
-  function addToHistory(matchData) {
-    const now = new Date();
-    const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-    
-    history.unshift({
-      date: dateStr,
-      teamA: matchData.teamA,
-      teamB: matchData.teamB,
-      scores: matchData.scores,
-      bestPronostic: matchData.bestPronostic,
-      btts: matchData.btts,
-      vainqueurPredict: matchData.vainqueurPredict,
-      resultatReel: null
-    });
-    
-    if (history.length > 100) history = history.slice(0, 100);
-    saveHistory();
-    showToast('📥 Pronostic sauvegardé dans l\'historique !');
-  }
-
-  // ========== ANALYSEUR MODIFIÉ (AJOUT DU BOUTON SAUVEGARDER) ==========
-  let currentMatchData = null;
 
   function analyser() {
-    const teamA = document.getElementById('teamA').value.trim() || 'Équipe A';
-    const teamB = document.getElementById('teamB').value.trim() || 'Équipe B';
+    const nomA = document.getElementById('teamA').value.trim() || 'Équipe A';
+    const nomB = document.getElementById('teamB').value.trim() || 'Équipe B';
+    const statsA = getStats('a');
+    const statsB = getStats('b');
+
+    const offA = normaliser(statsA.tirs,18)*0.2 + normaliser(statsA.tc,7)*0.25 + normaliser(statsA.xg,2.5)*0.25 + normaliser(statsA.corners,9)*0.3;
+    const offB = normaliser(statsB.tirs,18)*0.2 + normaliser(statsB.tc,7)*0.25 + normaliser(statsB.xg,2.5)*0.25 + normaliser(statsB.corners,9)*0.3;
+    const defA = normaliser(statsA.tirs_con,16,true)*0.25 + normaliser(statsA.tc_con,6,true)*0.25 + normaliser(statsA.xga,2.2,true)*0.25 + normaliser(statsA.corners_con,8,true)*0.25;
+    const defB = normaliser(statsB.tirs_con,16,true)*0.25 + normaliser(statsB.tc_con,6,true)*0.25 + normaliser(statsB.xga,2.2,true)*0.25 + normaliser(statsB.corners_con,8,true)*0.25;
     
-    const pointsA = calculatePoints(profiles.a);
-    const pointsB = calculatePoints(profiles.b);
+    let powerA = offA*0.55 + defA*0.45;
+    let powerB = offB*0.55 + defB*0.45;
     
-    const goalsA = pointsToGoals(pointsA.total);
-    const goalsB = pointsToGoals(pointsB.total);
+    let probA = powerA/(powerA+powerB+0.001)*100;
+    let probB = powerB/(powerA+powerB+0.001)*100;
+    let nulBase = Math.max(8, Math.min(32, 20 - Math.abs(probA-probB)/6));
+    probA = probA * (1 - nulBase/100);
+    probB = probB * (1 - nulBase/100);
+    const total = probA + probB + nulBase;
+    const finalA = probA/total*100;
+    const finalB = probB/total*100;
+    const finalNul = nulBase/total*100;
     
-    const btts = goalsA >= 1 && goalsB >= 1;
-    const scores = getPossibleScores(goalsA, goalsB);
-    const bestPronostic = getBestPronostic(goalsA, goalsB, teamA, teamB);
+    const expGolA = (statsA.xg + statsB.xga)/2;
+    const expGolB = (statsB.xg + statsA.xga)/2;
+    const over25 = Math.min(85, Math.max(20, 28 + (expGolA+expGolB-1.8)*18));
+    const under25 = 100 - over25;
+    const btts = Math.min(82, Math.max(18, (expGolA/(expGolA+0.6)*45 + expGolB/(expGolB+0.6)*45)));
+    const corners = (statsA.corners + statsB.corners_con + statsB.corners + statsA.corners_con)/2;
+    const tirsCadres = (statsA.tc + statsB.tc_con + statsB.tc + statsA.tc_con)/2;
+    const double1X = finalA + finalNul;
+    const doubleX2 = finalB + finalNul;
     
-    let vainqueurPredict = null;
-    if (bestPronostic.includes('Victoire')) {
-      if (bestPronostic.includes(teamA)) vainqueurPredict = teamA;
-      else if (bestPronostic.includes(teamB)) vainqueurPredict = teamB;
-    } else if (bestPronostic.includes('BTTS')) {
-      vainqueurPredict = 'BTTS';
-    } else if (bestPronostic.includes('Plus de 2,5')) {
-      vainqueurPredict = 'Over 2.5';
-    } else if (bestPronostic.includes('Moins de 2,5')) {
-      vainqueurPredict = 'Under 2.5';
-    }
+    const tips = [];
+    if(finalA > 60) tips.push(`Victoire ${nomA} : ${finalA.toFixed(1)}%`);
+    if(finalB > 60) tips.push(`Victoire ${nomB} : ${finalB.toFixed(1)}%`);
+    if(btts > 62) tips.push(`BTTS OUI : ${btts.toFixed(1)}%`);
+    if(over25 > 65) tips.push(`Over 2.5 : ${over25.toFixed(1)}%`);
+    if(tips.length === 0) tips.push("Match équilibré");
     
-    currentMatchData = {
-      teamA, teamB, goalsA, goalsB, btts, scores, bestPronostic, vainqueurPredict
-    };
+    // Sauvegarder dans l'historique
+    ajouterHistorique({
+      teamA: nomA, teamB: nomB,
+      probA: finalA.toFixed(1), probNul: finalNul.toFixed(1), probB: finalB.toFixed(1),
+      btts: btts.toFixed(1), over25: over25.toFixed(1),
+      corners: corners.toFixed(1), tirsCadres: tirsCadres.toFixed(1),
+      statsA: statsA, statsB: statsB
+    });
     
-    let styleA = '', styleB = '';
-    const posA = profiles.a.possession;
-    const posB = profiles.b.possession;
-    if (posA === 'bcp_dangereuse') styleA = 'domine le ballon et est très dangereuse';
-    else if (posA === 'peu_dangereuse') styleA = 'a le ballon mais peine à concrétiser';
-    else if (posA === 'peu_tres_dangereuse') styleA = 'laisse le ballon mais frappe fort en contre';
-    else styleA = 'joue de façon équilibrée';
-    
-    if (posB === 'bcp_dangereuse') styleB = 'domine le ballon et est très dangereuse';
-    else if (posB === 'peu_dangereuse') styleB = 'a le ballon mais peine à concrétiser';
-    else if (posB === 'peu_tres_dangereuse') styleB = 'laisse le ballon mais frappe fort en contre';
-    else styleB = 'joue de façon équilibrée';
-    
-    let dynamique = '';
-    if (profiles.a.reaction === 'reagit_vite') dynamique = `${teamA} réagit très vite après un coup dur.`;
-    else if (profiles.b.reaction === 'reagit_vite') dynamique = `${teamB} est capable de revenir rapidement.`;
-    else if (profiles.a.forme === 'pleine_confiance') dynamique = `${teamA} arrive en pleine confiance.`;
-    else if (profiles.b.forme === 'pleine_confiance') dynamique = `${teamB} est en pleine confiance.`;
-    else dynamique = 'Match équilibré, l\'intensité sera constante.';
-    
-    const resume = `${teamA} ${styleA}. ${teamB} ${styleB}. ${dynamique}`;
-    
-    const pointsHtmlA = pointsA.details.map(d => `<div class="points-line"><span>${d.category}</span><span>${d.points > 0 ? '+' : ''}${d.points} pts</span></div>`).join('');
-    const pointsHtmlB = pointsB.details.map(d => `<div class="points-line"><span>${d.category}</span><span>${d.points > 0 ? '+' : ''}${d.points} pts</span></div>`).join('');
-    
-    const whatsText = `⚽ PRONOSTICS ${teamA} vs ${teamB} ⚽\n` +
-      `📊 ${resume}\n` +
-      `🎯 Scores proposés : ${scores.slice(0,2).join(' ou ')}\n` +
-      `🎯 ${teamA} : ${goalsA} but(s) | ${teamB} : ${goalsB} but(s)\n` +
-      `🎯 BTTS : ${btts ? 'OUI' : 'NON'}\n` +
-      `🏆 MEILLEUR PRONOSTIC : ${bestPronostic}`;
+    const whatsText = `⚽ PRONOSTICS ${nomA} vs ${nomB} ⚽\nVictoire: ${nomA} ${finalA.toFixed(1)}% | Nul ${finalNul.toFixed(1)}% | ${nomB} ${finalB.toFixed(1)}%\nDouble chance: 1X ${double1X.toFixed(1)}% | X2 ${doubleX2.toFixed(1)}%\nBTTS: ${btts.toFixed(1)}% (${btts>50?'OUI':'NON'})\nOver 2.5: ${over25.toFixed(1)}% | Under 2.5: ${under25.toFixed(1)}%\nCorners ~ ${corners.toFixed(1)} | Tirs cadrés ~ ${tirsCadres.toFixed(1)}`;
     
     const html = `
       <div class="result-card">
-        <h3><i class="fas fa-chart-pie"></i> PRONOSTICS</h3>
-        
-        <div class="prediction-box">
-          <div style="color:#94a3b8; margin-bottom:8px;">⭐ MEILLEUR PRONOSTIC ⭐</div>
-          <div class="prediction-text">${bestPronostic}</div>
+        <h3 style="margin-bottom:16px;">📊 PRONOSTICS</h3>
+        <div class="result-grid">
+          <div class="result-item"><div>🏆 ${nomA}</div><div class="result-value">${finalA.toFixed(1)}%</div></div>
+          <div class="result-item"><div>🤝 NUL</div><div class="result-value">${finalNul.toFixed(1)}%</div></div>
+          <div class="result-item"><div>🏆 ${nomB}</div><div class="result-value">${finalB.toFixed(1)}%</div></div>
+          <div class="result-item"><div>🔄 1X</div><div class="result-value">${double1X.toFixed(1)}%</div></div>
+          <div class="result-item"><div>🔄 X2</div><div class="result-value">${doubleX2.toFixed(1)}%</div></div>
+          <div class="result-item"><div>⚽ BTTS</div><div class="result-value">${btts.toFixed(1)}%</div><div style="font-size:0.7rem;">${btts>50?'OUI':'NON'}</div></div>
+          <div class="result-item"><div>📈 Over 2.5</div><div class="result-value">${over25.toFixed(1)}%</div></div>
+          <div class="result-item"><div>📉 Under 2.5</div><div class="result-value">${under25.toFixed(1)}%</div></div>
+          <div class="result-item"><div>🚩 Corners</div><div class="result-value">${corners.toFixed(1)}</div></div>
+          <div class="result-item"><div>🎯 Tirs cadrés</div><div class="result-value">${tirsCadres.toFixed(1)}</div></div>
         </div>
-        
-        <div class="scores">
-          <div class="score-item">${scores[0]}</div>
-          <div class="score-item">${scores[1]}</div>
+        <div style="background:#eef2ff; border-radius:16px; padding:12px; margin:12px 0;">
+          <strong>⭐ MEILLEURS PRONOSTICS</strong><br>${tips.map(t=>`✅ ${t}`).join('<br>')}
         </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
-          <div class="points-detail">
-            <h4 style="color:#3b82f6; margin-bottom:12px;">📊 ${teamA}</h4>
-            ${pointsHtmlA}
-            <div class="points-total">TOTAL : ${pointsA.total} pts → ${goalsA} but(s)</div>
-          </div>
-          <div class="points-detail">
-            <h4 style="color:#3b82f6; margin-bottom:12px;">📊 ${teamB}</h4>
-            ${pointsHtmlB}
-            <div class="points-total">TOTAL : ${pointsB.total} pts → ${goalsB} but(s)</div>
-          </div>
-        </div>
-        
-        <div style="text-align:center; margin: 10px 0;">
-          <strong style="color:#3b82f6;">⚽ BTTS : ${btts ? '✅ OUI' : '❌ NON'}</strong>
-        </div>
-        
-        <div style="background:#0f0f13; border-radius:16px; padding:14px; margin:12px 0; border:1px solid #2d2d3a;">
-          <strong style="color:#3b82f6;">📋 RÉSUMÉ DU MATCH</strong><br>
-          <span style="color:#cbd5e1;">${resume}</span>
-        </div>
-        
-        <div class="btn-group">
-          <button class="btn btn-success" id="saveToHistoryBtn">📥 Sauvegarder ce pronostic</button>
-          <button class="btn btn-primary" id="whatsappCopyBtn">📋 Copier pour WhatsApp</button>
+        <div class="whatsapp-btn" onclick="copierWhatsApp('${whatsText.replace(/'/g, "\\'")}')">
+          📋 Cliquer ici pour copier le résumé WhatsApp
         </div>
       </div>
     `;
     
     document.getElementById('resultats').innerHTML = html;
     document.getElementById('resultats').style.display = 'block';
-    
-    const saveBtn = document.getElementById('saveToHistoryBtn');
-    if (saveBtn) {
-      saveBtn.onclick = () => {
-        addToHistory({
-          teamA, teamB,
-          scores: scores.slice(0,2).join(' ou '),
-          bestPronostic,
-          btts,
-          vainqueurPredict
-        });
-      };
-    }
-    
-    const copyBtn = document.getElementById('whatsappCopyBtn');
-    if (copyBtn) {
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(whatsText).then(() => {
-          showToast('✅ Pronostic copié ! Collez dans WhatsApp');
-        }).catch(() => {
-          showToast('❌ Copie manuelle', true);
-        });
-      };
-    }
+    showToast('✅ Analyse enregistrée dans l\'historique !');
   }
-  
-  // ========== ÉVÉNEMENTS ==========
+
+  function copierWhatsApp(texte) {
+    navigator.clipboard.writeText(texte).then(() => {
+      showToast('✅ Pronostic copié ! Collez dans WhatsApp');
+    }).catch(() => showToast('❌ Copie manuelle', true));
+  }
+
+  // Onglets
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -993,23 +628,21 @@
       document.getElementById(btn.dataset.tab).classList.add('active');
     });
   });
-  
-  document.getElementById('saveBtn').addEventListener('click', sauvegarder);
-  document.getElementById('loadBtn').addEventListener('click', charger);
-  document.getElementById('resetBtn').addEventListener('click', reinitialiser);
+
+  // Événements
+  document.getElementById('saveBtn').addEventListener('click', sauvegarderStats);
+  document.getElementById('loadBtn').addEventListener('click', chargerStats);
+  document.getElementById('resetBtn').addEventListener('click', reinitialiserStats);
   document.getElementById('analyserBtn').addEventListener('click', analyser);
+  document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
   
-  const clearBtn = document.getElementById('clearHistoryBtn');
-  if (clearBtn) clearBtn.addEventListener('click', clearAllHistory);
-  const exportBtn = document.getElementById('exportHistoryBtn');
-  if (exportBtn) exportBtn.addEventListener('click', exportHistoryCSV);
+  window.copierWhatsApp = copierWhatsApp;
+  window.rejouerAnalyse = rejouerAnalyse;
+  window.supprimerAnalyse = supprimerAnalyse;
   
-  window.updateResult = updateResult;
-  window.deleteHistoryItem = deleteHistoryItem;
-  
-  initProfileSelectors();
-  loadHistory();
-  setTimeout(() => { charger(); }, 100);
+  // Chargement initial
+  chargerStats();
+  chargerHistorique();
 </script>
 </body>
 </html>
