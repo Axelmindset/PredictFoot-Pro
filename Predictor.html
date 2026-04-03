@@ -164,6 +164,10 @@
       background: #2d2d3a;
       color: white;
     }
+    .btn-success {
+      background: #22c55e;
+      color: white;
+    }
     
     .result-card {
       background: #1a1a24;
@@ -236,6 +240,58 @@
       border-left: 4px solid #22c55e;
       color: #22c55e;
     }
+    
+    /* Styles pour l'historique */
+    .history-item {
+      background: #0f0f13;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #2d2d3a;
+    }
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .history-date {
+      color: #64748b;
+      font-size: 0.7rem;
+    }
+    .history-match {
+      font-weight: bold;
+      color: white;
+    }
+    .history-result {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #0f0f13;
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #2d2d3a;
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #3b82f6;
+    }
+    
     .toast {
       position: fixed;
       bottom: 30px;
@@ -274,9 +330,10 @@
     <button class="tab-btn active" data-tab="tab1">🏆 Équipe A</button>
     <button class="tab-btn" data-tab="tab2">⚽ Équipe B</button>
     <button class="tab-btn" data-tab="tab3">⚙️ Sauvegarde</button>
+    <button class="tab-btn" data-tab="tab4">📜 Historique & Stats</button>
   </div>
 
-  <!-- Équipe A -->
+  <!-- Équipe A (inchangé) -->
   <div id="tab1" class="tab-content active">
     <div class="full-width">
       <input type="text" id="teamA" placeholder="Nom de l'équipe A" value="Paris SG">
@@ -345,7 +402,7 @@
     </div>
   </div>
 
-  <!-- Équipe B -->
+  <!-- Équipe B (inchangé) -->
   <div id="tab2" class="tab-content">
     <div class="full-width">
       <input type="text" id="teamB" placeholder="Nom de l'équipe B" value="Toulouse">
@@ -414,7 +471,7 @@
     </div>
   </div>
 
-  <!-- Sauvegarde -->
+  <!-- Sauvegarde (inchangé) -->
   <div id="tab3" class="tab-content">
     <div class="section-title"><i class="fas fa-database"></i> GESTION DES DONNÉES</div>
     <div class="btn-group">
@@ -428,6 +485,27 @@
     </div>
   </div>
 
+  <!-- Historique & Stats (NOUVEAU - AJOUTÉ) -->
+  <div id="tab4" class="tab-content">
+    <div class="section-title"><i class="fas fa-chart-line"></i> STATISTIQUES GLOBALES</div>
+    <div class="stats-grid" id="statsContainer">
+      <div class="stat-card"><div>📊 Total</div><div class="stat-value" id="totalPronos">0</div></div>
+      <div class="stat-card"><div>✅ Justes</div><div class="stat-value" id="justesPronos">0</div></div>
+      <div class="stat-card"><div>❌ Faux</div><div class="stat-value" id="fauxPronos">0</div></div>
+      <div class="stat-card"><div>📈 Taux</div><div class="stat-value" id="tauxReussite">0%</div></div>
+    </div>
+    
+    <div class="btn-group">
+      <button class="btn btn-secondary" id="clearHistoryBtn"><i class="fas fa-trash"></i> Effacer tout</button>
+      <button class="btn btn-secondary" id="exportHistoryBtn"><i class="fas fa-download"></i> Exporter CSV</button>
+    </div>
+    
+    <div class="section-title"><i class="fas fa-history"></i> HISTORIQUE</div>
+    <div id="historyList" style="max-height: 500px; overflow-y: auto;">
+      <div style="text-align:center; color:#64748b; padding:20px;">Aucun pronostic sauvegardé.</div>
+    </div>
+  </div>
+
   <button class="btn btn-primary" id="analyserBtn"><i class="fas fa-chart-line"></i> ANALYSER LE MATCH</button>
 
   <div id="resultats" style="display:none;"></div>
@@ -436,6 +514,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
+  // ========== PARTIE EXISTANTE (IDENTIQUE À TA VERSION) ==========
   let profiles = {
     a: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' },
     b: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' }
@@ -609,6 +688,146 @@
     return `Moins de 2,5 buts`;
   }
   
+  // ========== NOUVEAU : HISTORIQUE ==========
+  let history = [];
+
+  function loadHistory() {
+    try {
+      const saved = localStorage.getItem('PredictorFootPro_History');
+      if (saved) history = JSON.parse(saved);
+      else history = [];
+    } catch(e) { history = []; }
+    updateHistoryDisplay();
+    updateStats();
+  }
+
+  function saveHistory() {
+    localStorage.setItem('PredictorFootPro_History', JSON.stringify(history));
+    updateHistoryDisplay();
+    updateStats();
+  }
+
+  function updateHistoryDisplay() {
+    const container = document.getElementById('historyList');
+    if (!container) return;
+    if (history.length === 0) {
+      container.innerHTML = '<div style="text-align:center; color:#64748b; padding:20px;">Aucun pronostic sauvegardé.</div>';
+      return;
+    }
+    let html = '';
+    for (let i = 0; i < history.length; i++) {
+      const h = history[i];
+      const estJuste = h.resultatReel !== null ? (h.resultatReel === h.vainqueurPredict ? '✅' : '❌') : '⏳';
+      html += `
+        <div class="history-item">
+          <div class="history-header">
+            <span class="history-date">📅 ${h.date}</span>
+            <span class="history-match">${h.teamA} vs ${h.teamB}</span>
+            <span>${estJuste}</span>
+          </div>
+          <div class="history-result">
+            <span>🎯 ${h.scores}</span>
+            <span>🏆 ${h.bestPronostic}</span>
+          </div>
+          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <select id="resultSelect_${i}" style="background:#0f0f13; border:1px solid #2d2d3a; border-radius: 40px; padding: 6px 12px; color: white;">
+              <option value="">-- Résultat réel --</option>
+              <option value="${h.teamA}">Victoire ${h.teamA}</option>
+              <option value="NUL">Nul</option>
+              <option value="${h.teamB}">Victoire ${h.teamB}</option>
+            </select>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="updateResult(${i})">✅ Valider</button>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; background:#ef4444;" onclick="deleteHistoryItem(${i})">🗑️</button>
+          </div>
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+  }
+
+  window.updateResult = function(index) {
+    const select = document.getElementById(`resultSelect_${index}`);
+    if (select && select.value) {
+      history[index].resultatReel = select.value;
+      saveHistory();
+      showToast('✅ Résultat enregistré !');
+    } else {
+      showToast('❌ Sélectionnez un résultat', true);
+    }
+  }
+
+  window.deleteHistoryItem = function(index) {
+    history.splice(index, 1);
+    saveHistory();
+    showToast('🗑️ Supprimé');
+  }
+
+  function clearAllHistory() {
+    if (confirm('⚠️ Supprimer tout l\'historique ?')) {
+      history = [];
+      saveHistory();
+      showToast('📭 Historique effacé');
+    }
+  }
+
+  function exportHistoryCSV() {
+    if (history.length === 0) {
+      showToast('📭 Aucun historique', true);
+      return;
+    }
+    let csv = 'Date,Equipe A,Equipe B,Scores,Meilleur Pronostic,BTTS,Résultat Réel\n';
+    for (const h of history) {
+      csv += `"${h.date}","${h.teamA}","${h.teamB}","${h.scores}","${h.bestPronostic}","${h.btts ? 'OUI' : 'NON'}","${h.resultatReel || 'Non renseigné'}"\n`;
+    }
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute('download', 'pronostics.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('📥 Export CSV réussi !');
+  }
+
+  function updateStats() {
+    const total = history.length;
+    let justes = 0;
+    for (const h of history) {
+      if (h.resultatReel !== null && h.vainqueurPredict !== null && h.resultatReel === h.vainqueurPredict) justes++;
+    }
+    const faux = total - justes;
+    const taux = total > 0 ? Math.round((justes / total) * 100) : 0;
+    const totalEl = document.getElementById('totalPronos');
+    const justesEl = document.getElementById('justesPronos');
+    const fauxEl = document.getElementById('fauxPronos');
+    const tauxEl = document.getElementById('tauxReussite');
+    if (totalEl) totalEl.innerText = total;
+    if (justesEl) justesEl.innerText = justes;
+    if (fauxEl) fauxEl.innerText = faux;
+    if (tauxEl) tauxEl.innerText = `${taux}%`;
+  }
+
+  function addToHistory(matchData) {
+    const now = new Date();
+    const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    history.unshift({
+      date: dateStr,
+      teamA: matchData.teamA,
+      teamB: matchData.teamB,
+      scores: matchData.scores,
+      bestPronostic: matchData.bestPronostic,
+      btts: matchData.btts,
+      vainqueurPredict: matchData.vainqueurPredict,
+      resultatReel: null
+    });
+    if (history.length > 100) history = history.slice(0, 100);
+    saveHistory();
+    showToast('📥 Pronostic sauvegardé !');
+  }
+
+  // ========== ANALYSEUR MODIFIÉ (AJOUT DU BOUTON SAUVEGARDER) ==========
   function analyser() {
     const teamA = document.getElementById('teamA').value.trim() || 'Équipe A';
     const teamB = document.getElementById('teamB').value.trim() || 'Équipe B';
@@ -622,6 +841,18 @@
     const btts = goalsA >= 1 && goalsB >= 1;
     const scores = getPossibleScores(goalsA, goalsB);
     const bestPronostic = getBestPronostic(goalsA, goalsB, teamA, teamB);
+    
+    let vainqueurPredict = null;
+    if (bestPronostic.includes('Victoire')) {
+      if (bestPronostic.includes(teamA)) vainqueurPredict = teamA;
+      else if (bestPronostic.includes(teamB)) vainqueurPredict = teamB;
+    } else if (bestPronostic.includes('BTTS')) {
+      vainqueurPredict = 'BTTS';
+    } else if (bestPronostic.includes('Plus de 2,5')) {
+      vainqueurPredict = 'Over 2.5';
+    } else if (bestPronostic.includes('Moins de 2,5')) {
+      vainqueurPredict = 'Under 2.5';
+    }
     
     let styleA = '', styleB = '';
     const posA = profiles.a.possession;
@@ -691,8 +922,9 @@
           <span style="color:#cbd5e1;">${resume}</span>
         </div>
         
-        <div class="whatsapp-btn" id="whatsappCopyBtn">
-          📋 Cliquer ici pour copier le pronostic WhatsApp
+        <div class="btn-group">
+          <button class="btn btn-success" id="saveToHistoryBtn">📥 Sauvegarder ce pronostic</button>
+          <button class="btn btn-primary" id="whatsappCopyBtn">📋 Copier WhatsApp</button>
         </div>
       </div>
     `;
@@ -700,11 +932,24 @@
     document.getElementById('resultats').innerHTML = html;
     document.getElementById('resultats').style.display = 'block';
     
+    const saveBtn = document.getElementById('saveToHistoryBtn');
+    if (saveBtn) {
+      saveBtn.onclick = () => {
+        addToHistory({
+          teamA, teamB,
+          scores: scores.slice(0,2).join(' ou '),
+          bestPronostic,
+          btts,
+          vainqueurPredict
+        });
+      };
+    }
+    
     const copyBtn = document.getElementById('whatsappCopyBtn');
     if (copyBtn) {
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(whatsText).then(() => {
-          showToast('✅ Pronostic copié ! Collez dans WhatsApp');
+          showToast('✅ Pronostic copié !');
         }).catch(() => {
           showToast('❌ Copie manuelle', true);
         });
@@ -712,6 +957,7 @@
     }
   }
   
+  // ========== ÉVÉNEMENTS ==========
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -726,7 +972,13 @@
   document.getElementById('resetBtn').addEventListener('click', reinitialiser);
   document.getElementById('analyserBtn').addEventListener('click', analyser);
   
+  const clearBtn = document.getElementById('clearHistoryBtn');
+  if (clearBtn) clearBtn.addEventListener('click', clearAllHistory);
+  const exportBtn = document.getElementById('exportHistoryBtn');
+  if (exportBtn) exportBtn.addEventListener('click', exportHistoryCSV);
+  
   initProfileSelectors();
+  loadHistory();
   setTimeout(() => { charger(); }, 100);
 </script>
 </body>
