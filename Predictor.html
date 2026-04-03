@@ -441,6 +441,7 @@
         <div class="profile-option" data-value="peu_efficace">✅ Peu de corners mais efficace (+2)</div>
         <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
         <div class="profile-option" data-value="bcp_inefficace">⚠️ Beaucoup de corners mais inefficace (0)</div>
+        <div class="profile-option" data-value="peu_inefficace">💀 Peu de corners et inefficace (-1)</div>
       </div>
     </div>
     
@@ -451,6 +452,7 @@
         <div class="profile-option" data-value="peu_tres_dangereuse">✅ Possède peu mais très dangereuse (+2)</div>
         <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
         <div class="profile-option" data-value="peu_dangereuse">⚠️ Possède le ballon mais peu dangereuse (0)</div>
+        <div class="profile-option" data-value="pas_dangereuse">💀 Ne possède pas le ballon et inefficace (-1)</div>
       </div>
     </div>
     
@@ -510,6 +512,7 @@
         <div class="profile-option" data-value="peu_efficace">✅ Peu de corners mais efficace (+2)</div>
         <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
         <div class="profile-option" data-value="bcp_inefficace">⚠️ Beaucoup de corners mais inefficace (0)</div>
+        <div class="profile-option" data-value="peu_inefficace">💀 Peu de corners et inefficace (-1)</div>
       </div>
     </div>
     
@@ -520,6 +523,7 @@
         <div class="profile-option" data-value="peu_tres_dangereuse">✅ Possède peu mais très dangereuse (+2)</div>
         <div class="profile-option" data-value="equilibre">➖ Équilibré (+1)</div>
         <div class="profile-option" data-value="peu_dangereuse">⚠️ Possède le ballon mais peu dangereuse (0)</div>
+        <div class="profile-option" data-value="pas_dangereuse">💀 Ne possède pas le ballon et inefficace (-1)</div>
       </div>
     </div>
     
@@ -618,11 +622,17 @@
   const categories = ['corners', 'possession', 'domination', 'reaction', 'adversaire', 'forme'];
   
   const pointsMap = {
-    'bcp_efficace': 3, 'peu_efficace': 2, 'equilibre': 1, 'bcp_inefficace': 0,
-    'bcp_dangereuse': 3, 'peu_tres_dangereuse': 2, 'peu_dangereuse': 0,
+    // Corners
+    'bcp_efficace': 3, 'peu_efficace': 2, 'equilibre': 1, 'bcp_inefficace': 0, 'peu_inefficace': -1,
+    // Possession
+    'bcp_dangereuse': 3, 'peu_tres_dangereuse': 2, 'equilibre': 1, 'peu_dangereuse': 0, 'pas_dangereuse': -1,
+    // Domination
     'domine_efficace': 3, 'subit_dangereux': 1, 'domine_inefficace': 0,
+    // Reaction
     'reagit_vite': 2, 'subit_reagit': 1, 'attaque_subit': 0, 'subit_apres_bon': -1, 'jamais': -2,
+    // Adversaire
     'perf_forts': 3, 'surperf_forts': 2, 'equilibre_adv': 0, 'perf_faibles': -1, 'contre_perf': -2,
+    // Forme
     'pleine_confiance': 2, 'neutre': 0, 'irregulier': -1, 'crise': -2
   };
   
@@ -769,18 +779,62 @@
     return [`${goalsA}-${goalsB}`, `${Math.min(5,goalsA+1)}-${goalsB}`];
   }
   
+  // ========== NOUVEAU : MEILLEUR PRONOSTIC PLUS PRÉCIS ==========
   function getBestPronostic(goalsA, goalsB, teamA, teamB) {
     const total = goalsA + goalsB;
-    if (goalsA >= 4 && goalsB === 0) return `${teamA} gagne sans encaisser et plus de 2,5 buts`;
-    if (goalsB >= 4 && goalsA === 0) return `${teamB} gagne sans encaisser et plus de 2,5 buts`;
-    if (goalsA >= 3 && goalsB <= 1) return `Victoire ${teamA} et plus de 2,5 buts`;
-    if (goalsB >= 3 && goalsA <= 1) return `Victoire ${teamB} et plus de 2,5 buts`;
-    if (goalsA >= 2 && goalsB >= 2) return `Plus de 2,5 buts et BTTS oui`;
-    if (goalsA >= 2 && goalsB === 0) return `${teamA} gagne sans encaisser`;
-    if (goalsB >= 2 && goalsA === 0) return `${teamB} gagne sans encaisser`;
-    if (total >= 3) return `Plus de 2,5 buts`;
-    if (goalsA >= 1 && goalsB >= 1) return `BTTS oui`;
-    return `Moins de 2,5 buts`;
+    const diff = Math.abs(goalsA - goalsB);
+    const maxGoals = Math.max(goalsA, goalsB);
+    const minGoals = Math.min(goalsA, goalsB);
+    
+    // Cas particuliers très précis
+    if (goalsA >= 4 && goalsB === 0) return `${teamA} gagne sans encaisser et plus de 3,5 buts`;
+    if (goalsB >= 4 && goalsA === 0) return `${teamB} gagne sans encaisser et plus de 3,5 buts`;
+    
+    if (goalsA >= 3 && goalsB === 0) return `${teamA} gagne sans encaisser et plus de 2,5 buts`;
+    if (goalsB >= 3 && goalsA === 0) return `${teamB} gagne sans encaisser et plus de 2,5 buts`;
+    
+    if (goalsA === 3 && goalsB === 1) return `${teamA} gagne et plus de 2,5 buts`;
+    if (goalsB === 3 && goalsA === 1) return `${teamB} gagne et plus de 2,5 buts`;
+    
+    if (goalsA === 2 && goalsB === 0) return `${teamA} gagne sans encaisser`;
+    if (goalsB === 2 && goalsA === 0) return `${teamB} gagne sans encaisser`;
+    
+    if (goalsA === 2 && goalsB === 1) return `${teamA} gagne et plus de 2,5 buts`;
+    if (goalsB === 2 && goalsA === 1) return `${teamB} gagne et plus de 2,5 buts`;
+    
+    if (goalsA === 1 && goalsB === 0) return `${teamA} gagne et moins de 2,5 buts`;
+    if (goalsB === 1 && goalsA === 0) return `${teamB} gagne et moins de 2,5 buts`;
+    
+    if (goalsA === 1 && goalsB === 1) return `Match nul et moins de 2,5 buts`;
+    if (goalsA === 2 && goalsB === 2) return `Match nul et plus de 2,5 buts`;
+    
+    if (goalsA === 3 && goalsB === 2) return `${teamA} gagne et plus de 3,5 buts`;
+    if (goalsB === 3 && goalsA === 2) return `${teamB} gagne et plus de 3,5 buts`;
+    
+    if (goalsA === 4 && goalsB === 1) return `${teamA} gagne et plus de 3,5 buts`;
+    if (goalsB === 4 && goalsA === 1) return `${teamB} gagne et plus de 3,5 buts`;
+    
+    if (goalsA === 4 && goalsB === 2) return `${teamA} gagne et plus de 4,5 buts`;
+    if (goalsB === 4 && goalsA === 2) return `${teamB} gagne et plus de 4,5 buts`;
+    
+    if (goalsA === 5 && goalsB === 2) return `${teamA} gagne et plus de 5,5 buts`;
+    if (goalsB === 5 && goalsA === 2) return `${teamB} gagne et plus de 5,5 buts`;
+    
+    if (goalsA === 5 && goalsB === 3) return `${teamA} gagne et plus de 6,5 buts`;
+    if (goalsB === 5 && goalsA === 3) return `${teamB} gagne et plus de 6,5 buts`;
+    
+    if (goalsA === 0 && goalsB === 0) return `Moins de 1,5 buts et match nul`;
+    
+    if (goalsA === 5 && goalsB === 4) return `Plus de 7,5 buts et ${teamA} gagne`;
+    if (goalsB === 5 && goalsA === 4) return `Plus de 7,5 buts et ${teamB} gagne`;
+    
+    // Cas général par défaut
+    if (total >= 4) return `Plus de 3,5 buts`;
+    if (total === 3) return `Plus de 2,5 buts`;
+    if (total === 2) return `Moins de 2,5 buts`;
+    if (total <= 1) return `Moins de 1,5 buts`;
+    
+    return `Match équilibré, peu de buts`;
   }
   
   // ========== HISTORIQUE ==========
@@ -938,15 +992,17 @@
     const bestPronostic = getBestPronostic(goalsA, goalsB, teamA, teamB);
     
     let vainqueurPredict = null;
-    if (bestPronostic.includes('Victoire')) {
+    if (bestPronostic.includes('Victoire') || bestPronostic.includes('gagne')) {
       if (bestPronostic.includes(teamA)) vainqueurPredict = teamA;
       else if (bestPronostic.includes(teamB)) vainqueurPredict = teamB;
+    } else if (bestPronostic.includes('nul') || bestPronostic.includes('Match nul')) {
+      vainqueurPredict = 'NUL';
     } else if (bestPronostic.includes('BTTS')) {
       vainqueurPredict = 'BTTS';
-    } else if (bestPronostic.includes('Plus de 2,5')) {
-      vainqueurPredict = 'Over 2.5';
-    } else if (bestPronostic.includes('Moins de 2,5')) {
-      vainqueurPredict = 'Under 2.5';
+    } else if (bestPronostic.includes('Plus de')) {
+      vainqueurPredict = 'Over';
+    } else if (bestPronostic.includes('Moins de')) {
+      vainqueurPredict = 'Under';
     }
     
     let styleA = '', styleB = '';
@@ -955,11 +1011,13 @@
     if (posA === 'bcp_dangereuse') styleA = 'domine le ballon et est très dangereuse';
     else if (posA === 'peu_dangereuse') styleA = 'a le ballon mais peine à concrétiser';
     else if (posA === 'peu_tres_dangereuse') styleA = 'laisse le ballon mais frappe fort en contre';
+    else if (posA === 'pas_dangereuse') styleA = 'n\'a pas le ballon et est inefficace';
     else styleA = 'joue de façon équilibrée';
     
     if (posB === 'bcp_dangereuse') styleB = 'domine le ballon et est très dangereuse';
     else if (posB === 'peu_dangereuse') styleB = 'a le ballon mais peine à concrétiser';
     else if (posB === 'peu_tres_dangereuse') styleB = 'laisse le ballon mais frappe fort en contre';
+    else if (posB === 'pas_dangereuse') styleB = 'n\'a pas le ballon et est inefficace';
     else styleB = 'joue de façon équilibrée';
     
     let dynamique = '';
