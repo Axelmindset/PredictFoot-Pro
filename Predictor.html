@@ -14,7 +14,6 @@
       transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Thème sombre par défaut (AMOLED) */
     :root {
       --bg-primary: #000000;
       --bg-secondary: #111115;
@@ -36,7 +35,6 @@
       --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
-    /* Mode sombre normal (moins extrême) */
     body.light-dark {
       --bg-primary: #0f0f13;
       --bg-secondary: #18181c;
@@ -328,7 +326,6 @@
       transform: scale(0.98);
     }
     
-    /* Styles pour l'historique */
     .history-item {
       background: var(--bg-secondary);
       border-radius: 16px;
@@ -613,7 +610,6 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  // ========== PARTIE EXISTANTE ==========
   let profiles = {
     a: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' },
     b: { corners: 'equilibre', possession: 'equilibre', domination: 'equilibre', reaction: 'jamais', adversaire: 'equilibre_adv', forme: 'neutre' }
@@ -622,17 +618,11 @@
   const categories = ['corners', 'possession', 'domination', 'reaction', 'adversaire', 'forme'];
   
   const pointsMap = {
-    // Corners
     'bcp_efficace': 3, 'peu_efficace': 2, 'equilibre': 1, 'bcp_inefficace': 0, 'peu_inefficace': -1,
-    // Possession
-    'bcp_dangereuse': 3, 'peu_tres_dangereuse': 2, 'equilibre': 1, 'peu_dangereuse': 0, 'pas_dangereuse': -1,
-    // Domination
+    'bcp_dangereuse': 3, 'peu_tres_dangereuse': 2, 'peu_dangereuse': 0, 'pas_dangereuse': -1,
     'domine_efficace': 3, 'subit_dangereux': 1, 'domine_inefficace': 0,
-    // Reaction
     'reagit_vite': 2, 'subit_reagit': 1, 'attaque_subit': 0, 'subit_apres_bon': -1, 'jamais': -2,
-    // Adversaire
     'perf_forts': 3, 'surperf_forts': 2, 'equilibre_adv': 0, 'perf_faibles': -1, 'contre_perf': -2,
-    // Forme
     'pleine_confiance': 2, 'neutre': 0, 'irregulier': -1, 'crise': -2
   };
   
@@ -757,82 +747,62 @@
     if (goalsA === 5 && goalsB === 3) return ['5-3', '4-3', '5-2'];
     if (goalsA === 5 && goalsB === 2) return ['5-2', '4-2', '5-1'];
     if (goalsA === 5 && goalsB === 1) return ['5-1', '4-1', '5-0'];
-    if (goalsA === 5 && goalsB === 0) return ['5-0', '4-0', '6-0'];
+    if (goalsA === 5 && goalsB === 0) return ['5-0', '4-0'];
     if (goalsA === 4 && goalsB === 4) return ['4-4', '5-4', '4-3'];
     if (goalsA === 4 && goalsB === 3) return ['4-3', '3-3', '4-2'];
     if (goalsA === 4 && goalsB === 2) return ['4-2', '3-2', '4-1'];
     if (goalsA === 4 && goalsB === 1) return ['4-1', '3-1', '4-0'];
-    if (goalsA === 4 && goalsB === 0) return ['4-0', '3-0', '5-0'];
+    if (goalsA === 4 && goalsB === 0) return ['4-0', '3-0'];
     if (goalsA === 3 && goalsB === 3) return ['3-3', '4-3', '3-2'];
     if (goalsA === 3 && goalsB === 2) return ['3-2', '2-2', '3-1'];
     if (goalsA === 3 && goalsB === 1) return ['3-1', '2-1', '3-0'];
-    if (goalsA === 3 && goalsB === 0) return ['3-0', '2-0', '4-0'];
+    if (goalsA === 3 && goalsB === 0) return ['3-0', '2-0'];
     if (goalsA === 2 && goalsB === 2) return ['2-2', '3-2', '2-1'];
     if (goalsA === 2 && goalsB === 1) return ['2-1', '3-1', '2-0'];
-    if (goalsA === 2 && goalsB === 0) return ['2-0', '3-0', '1-0'];
+    if (goalsA === 2 && goalsB === 0) return ['2-0', '1-0'];
     if (goalsA === 1 && goalsB === 1) return ['1-1', '2-1', '1-0'];
     if (goalsA === 1 && goalsB === 0) return ['1-0', '2-0', '0-0'];
-    if (goalsA === 0 && goalsB === 0) return ['0-0', '1-0', '0-1'];
+    if (goalsA === 0 && goalsB === 0) return ['0-0', '1-0'];
     if (goalsA === 0 && goalsB === 1) return ['0-1', '0-2', '1-1'];
-    if (goalsA === 0 && goalsB === 2) return ['0-2', '1-2', '0-3'];
-    if (goalsA === 0 && goalsB === 3) return ['0-3', '1-3', '0-4'];
+    if (goalsA === 0 && goalsB === 2) return ['0-2', '1-2'];
+    if (goalsA === 0 && goalsB === 3) return ['0-3', '1-3'];
     return [`${goalsA}-${goalsB}`, `${Math.min(5,goalsA+1)}-${goalsB}`];
   }
   
-  // ========== NOUVEAU : MEILLEUR PRONOSTIC PLUS PRÉCIS ==========
+  // ========== MEILLEUR PRONOSTIC INTELLIGENT ==========
   function getBestPronostic(goalsA, goalsB, teamA, teamB) {
     const total = goalsA + goalsB;
     const diff = Math.abs(goalsA - goalsB);
-    const maxGoals = Math.max(goalsA, goalsB);
-    const minGoals = Math.min(goalsA, goalsB);
     
-    // Cas particuliers très précis
-    if (goalsA >= 4 && goalsB === 0) return `${teamA} gagne sans encaisser et plus de 3,5 buts`;
-    if (goalsB >= 4 && goalsA === 0) return `${teamB} gagne sans encaisser et plus de 3,5 buts`;
+    // VICTOIRE SÈCHE (écart net)
+    if (goalsA >= 4 && goalsB <= 1) return `Victoire ${teamA} (score probable ${goalsA}-${goalsB})`;
+    if (goalsB >= 4 && goalsA <= 1) return `Victoire ${teamB} (score probable ${goalsB}-${goalsA})`;
+    if (goalsA === 3 && goalsB === 0) return `Victoire ${teamA} sans encaisser`;
+    if (goalsB === 3 && goalsA === 0) return `Victoire ${teamB} sans encaisser`;
+    if (goalsA === 3 && goalsB === 1) return `Victoire ${teamA}`;
+    if (goalsB === 3 && goalsA === 1) return `Victoire ${teamB}`;
     
-    if (goalsA >= 3 && goalsB === 0) return `${teamA} gagne sans encaisser et plus de 2,5 buts`;
-    if (goalsB >= 3 && goalsA === 0) return `${teamB} gagne sans encaisser et plus de 2,5 buts`;
+    // DOUBLE CHANCE + UNDER (sécurité)
+    if (diff <= 1 && total <= 2) return `Double chance ${teamA} ou nul et moins de 2,5 buts`;
+    if (diff <= 1 && total === 3) return `Double chance ${teamB} ou nul et moins de 3,5 buts`;
+    if (diff === 1 && total === 2) return `Double chance ${goalsA > goalsB ? teamA : teamB} ou nul`;
     
-    if (goalsA === 3 && goalsB === 1) return `${teamA} gagne et plus de 2,5 buts`;
-    if (goalsB === 3 && goalsA === 1) return `${teamB} gagne et plus de 2,5 buts`;
+    // UNDER spécifiques
+    if (total === 0) return `Moins de 0,5 but dans le match`;
+    if (total === 1) return `Moins de 1,5 but dans le match`;
+    if (total === 2) return `Moins de 2,5 buts dans le match`;
     
-    if (goalsA === 2 && goalsB === 0) return `${teamA} gagne sans encaisser`;
-    if (goalsB === 2 && goalsA === 0) return `${teamB} gagne sans encaisser`;
+    // OVER spécifiques
+    if (total === 3) return `Plus de 2,5 buts dans le match`;
+    if (total === 4) return `Plus de 3,5 buts dans le match`;
+    if (total === 5) return `Plus de 4,5 buts dans le match`;
+    if (total >= 6) return `Plus de 5,5 buts dans le match`;
     
-    if (goalsA === 2 && goalsB === 1) return `${teamA} gagne et plus de 2,5 buts`;
-    if (goalsB === 2 && goalsA === 1) return `${teamB} gagne et plus de 2,5 buts`;
-    
-    if (goalsA === 1 && goalsB === 0) return `${teamA} gagne et moins de 2,5 buts`;
-    if (goalsB === 1 && goalsA === 0) return `${teamB} gagne et moins de 2,5 buts`;
-    
-    if (goalsA === 1 && goalsB === 1) return `Match nul et moins de 2,5 buts`;
-    if (goalsA === 2 && goalsB === 2) return `Match nul et plus de 2,5 buts`;
-    
-    if (goalsA === 3 && goalsB === 2) return `${teamA} gagne et plus de 3,5 buts`;
-    if (goalsB === 3 && goalsA === 2) return `${teamB} gagne et plus de 3,5 buts`;
-    
-    if (goalsA === 4 && goalsB === 1) return `${teamA} gagne et plus de 3,5 buts`;
-    if (goalsB === 4 && goalsA === 1) return `${teamB} gagne et plus de 3,5 buts`;
-    
-    if (goalsA === 4 && goalsB === 2) return `${teamA} gagne et plus de 4,5 buts`;
-    if (goalsB === 4 && goalsA === 2) return `${teamB} gagne et plus de 4,5 buts`;
-    
-    if (goalsA === 5 && goalsB === 2) return `${teamA} gagne et plus de 5,5 buts`;
-    if (goalsB === 5 && goalsA === 2) return `${teamB} gagne et plus de 5,5 buts`;
-    
-    if (goalsA === 5 && goalsB === 3) return `${teamA} gagne et plus de 6,5 buts`;
-    if (goalsB === 5 && goalsA === 3) return `${teamB} gagne et plus de 6,5 buts`;
-    
-    if (goalsA === 0 && goalsB === 0) return `Moins de 1,5 buts et match nul`;
-    
-    if (goalsA === 5 && goalsB === 4) return `Plus de 7,5 buts et ${teamA} gagne`;
-    if (goalsB === 5 && goalsA === 4) return `Plus de 7,5 buts et ${teamB} gagne`;
-    
-    // Cas général par défaut
-    if (total >= 4) return `Plus de 3,5 buts`;
-    if (total === 3) return `Plus de 2,5 buts`;
-    if (total === 2) return `Moins de 2,5 buts`;
-    if (total <= 1) return `Moins de 1,5 buts`;
+    // BTTS
+    if (goalsA >= 1 && goalsB >= 1 && total <= 3) return `BTTS oui et moins de 3,5 buts`;
+    if (goalsA >= 1 && goalsB >= 1 && total >= 4) return `BTTS oui et plus de 3,5 buts`;
+    if (goalsA >= 1 && goalsB >= 1) return `BTTS oui`;
+    if (goalsA === 0 || goalsB === 0) return `BTTS non`;
     
     return `Match équilibré, peu de buts`;
   }
@@ -872,21 +842,54 @@
           <div class="history-header">
             <span class="history-date">📅 ${h.date}</span>
             <span class="history-match">${h.teamA} vs ${h.teamB}</span>
-            <span>${estJuste}</span>
+            <span style="font-size:1.2rem;">${estJuste}</span>
           </div>
           <div class="history-result">
-            <span>🎯 ${h.scores}</span>
-            <span>🏆 ${h.bestPronostic}</span>
+            <span>🎯 Scores: ${h.scores}</span>
+            <span>🏆 Pronostic: ${h.bestPronostic}</span>
           </div>
-          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
             <select id="resultSelect_${i}" style="background:var(--bg-secondary); border:1px solid var(--border); border-radius: 40px; padding: 6px 12px; color: var(--text-primary);">
               <option value="">-- Résultat réel --</option>
-              <option value="${h.teamA}">Victoire ${h.teamA}</option>
-              <option value="NUL">Nul</option>
-              <option value="${h.teamB}">Victoire ${h.teamB}</option>
+      `;
+      
+      // Ajouter les options en fonction du type de pronostic
+      if (h.bestPronostic.includes('Victoire') || h.bestPronostic.includes('gagne')) {
+        html += `<option value="${h.teamA}">Victoire ${h.teamA}</option>`;
+        html += `<option value="NUL">Nul</option>`;
+        html += `<option value="${h.teamB}">Victoire ${h.teamB}</option>`;
+      } else if (h.bestPronostic.includes('Double chance')) {
+        if (h.bestPronostic.includes(h.teamA)) {
+          html += `<option value="${h.teamA}">Victoire ${h.teamA}</option>`;
+          html += `<option value="NUL">Nul</option>`;
+        } else if (h.bestPronostic.includes(h.teamB)) {
+          html += `<option value="${h.teamB}">Victoire ${h.teamB}</option>`;
+          html += `<option value="NUL">Nul</option>`;
+        }
+        html += `<option value="AUCUN">Aucun des deux</option>`;
+      } else if (h.bestPronostic.includes('BTTS')) {
+        html += `<option value="BTTS_OUI">BTTS : OUI (les deux marquent)</option>`;
+        html += `<option value="BTTS_NON">BTTS : NON (au moins une équipe ne marque pas)</option>`;
+      } else if (h.bestPronostic.includes('Plus de')) {
+        const seuil = h.bestPronostic.match(/\d+[,.]?\d?/);
+        const val = seuil ? parseFloat(seuil[0].replace(',', '.')) : 2.5;
+        html += `<option value="OVER">Over ${val} : OUI (plus de ${val} buts)</option>`;
+        html += `<option value="UNDER">Over ${val} : NON (moins de ${val} buts)</option>`;
+      } else if (h.bestPronostic.includes('Moins de')) {
+        const seuil = h.bestPronostic.match(/\d+[,.]?\d?/);
+        const val = seuil ? parseFloat(seuil[0].replace(',', '.')) : 2.5;
+        html += `<option value="UNDER">Under ${val} : OUI (moins de ${val} buts)</option>`;
+        html += `<option value="OVER">Under ${val} : NON (plus de ${val} buts)</option>`;
+      } else {
+        html += `<option value="${h.teamA}">Victoire ${h.teamA}</option>`;
+        html += `<option value="NUL">Nul</option>`;
+        html += `<option value="${h.teamB}">Victoire ${h.teamB}</option>`;
+      }
+      
+      html += `
             </select>
             <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="updateResult(${i})">✅ Valider</button>
-            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; background:var(--danger); border-color:var(--danger);" onclick="deleteHistoryItem(${i})">🗑️</button>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; background:var(--danger); border-color:var(--danger);" onclick="deleteHistoryItem(${i})">🗑️ Supprimer</button>
           </div>
         </div>
       `;
@@ -898,8 +901,9 @@
     const select = document.getElementById(`resultSelect_${index}`);
     if (select && select.value) {
       history[index].resultatReel = select.value;
+      history[index].vainqueurPredict = select.value;
       saveHistory();
-      showToast('✅ Résultat enregistré !');
+      showToast('✅ Résultat enregistré ! Les stats sont mises à jour.');
     } else {
       showToast('❌ Sélectionnez un résultat', true);
     }
@@ -908,11 +912,11 @@
   window.deleteHistoryItem = function(index) {
     history.splice(index, 1);
     saveHistory();
-    showToast('🗑️ Supprimé');
+    showToast('🗑️ Pronostic supprimé');
   }
 
   function clearAllHistory() {
-    if (confirm('⚠️ Supprimer tout l\'historique ?')) {
+    if (confirm('⚠️ Supprimer tout l\'historique ? Cette action est irréversible.')) {
       history = [];
       saveHistory();
       showToast('📭 Historique effacé');
@@ -921,18 +925,19 @@
 
   function exportHistoryCSV() {
     if (history.length === 0) {
-      showToast('📭 Aucun historique', true);
+      showToast('📭 Aucun historique à exporter', true);
       return;
     }
-    let csv = 'Date,Equipe A,Equipe B,Scores,Meilleur Pronostic,BTTS,Résultat Réel\n';
+    let csv = 'Date,Equipe A,Equipe B,Scores,Meilleur Pronostic,Résultat Réel,Juste\n';
     for (const h of history) {
-      csv += `"${h.date}","${h.teamA}","${h.teamB}","${h.scores}","${h.bestPronostic}","${h.btts ? 'OUI' : 'NON'}","${h.resultatReel || 'Non renseigné'}"\n`;
+      const juste = h.resultatReel !== null && h.resultatReel === h.vainqueurPredict ? 'OUI' : (h.resultatReel !== null ? 'NON' : 'Non renseigné');
+      csv += `"${h.date}","${h.teamA}","${h.teamB}","${h.scores}","${h.bestPronostic}","${h.resultatReel || 'Non renseigné'}","${juste}"\n`;
     }
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.href = url;
-    link.setAttribute('download', 'pronostics.csv');
+    link.setAttribute('download', `pronostics_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -944,14 +949,16 @@
     const total = history.length;
     let justes = 0;
     for (const h of history) {
-      if (h.resultatReel !== null && h.vainqueurPredict !== null && h.resultatReel === h.vainqueurPredict) justes++;
+      if (h.resultatReel !== null && h.resultatReel === h.vainqueurPredict) justes++;
     }
     const faux = total - justes;
     const taux = total > 0 ? Math.round((justes / total) * 100) : 0;
+    
     const totalEl = document.getElementById('totalPronos');
     const justesEl = document.getElementById('justesPronos');
     const fauxEl = document.getElementById('fauxPronos');
     const tauxEl = document.getElementById('tauxReussite');
+    
     if (totalEl) totalEl.innerText = total;
     if (justesEl) justesEl.innerText = justes;
     if (fauxEl) fauxEl.innerText = faux;
@@ -967,13 +974,12 @@
       teamB: matchData.teamB,
       scores: matchData.scores,
       bestPronostic: matchData.bestPronostic,
-      btts: matchData.btts,
       vainqueurPredict: matchData.vainqueurPredict,
       resultatReel: null
     });
     if (history.length > 100) history = history.slice(0, 100);
     saveHistory();
-    showToast('📥 Pronostic sauvegardé !');
+    showToast('📥 Pronostic sauvegardé dans l\'historique !');
   }
 
   // ========== ANALYSEUR ==========
@@ -991,19 +997,7 @@
     const scores = getPossibleScores(goalsA, goalsB);
     const bestPronostic = getBestPronostic(goalsA, goalsB, teamA, teamB);
     
-    let vainqueurPredict = null;
-    if (bestPronostic.includes('Victoire') || bestPronostic.includes('gagne')) {
-      if (bestPronostic.includes(teamA)) vainqueurPredict = teamA;
-      else if (bestPronostic.includes(teamB)) vainqueurPredict = teamB;
-    } else if (bestPronostic.includes('nul') || bestPronostic.includes('Match nul')) {
-      vainqueurPredict = 'NUL';
-    } else if (bestPronostic.includes('BTTS')) {
-      vainqueurPredict = 'BTTS';
-    } else if (bestPronostic.includes('Plus de')) {
-      vainqueurPredict = 'Over';
-    } else if (bestPronostic.includes('Moins de')) {
-      vainqueurPredict = 'Under';
-    }
+    let vainqueurPredict = bestPronostic;
     
     let styleA = '', styleB = '';
     const posA = profiles.a.possession;
@@ -1092,7 +1086,6 @@
           teamA, teamB,
           scores: scores.slice(0,2).join(' ou '),
           bestPronostic,
-          btts,
           vainqueurPredict
         });
       };
@@ -1102,7 +1095,7 @@
     if (copyBtn) {
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(whatsText).then(() => {
-          showToast('✅ Pronostic copié !');
+          showToast('✅ Pronostic copié ! Collez dans WhatsApp');
         }).catch(() => {
           showToast('❌ Copie manuelle', true);
         });
