@@ -45,6 +45,7 @@
         .history-item { background: rgba(55,65,81,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; }
         .btn-small { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; margin: 2px; }
         .btn-valid { background: #10b981; color: white; }
+        .btn-lost { background: #ef4444; color: white; }
         .btn-delete { background: #374151; color: white; }
         .summary-text { background: #0f172a; border-radius: 12px; padding: 15px; margin-top: 15px; font-size: 14px; line-height: 1.5; border-left: 3px solid #10b981; }
         .stat-detail { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #374151; }
@@ -76,7 +77,6 @@
         <div class="card">
             <div class="card-title">🎯 Facteurs Contextuels</div>
             <div class="grid-2">
-                <!-- Équipe A -->
                 <div>
                     <label class="label">🌦️ Météo</label>
                     <select id="weatherA" class="select-dark">
@@ -84,7 +84,6 @@
                         <option value="normal" selected>🌙 Nuit/Normal (+3)</option>
                         <option value="rain">🌧️ Pluie/Froid (+1)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">🏆 Contexte</label>
                     <select id="contextA" class="select-dark">
                         <option value="decisif">🔥 Match décisif (+4)</option>
@@ -92,7 +91,6 @@
                         <option value="normal" selected>✅ Normal (0)</option>
                         <option value="treve">📅 Trêve proche (-1)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">📈 Forme</label>
                     <select id="formA" class="select-dark">
                         <option value="bonne">✅ Bonne série (+3)</option>
@@ -100,14 +98,12 @@
                         <option value="irregulier">🎢 Irrégulier (0)</option>
                         <option value="crise">📉 Crise (-2)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">⚡ Dynamique</label>
                     <select id="dynA" class="select-dark">
                         <option value="super_forts">💪 Super vs forts (+3)</option>
                         <option value="normal" selected>🎯 Normal (+1)</option>
                         <option value="contre_perf">❌ Contre-perf (-2)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">🔄 Réaction</label>
                     <select id="reactA" class="select-dark">
                         <option value="reagit_vite">⚡ Réagit vite (+4)</option>
@@ -115,7 +111,6 @@
                         <option value="subit_apres">😴 Subit après bon résultat (-1)</option>
                         <option value="jamais" selected>❌ Ne réagit jamais (-3)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">💪 Puissance équipe</label>
                     <select id="powerA" class="select-dark">
                         <option value="solide">🧱 Attaque/Défense solide (+4)</option>
@@ -124,8 +119,6 @@
                         <option value="desequilibre">⚠️ Déséquilibre (-3)</option>
                     </select>
                 </div>
-
-                <!-- Équipe B -->
                 <div>
                     <label class="label">🌦️ Météo</label>
                     <select id="weatherB" class="select-dark">
@@ -133,7 +126,6 @@
                         <option value="normal" selected>🌙 Nuit/Normal (+3)</option>
                         <option value="rain">🌧️ Pluie/Froid (+1)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">🏆 Contexte</label>
                     <select id="contextB" class="select-dark">
                         <option value="decisif">🔥 Match décisif (+4)</option>
@@ -141,7 +133,6 @@
                         <option value="normal" selected>✅ Normal (0)</option>
                         <option value="treve">📅 Trêve proche (-1)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">📈 Forme</label>
                     <select id="formB" class="select-dark">
                         <option value="bonne">✅ Bonne série (+3)</option>
@@ -149,14 +140,12 @@
                         <option value="irregulier">🎢 Irrégulier (0)</option>
                         <option value="crise">📉 Crise (-2)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">⚡ Dynamique</label>
                     <select id="dynB" class="select-dark">
                         <option value="super_forts">💪 Super vs forts (+3)</option>
                         <option value="normal" selected>🎯 Normal (+1)</option>
                         <option value="contre_perf">❌ Contre-perf (-2)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">🔄 Réaction</label>
                     <select id="reactB" class="select-dark">
                         <option value="reagit_vite">⚡ Réagit vite (+4)</option>
@@ -164,7 +153,6 @@
                         <option value="subit_apres">😴 Subit après bon résultat (-1)</option>
                         <option value="jamais" selected>❌ Ne réagit jamais (-3)</option>
                     </select>
-                    
                     <label class="label" style="margin-top:10px;">💪 Puissance équipe</label>
                     <select id="powerB" class="select-dark">
                         <option value="solide">🧱 Attaque/Défense solide (+4)</option>
@@ -174,7 +162,6 @@
                     </select>
                 </div>
             </div>
-
             <button class="btn-primary" onclick="runAnalysis()">🚀 LANCER L'ANALYSE</button>
         </div>
 
@@ -185,12 +172,10 @@
                 <div class="kpi-card kpi-c"><div class="kpi-label">Over 2.5</div><div id="resOver25" class="kpi-value">--</div></div>
                 <div class="kpi-card kpi-d"><div class="kpi-label">Confiance</div><div id="resConf" class="kpi-value">--</div></div>
             </div>
-
             <div class="card" style="border-left:4px solid #10b981;">
                 <div class="card-title">🔒 PRONOSTIC LE PLUS SÛR</div>
                 <div id="safeBetMain" style="font-size:24px;font-weight:700;color:#10b981;text-align:center;padding:15px;">--</div>
             </div>
-
             <div class="card">
                 <div class="card-title">🎲 Scores Exacts</div>
                 <div class="grid-2">
@@ -198,7 +183,6 @@
                     <div style="background:rgba(55,65,81,0.3);padding:20px;border-radius:10px;text-align:center;"><div class="label">Score 2</div><div id="score2" style="font-size:36px;font-weight:700;">-- - --</div></div>
                 </div>
             </div>
-
             <div class="grid-2">
                 <div class="card" style="border-left:4px solid #f59e0b;">
                     <div class="card-title">📐 Corners</div>
@@ -213,9 +197,7 @@
                     <div class="stat-detail"><strong>Total</strong><strong id="sotTotal">--</strong></div>
                 </div>
             </div>
-
             <div class="card"><div class="card-title">📝 RÉSUMÉ DU MATCH</div><div id="matchSummary" class="summary-text">--</div></div>
-
             <div class="grid-2" style="margin-top:15px;">
                 <button class="btn-primary btn-whatsapp" onclick="copyToClipboard()">📋 Copier pour WhatsApp</button>
                 <button class="btn-primary btn-save" onclick="saveCurrentPrediction()">💾 Sauvegarder</button>
@@ -223,11 +205,10 @@
         </div>
     </div>
 
-    <div id="historyModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>📜 Historique</h3><button onclick="closeHistory()" style="background:none;border:none;color:white;font-size:24px;">&times;</button></div><div class="modal-body" id="historyList"></div><div style="padding:15px; text-align:center;"><button class="btn-small btn-valid" onclick="exportHistoryCSV()">📎 Exporter en CSV</button></div></div></div>
+    <div id="historyModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>📜 Historique des pronostics</h3><button onclick="closeHistory()" style="background:none;border:none;color:white;font-size:24px;">&times;</button></div><div class="modal-body" id="historyList"></div><div style="padding:15px; text-align:center;"><button class="btn-small btn-valid" onclick="exportHistoryCSV()">📎 Exporter CSV</button></div></div></div>
     <div id="toast" class="toast"></div>
 
     <script>
-        // ========== GRILLE DE POINTS ==========
         function getPoints(prefix) {
             let weather = document.getElementById(`weather${prefix}`).value;
             let context = document.getElementById(`context${prefix}`).value;
@@ -235,38 +216,29 @@
             let dyn = document.getElementById(`dyn${prefix}`).value;
             let react = document.getElementById(`react${prefix}`).value;
             let power = document.getElementById(`power${prefix}`).value;
-            
             let points = 0;
             if(weather === 'sun') points += -2;
             else if(weather === 'normal') points += 3;
             else if(weather === 'rain') points += 1;
-            
             if(context === 'decisif') points += 4;
             else if(context === 'survie') points += 3;
             else if(context === 'treve') points += -1;
-            
             if(form === 'bonne') points += 3;
             else if(form === 'neutre') points += 1;
             else if(form === 'crise') points += -2;
-            
             if(dyn === 'super_forts') points += 3;
             else if(dyn === 'normal') points += 1;
             else if(dyn === 'contre_perf') points += -2;
-            
             if(react === 'reagit_vite') points += 4;
             else if(react === 'subit_reagit') points += 2;
             else if(react === 'subit_apres') points += -1;
             else if(react === 'jamais') points += -3;
-            
             if(power === 'solide') points += 4;
             else if(power === 'optimiste') points += 2;
             else if(power === 'desequilibre') points += -3;
-            
             return points;
         }
         
-        // ========== NOUVEAUX SEUILS POINTS → BUTS ==========
-        // 0-3 → 0 but, 4-7 → 1, 8-11 → 2, 12-15 → 3, 16-19 → 4, 20+ → 5
         function pointsToGoals(points) {
             if(points >= 20) return 5;
             if(points >= 16) return 4;
@@ -307,37 +279,28 @@
         function runAnalysis() {
             let nameA = document.getElementById('nameA').value.trim() || "Domicile";
             let nameB = document.getElementById('nameB').value.trim() || "Extérieur";
-            
             let ptsA = getPoints('A');
             let ptsB = getPoints('B');
-            let totalPts = ptsA + ptsB;
-            
             let goalsA = pointsToGoals(ptsA);
             let goalsB = pointsToGoals(ptsB);
-            
             let scores = getPossibleScores(goalsA, goalsB);
             let btts = (goalsA >= 1 && goalsB >= 1);
             let over25 = (goalsA + goalsB) >= 3;
-            
             let winner = "";
             let confidence = "";
             let safeBet = "";
             let diff = Math.abs(goalsA - goalsB);
-            
             if(diff >= 3) { winner = `Victoire ${goalsA > goalsB ? nameA : nameB}`; confidence = "Très Haute"; safeBet = `🔒 ${goalsA > goalsB ? nameA : nameB} gagne`; }
             else if(diff === 2) { winner = `Victoire ${goalsA > goalsB ? nameA : nameB}`; confidence = "Haute"; safeBet = `✅ ${goalsA > goalsB ? nameA : nameB} gagne`; }
             else if(diff === 1) { winner = `Avantage ${goalsA > goalsB ? nameA : nameB}`; confidence = "Moyenne"; safeBet = `⚖️ Double chance ${goalsA > goalsB ? nameA : nameB} ou nul`; }
             else { winner = `Match Nul ou Très Serré`; confidence = "Faible"; safeBet = `🛡️ Moins de 2,5 buts`; }
-            
             if(goalsA + goalsB >= 5) safeBet = "🔒 Plus de 3,5 buts";
             else if(goalsA + goalsB >= 3) safeBet = "✅ Plus de 2,5 buts";
             else safeBet = "🛡️ Moins de 2,5 buts";
-            
             let cornersA = Math.min(12, Math.max(2, Math.floor(ptsA / 2.5) + 2));
             let cornersB = Math.min(12, Math.max(2, Math.floor(ptsB / 2.5) + 2));
             let sotA = Math.min(10, Math.max(1, Math.floor(ptsA / 3) + 1));
             let sotB = Math.min(10, Math.max(1, Math.floor(ptsB / 3) + 1));
-            
             document.getElementById('resWinner').innerHTML = winner;
             document.getElementById('resBtts').innerHTML = btts ? "OUI ✅" : "NON ❌";
             document.getElementById('resOver25').innerHTML = over25 ? "OUI ✅" : "NON ❌";
@@ -355,15 +318,8 @@
             document.getElementById('sotA').innerHTML = sotA;
             document.getElementById('sotB').innerHTML = sotB;
             document.getElementById('sotTotal').innerHTML = sotA + sotB;
-            
-            let resume = `🏆 ${nameA} (${ptsA} pts) vs ${nameB} (${ptsB} pts)\n`;
-            resume += `📊 Analyse : ${winner}. BTTS : ${btts ? 'OUI' : 'NON'}. Over 2.5 : ${over25 ? 'OUI' : 'NON'}.\n`;
-            resume += `🎯 Scores suggérés : ${scores[0]} ou ${scores[1]}.\n`;
-            resume += `📐 Corners : ${cornersA+cornersB} (${cornersA}/${cornersB}). `;
-            resume += `🎯 Tirs cadrés : ${sotA+sotB} (${sotA}/${sotB}).\n`;
-            resume += `💡 Pronostic sûr : ${safeBet}.`;
+            let resume = `🏆 ${nameA} (${ptsA} pts) vs ${nameB} (${ptsB} pts)\n📊 Analyse : ${winner}. BTTS : ${btts ? 'OUI' : 'NON'}. Over 2.5 : ${over25 ? 'OUI' : 'NON'}.\n🎯 Scores suggérés : ${scores[0]} ou ${scores[1]}.\n📐 Corners : ${cornersA+cornersB} (${cornersA}/${cornersB}). 🎯 Tirs cadrés : ${sotA+sotB} (${sotA}/${sotB}).\n💡 Pronostic sûr : ${safeBet}.`;
             document.getElementById('matchSummary').innerHTML = resume.replace(/\n/g, '<br>');
-            
             document.getElementById('resultsArea').classList.add('show');
             window.currentPrediction = { nameA, nameB, ptsA, ptsB, goalsA, goalsB, scores, btts, over25, winner, safeBet, resume, cornersA, cornersB, sotA, sotB };
             showToast("✅ Analyse terminée !");
@@ -372,23 +328,13 @@
         function copyToClipboard() {
             if(!window.currentPrediction) { showToast("❌ Lancez d'abord une analyse", true); return; }
             let p = window.currentPrediction;
-            let text = `⚽ *PRONOSTIC FootPredict Pro* ⚽\n\n`;
-            text += `🏠 *${p.nameA}* (${p.ptsA} pts) vs ✈️ *${p.nameB}* (${p.ptsB} pts)\n`;
-            text += `📊 *Pronostic* : ${p.winner}\n`;
-            text += `🎯 *BTTS* : ${p.btts ? 'OUI' : 'NON'}\n`;
-            text += `📈 *Over 2.5* : ${p.over25 ? 'OUI' : 'NON'}\n`;
-            text += `🎲 *Scores* : ${p.scores[0]} ou ${p.scores[1]}\n`;
-            text += `📐 *Corners* : ${p.cornersA + p.cornersB} (${p.cornersA}/${p.cornersB})\n`;
-            text += `🎯 *Tirs cadrés* : ${p.sotA + p.sotB} (${p.sotA}/${p.sotB})\n`;
-            text += `🔒 *Pronostic sûr* : ${p.safeBet}\n\n`;
-            text += `🔗 FootPredict Pro - Analyse terrain 🎯`;
+            let text = `⚽ *PRONOSTIC FootPredict Pro* ⚽\n\n🏠 *${p.nameA}* (${p.ptsA} pts) vs ✈️ *${p.nameB}* (${p.ptsB} pts)\n📊 *Pronostic* : ${p.winner}\n🎯 *BTTS* : ${p.btts ? 'OUI' : 'NON'}\n📈 *Over 2.5* : ${p.over25 ? 'OUI' : 'NON'}\n🎲 *Scores* : ${p.scores[0]} ou ${p.scores[1]}\n📐 *Corners* : ${p.cornersA + p.cornersB} (${p.cornersA}/${p.cornersB})\n🎯 *Tirs cadrés* : ${p.sotA + p.sotB} (${p.sotA}/${p.sotB})\n🔒 *Pronostic sûr* : ${p.safeBet}\n\n🔗 FootPredict Pro - Analyse terrain 🎯`;
             navigator.clipboard.writeText(text).then(() => showToast("✅ Texte copié ! Collez dans WhatsApp")).catch(() => showToast("❌ Erreur de copie", true));
         }
         
-        // ========== HISTORIQUE ==========
         let history = [];
-        function loadHistory() { try { let saved = localStorage.getItem('FootPredictPro_History'); if(saved) history = JSON.parse(saved); } catch(e){} updateHistoryDisplay(); }
-        function saveHistory() { localStorage.setItem('FootPredictPro_History', JSON.stringify(history)); updateHistoryDisplay(); }
+        function loadHistory() { try { let saved = localStorage.getItem('FootPredictPro_History'); if(saved) history = JSON.parse(saved); } catch(e){} updateHistoryDisplay(); updateStats(); }
+        function saveHistory() { localStorage.setItem('FootPredictPro_History', JSON.stringify(history)); updateHistoryDisplay(); updateStats(); }
         function updateHistoryDisplay() {
             let container = document.getElementById('historyList');
             if(!container) return;
@@ -396,44 +342,50 @@
             let html = '';
             for(let i=0; i<history.length; i++) {
                 let h = history[i];
-                let estJuste = h.resultat !== null ? (h.resultat === h.prediction ? '✅' : '❌') : '⏳';
-                html += `<div class="history-item"><div style="display:flex;justify-content:space-between;"><strong>${h.date}</strong> ${estJuste}</div>`;
+                let statut = h.resultat === true ? '✅ Validé' : (h.resultat === false ? '❌ Perdu' : '⏳ En attente');
+                html += `<div class="history-item"><div style="display:flex;justify-content:space-between;"><strong>${h.date}</strong> <span>${statut}</span></div>`;
                 html += `<div>${h.nameA} vs ${h.nameB}</div>`;
                 html += `<div style="font-size:12px;color:#94a3b8;">Pronostic: ${h.safeBet}</div>`;
-                html += `<div style="margin-top:8px;"><select id="resultSelect_${i}" style="background:#374151;color:white;border:none;padding:6px;border-radius:6px;">`;
-                html += `<option value="">-- Résultat réel --</option>`;
-                if(h.safeBet.includes('Plus')) html += `<option value="OVER_OUI">Over : OUI</option><option value="OVER_NON">Over : NON</option>`;
-                else if(h.safeBet.includes('Moins')) html += `<option value="UNDER_OUI">Under : OUI</option><option value="UNDER_NON">Under : NON</option>`;
-                else html += `<option value="${h.nameA}">Victoire ${h.nameA}</option><option value="NUL">Nul</option><option value="${h.nameB}">Victoire ${h.nameB}</option>`;
-                html += `</select> <button class="btn-small btn-valid" onclick="validateHistory(${i})">Valider</button> <button class="btn-small btn-delete" onclick="deleteHistory(${i})">Supprimer</button></div></div>`;
+                html += `<div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">`;
+                html += `<button class="btn-small btn-valid" onclick="setResult(${i}, true)">✅ Validé</button>`;
+                html += `<button class="btn-small btn-lost" onclick="setResult(${i}, false)">❌ Perdu</button>`;
+                html += `<button class="btn-small btn-delete" onclick="deleteHistory(${i})">🗑️ Supprimer</button>`;
+                html += `</div></div>`;
             }
             container.innerHTML = html;
         }
-        window.validateHistory = function(idx) {
-            let select = document.getElementById(`resultSelect_${idx}`);
-            if(select && select.value) {
-                history[idx].resultat = select.value;
-                saveHistory();
-                showToast("✅ Résultat enregistré !");
-            } else showToast("❌ Sélectionnez un résultat", true);
-        };
-        window.deleteHistory = function(idx) { history.splice(idx,1); saveHistory(); showToast("🗑️ Supprimé"); };
+        function setResult(idx, value) {
+            history[idx].resultat = value;
+            saveHistory();
+            showToast(value ? "✅ Pronostic validé !" : "❌ Pronostic perdu !");
+        }
+        function deleteHistory(idx) { history.splice(idx,1); saveHistory(); showToast("🗑️ Supprimé"); }
+        function updateStats() {
+            let total = history.length;
+            let justes = history.filter(h => h.resultat === true).length;
+            let faux = history.filter(h => h.resultat === false).length;
+            let taux = total > 0 ? Math.round((justes / total) * 100) : 0;
+            document.getElementById('totalPronos').innerText = total;
+            document.getElementById('justesPronos').innerText = justes;
+            document.getElementById('fauxPronos').innerText = faux;
+            document.getElementById('tauxReussite').innerText = `${taux}%`;
+        }
         function saveCurrentPrediction() {
             if(!window.currentPrediction) { showToast("❌ Lancez d'abord une analyse", true); return; }
             let p = window.currentPrediction;
             let now = new Date();
             let dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            history.unshift({ date: dateStr, nameA: p.nameA, nameB: p.nameB, safeBet: p.safeBet, prediction: p.safeBet, resultat: null });
+            history.unshift({ date: dateStr, nameA: p.nameA, nameB: p.nameB, safeBet: p.safeBet, resultat: null });
             if(history.length > 100) history.pop();
             saveHistory();
             showToast("📥 Pronostic sauvegardé !");
         }
         function exportHistoryCSV() {
             if(history.length === 0) { showToast("📭 Aucun historique", true); return; }
-            let csv = "Date,Equipe A,Equipe B,Meilleur Pronostic,Résultat Réel,Juste\n";
+            let csv = "Date,Equipe A,Equipe B,Meilleur Pronostic,Résultat\n";
             for(let h of history) {
-                let juste = h.resultat !== null ? (h.resultat === h.prediction ? "OUI" : "NON") : "Non renseigné";
-                csv += `"${h.date}","${h.nameA}","${h.nameB}","${h.safeBet}","${h.resultat || 'Non renseigné'}","${juste}"\n`;
+                let res = h.resultat === true ? "Validé" : (h.resultat === false ? "Perdu" : "En attente");
+                csv += `"${h.date}","${h.nameA}","${h.nameB}","${h.safeBet}","${res}"\n`;
             }
             let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             let link = document.createElement('a');
