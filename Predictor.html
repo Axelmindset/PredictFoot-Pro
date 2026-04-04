@@ -1,208 +1,377 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚽ FootPredict Pro - Version Finale</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-    :root { --bg-primary: #000; --bg-card: #1a1a24; --accent: #10b981; --text: #fff; --border: #2a2a38; }
-    body { background: var(--bg-primary); color: var(--text); padding: 15px; }
-    .container { max-width: 600px; margin: 0 auto; }
-    .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-    .tab-btn { flex: 1; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); color: #aaa; cursor: pointer; border-radius: 10px; }
-    .tab-btn.active { background: var(--accent); color: #fff; }
-    .tab-content { display: none; background: var(--bg-card); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
-    .tab-content.active { display: block; }
-    .profile-option { background: #111; padding: 10px; margin: 5px 0; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; text-align: center; }
-    .profile-option.selected { background: var(--accent); border-color: #fff; }
-    input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid var(--border); background: #111; color: #fff; font-weight: bold; }
-    .btn-primary { width: 100%; padding: 15px; background: var(--accent); border: none; color: #fff; font-weight: bold; border-radius: 30px; margin: 15px 0; cursor: pointer; }
-    .result-card { background: var(--bg-card); border: 2px solid var(--accent); padding: 20px; border-radius: 20px; margin-top: 20px; }
-    .score-item { font-size: 2rem; font-weight: bold; background: #222; padding: 10px 20px; border-radius: 15px; }
-    .history-item { background: #111; padding: 10px; border-bottom: 1px solid var(--border); margin-top: 5px; }
-    .toast { position: fixed; bottom: 20px; width: 80%; left: 10%; background: var(--accent); color: #fff; padding: 10px; border-radius: 20px; text-align: center; display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FootPredict Pro</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0e1a, #111827); color: #f1f5f9; min-height: 100vh; padding-bottom: 20px; }
+        .header { background: rgba(10,14,26,0.95); border-bottom: 1px solid #1f2937; padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 20px; font-weight: 700; }
+        .header span { color: #10b981; }
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; }
+        .btn-history { background: #1f2937; color: white; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .card { background: rgba(31,41,55,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .input-dark, .select-dark { background: rgba(55,65,81,0.5); border: 1px solid rgba(75,85,99,0.5); color: white; border-radius: 8px; padding: 12px 16px; width: 100%; font-size: 16px; }
+        .input-dark:focus, .select-dark:focus { border-color: #10b981; outline: none; }
+        .select-dark { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 20px; padding-right: 40px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
+        .label-primary { color: #10b981; }
+        .label-danger { color: #ef4444; }
+        .score-box { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(31,41,55,0.5); border-radius: 10px; margin-bottom: 15px; }
+        .score-value { font-size: 18px; font-weight: 700; padding: 6px 12px; border-radius: 8px; }
+        .score-a { color: #10b981; background: rgba(16,185,129,0.2); }
+        .score-b { color: #ef4444; background: rgba(239,68,68,0.2); }
+        .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin: 2px; display: inline-block; }
+        .badge-pos { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981; }
+        .badge-neg { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid #ef4444; }
+        .badge-zero { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid #64748b; }
+        .gap-box { background: linear-gradient(90deg, #1f2937, #111827); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 15px; margin: 20px 0; }
+        .gap-bar { height: 8px; background: #374151; border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .gap-fill { height: 100%; background: #10b981; border-radius: 4px; transition: width 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #10b981, #059669); color: white; width: 100%; padding: 16px; font-size: 18px; font-weight: 700; border-radius: 12px; border: none; margin-top: 20px; cursor: pointer; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+        .btn-save { background: #1f2937; color: white; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .kpi-card { background: rgba(31,41,55,0.5); border-radius: 12px; padding: 15px; text-align: center; border-top: 3px solid; }
+        .kpi-a { border-color: #10b981; }
+        .kpi-b { border-color: #8b5cf6; }
+        .kpi-c { border-color: #3b82f6; }
+        .kpi-d { border-color: #f59e0b; }
+        .kpi-value { font-size: 24px; font-weight: 700; margin-top: 5px; }
+        .kpi-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        .result-section { display: none; }
+        .result-section.show { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.show { display: flex; }
+        .modal-content { background: #1f2937; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { padding: 20px; border-bottom: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: rgba(55,65,81,0.3); padding: 10px; border-radius: 8px; text-align: center; }
+        .stat-value { font-size: 20px; font-weight: 700; }
+        .stat-label { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+        .history-item { background: rgba(55,65,81,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+        .btn-small { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; margin: 2px; }
+        .btn-valid { background: #10b981; color: white; }
+        .btn-invalid { background: #ef4444; color: white; }
+        .btn-delete { background: #374151; color: white; }
+        .summary-text { background: #0f172a; border-radius: 12px; padding: 15px; margin-top: 15px; font-size: 14px; line-height: 1.5; border-left: 3px solid #10b981; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="openTab('tab1', this)">Équipe A</button>
-    <button class="tab-btn" onclick="openTab('tab2', this)">Équipe B</button>
-    <button class="tab-btn" onclick="openTab('tab3', this)">Outils</button>
-    <button class="tab-btn" onclick="openTab('tab4', this)">Historique</button>
-  </div>
-
-  <div id="tab1" class="tab-content active">
-    <input type="text" id="teamA" value="Paris SG">
-    <div id="optsA"></div>
-  </div>
-
-  <div id="tab2" class="tab-content">
-    <input type="text" id="teamB" value="Toulouse">
-    <div id="optsB"></div>
-  </div>
-
-  <div id="tab3" class="tab-content">
-    <button class="btn-primary" style="background:#444;" onclick="saveAll()">💾 Sauvegarder Profils</button>
-    <button class="btn-primary" style="background:#444;" onclick="loadAll()">📂 Charger Profils</button>
-  </div>
-
-  <div id="tab4" class="tab-content">
-    <button onclick="clearHistory()" style="color:red; background:none; border:none; margin-bottom:10px;">Effacer l'historique</button>
-    <div id="historyList"></div>
-  </div>
-
-  <button class="btn-primary" onclick="runAnalysis()">🚀 ANALYSER LE MATCH</button>
-  <div id="resultats"></div>
-</div>
-
-<div id="toast" class="toast"></div>
-
-<script>
-  // Données et Config
-  let profiles = { a: {}, b: {} };
-  const categories = [
-    { id: 'forme', label: 'FORME', options: [{n:'Bonne', v:4}, {n:'Neutre', v:1}, {n:'Crise', v:-2}] },
-    { id: 'context', label: 'CONTEXTE', options: [{n:'Décisif', v:4}, {n:'Normal', v:0}] }
-  ];
-
-  window.onload = () => {
-    renderOptions();
-    loadHistory();
-  };
-
-  function renderOptions() {
-    ['a', 'b'].forEach(t => {
-      let html = '';
-      categories.forEach(c => {
-        html += `<p style="font-size:0.7rem; margin-top:10px;">${c.label}</p>`;
-        c.options.forEach((o, i) => {
-          let sel = (i===1) ? 'selected' : '';
-          if(i===1) profiles[t][c.id] = o.v;
-          html += `<div class="profile-option ${sel}" onclick="selectOpt('${t}','${c.id}',${o.v}, this)">${o.n}</div>`;
-        });
-      });
-      document.getElementById('opts'+t.toUpperCase()).innerHTML = html;
-    });
-  }
-
-  function selectOpt(team, cat, val, el) {
-    let opts = el.parentElement.querySelectorAll('.profile-option');
-    opts.forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
-    profiles[team][cat] = val;
-  }
-
-  function runAnalysis() {
-    let ptsA = 0; for(let k in profiles.a) ptsA += profiles.a[k];
-    let ptsB = 0; for(let k in profiles.b) ptsB += profiles.b[k];
-    
-    const nameA = document.getElementById('teamA').value;
-    const nameB = document.getElementById('teamB').value;
-
-    // Calcul des scores selon tes points
-    let s1A = Math.max(0, Math.floor(ptsA/2));
-    let s1B = Math.max(0, Math.floor(ptsB/2));
-    let s2A = s1A + 1;
-    let s2B = (ptsB > ptsA) ? s1B + 1 : s1B;
-
-    // --- RÈGLE 1 : PRONOSTIC SÛR (OVER/UNDER) ---
-    let totalScore1 = s1A + s1B;
-    let totalScore2 = s2A + s2B;
-    let safeBet = (totalScore1 + totalScore2 >= 4) ? "Over 2.5 Buts" : "Under 3.5 Buts";
-
-    // --- RÈGLE 2 : MATCH NUL & DOMINANCE ---
-    if (s1A === s1B && s2A === s2B) {
-        let dominante = (ptsA >= ptsB) ? nameA : nameB;
-        safeBet = dominante + " ou Nul";
-    }
-
-    // --- RÈGLE 3 : BTTS AJUSTÉ ---
-    let btts = "OUI";
-    // Si l'un des scores contient un 0 (ex: 3-0), BTTS est plus risqué
-    if (s1A === 0 || s1B === 0 || s2A === 0 || s2B === 0) btts = "NON";
-    // Correction spécifique demandée : 3-0 et 3-1 -> NON
-    if ((s1A === 3 && s1B === 0) && (s2A === 3 && s2B === 1)) btts = "NON";
-    // Validation des BTTS OUI (2-2, 3-2, etc)
-    if (s1A > 0 && s1B > 0 && s2A > 0 && s2B > 0) btts = "OUI";
-
-    const resHTML = `
-      <div class="result-card">
-        <center><small>PRONOSTIC LE PLUS SÛR</small><br><h2 style="color:var(--accent)">${safeBet}</h2></center>
-        <div style="display:flex; justify-content:center; gap:10px; margin:15px 0;">
-          <div class="score-item">${s1A}-${s1B}</div>
-          <div class="score-item">${s2A}-${s2B}</div>
+    <header class="header">
+        <h1>FootPredict <span>Pro</span> 🎯</h1>
+        <div>
+            <button class="btn btn-history" onclick="saveCurrentPrediction()">💾 Sauvegarder</button>
+            <button class="btn btn-history" onclick="openHistory()">📜 Historique</button>
         </div>
-        <p>⚡ BTTS : <b>${btts}</b></p>
-        <p>📐 Corners : <b>7 - 11</b></p>
-        <button class="btn-primary" onclick="copyWA()">COPIER WHATSAPP</button>
-      </div>`;
-    
-    document.getElementById('resultats').innerHTML = resHTML;
-    saveToHistory({match: nameA+' vs '+nameB, score: s1A+'-'+s1B+' / '+s2A+'-'+s2B, prono: safeBet});
-  }
+    </header>
 
-  // Fonctions Techniques (Historique et Sauvegarde)
-  function saveToHistory(obj) {
-    let history = JSON.parse(localStorage.getItem('my_history') || '[]');
-    history.unshift(obj);
-    localStorage.setItem('my_history', JSON.stringify(history));
-    loadHistory();
-  }
+    <div class="container">
 
-  function loadHistory() {
-    let history = JSON.parse(localStorage.getItem('my_history') || '[]');
-    document.getElementById('historyList').innerHTML = history.map(h => `
-      <div class="history-item">
-        <b>${h.match}</b><br><small>${h.score} | ${h.prono}</small>
-      </div>`).join('');
-  }
+        <div class="card">
+            <div class="card-title">
+                📊 Équipes
+                <button class="btn btn-history" onclick="loadDemo()">⚡ Démo</button>
+            </div>
+            <div class="grid-2">
+                <div><label class="label label-primary">🏠 Domicile</label><input type="text" id="nameA" placeholder="Équipe A" class="input-dark"></div>
+                <div><label class="label label-danger">✈️ Extérieur</label><input type="text" id="nameB" placeholder="Équipe B" class="input-dark"></div>
+            </div>
+        </div>
 
-  function clearHistory() {
-    localStorage.removeItem('my_history');
-    loadHistory();
-    showToast("Historique effacé");
-  }
+        <div class="card">
+            <div class="card-title">🎯 Facteurs Contextuels</div>
+            <div class="grid-2">
+                <div>
+                    <div class="score-box"><span class="label-primary" style="font-size:16px;font-weight:700;">🏠 Équipe A</span><span id="scoreA" class="score-value score-a">0 pts</span></div>
+                    <label class="label">🌦️ Météo</label><select id="weatherA" class="select-dark" onchange="updatePoints('A')"><option value="4">🌧️ Pluie/Froid (+4)</option><option value="3">☀️ Soleil (+3)</option><option value="2" selected>🌙 Nuit/Normal (+2)</option><option value="1">⚪ Neutre (+1)</option></select>
+                    <label class="label" style="margin-top:10px;">🏆 Contexte</label><select id="contextA" class="select-dark" onchange="updatePoints('A')"><option value="4">🔥 Match décisif (+4)</option><option value="3">💀 Joue sa survie (+3)</option><option value="1">🎄 Avant trêve (+1)</option><option value="0" selected>✅ Normal (0)</option><option value="-2">📅 Après trêve (-2)</option></select>
+                    <label class="label" style="margin-top:10px;">📈 Forme</label><select id="formA" class="select-dark" onchange="updatePoints('A')"><option value="3">✅ Bonne série (+3)</option><option value="1" selected>😐 Neutre (+1)</option><option value="0">🎢 Irrégulier (0)</option><option value="-1">📉 Crise (-1)</option></select>
+                    <label class="label" style="margin-top:10px;">⚡ Dynamique</label><select id="dynA" class="select-dark" onchange="updatePoints('A')"><option value="3">💪 Super vs forts (+3)</option><option value="1">👑 Top 5 (+1)</option><option value="0" selected>🎯 Super vs faibles (0)</option><option value="-1">❌ Contre-perf (-1)</option></select>
+                    <label class="label" style="margin-top:10px;">🔄 Réaction</label><select id="reactA" class="select-dark" onchange="updatePoints('A')"><option value="4">⚡ Réagit vite (+4)</option><option value="2">📊 Subit puis réagit (+2)</option><option value="0" selected>🎪 Attaque puis subit (0)</option><option value="-1">😴 Subit après (-1)</option><option value="-2">❌ Jamais (-2)</option></select>
+                    <div style="margin-top:10px; padding:10px; background:rgba(55,65,81,0.3); border-radius:8px;"><div class="label" style="margin-bottom:6px;">Détail :</div><div id="tagsA"></div></div>
+                </div>
+                <div>
+                    <div class="score-box"><span class="label-danger" style="font-size:16px;font-weight:700;">✈️ Équipe B</span><span id="scoreB" class="score-value score-b">0 pts</span></div>
+                    <label class="label">🌦️ Météo</label><select id="weatherB" class="select-dark" onchange="updatePoints('B')"><option value="4">🌧️ Pluie/Froid (+4)</option><option value="3">☀️ Soleil (+3)</option><option value="2" selected>🌙 Nuit/Normal (+2)</option><option value="1">⚪ Neutre (+1)</option></select>
+                    <label class="label" style="margin-top:10px;">🏆 Contexte</label><select id="contextB" class="select-dark" onchange="updatePoints('B')"><option value="4">🔥 Match décisif (+4)</option><option value="3">💀 Joue sa survie (+3)</option><option value="1">🎄 Avant trêve (+1)</option><option value="0" selected>✅ Normal (0)</option><option value="-2">📅 Après trêve (-2)</option></select>
+                    <label class="label" style="margin-top:10px;">📈 Forme</label><select id="formB" class="select-dark" onchange="updatePoints('B')"><option value="3">✅ Bonne série (+3)</option><option value="1" selected>😐 Neutre (+1)</option><option value="0">🎢 Irrégulier (0)</option><option value="-1">📉 Crise (-1)</option></select>
+                    <label class="label" style="margin-top:10px;">⚡ Dynamique</label><select id="dynB" class="select-dark" onchange="updatePoints('B')"><option value="3">💪 Super vs forts (+3)</option><option value="1">👑 Top 5 (+1)</option><option value="0" selected>🎯 Super vs faibles (0)</option><option value="-1">❌ Contre-perf (-1)</option></select>
+                    <label class="label" style="margin-top:10px;">🔄 Réaction</label><select id="reactB" class="select-dark" onchange="updatePoints('B')"><option value="4">⚡ Réagit vite (+4)</option><option value="2">📊 Subit puis réagit (+2)</option><option value="0" selected>🎪 Attaque puis subit (0)</option><option value="-1">😴 Subit après (-1)</option><option value="-2">❌ Jamais (-2)</option></select>
+                    <div style="margin-top:10px; padding:10px; background:rgba(55,65,81,0.3); border-radius:8px;"><div class="label" style="margin-bottom:6px;">Détail :</div><div id="tagsB"></div></div>
+                </div>
+            </div>
 
-  function saveAll() {
-    localStorage.setItem('my_profiles', JSON.stringify(profiles));
-    localStorage.setItem('my_teams', JSON.stringify([document.getElementById('teamA').value, document.getElementById('teamB').value]));
-    showToast("Profils enregistrés !");
-  }
+            <div class="gap-box">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div><div class="label">Écart</div><div id="pointGap" style="font-size:24px;font-weight:700;">0 pts</div></div>
+                    <div style="text-align:right;"><div class="label">Pronostic Sûr</div><div id="safeBetPreview" style="font-size:18px;font-weight:700;color:#10b981;">--</div></div>
+                    <div style="text-align:right;"><div class="label">Confiance</div><div id="confidenceLevel" style="font-size:18px;font-weight:700;color:#f59e0b;">--</div></div>
+                </div>
+                <div class="gap-bar"><div id="gapBar" class="gap-fill" style="width:50%;"></div></div>
+            </div>
 
-  function loadAll() {
-    let p = localStorage.getItem('my_profiles');
-    if(p) {
-      profiles = JSON.parse(p);
-      let t = JSON.parse(localStorage.getItem('my_teams'));
-      document.getElementById('teamA').value = t[0];
-      document.getElementById('teamB').value = t[1];
-      showToast("Profils chargés !");
-    }
-  }
+            <button class="btn-primary" onclick="runAnalysis()">🚀 LANCER L'ANALYSE</button>
+        </div>
 
-  function openTab(id, btn) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-  }
+        <div id="resultsArea" class="result-section">
+            <div class="kpi-grid">
+                <div class="kpi-card kpi-a"><div class="kpi-label">Pronostic</div><div id="resWinner" class="kpi-value">--</div></div>
+                <div class="kpi-card kpi-b"><div class="kpi-label">BTTS</div><div id="resBtts" class="kpi-value">--</div></div>
+                <div class="kpi-card kpi-c"><div class="kpi-label">Over 2.5</div><div id="resOver25" class="kpi-value">--</div></div>
+                <div class="kpi-card kpi-d"><div class="kpi-label">Confiance</div><div id="resConf" class="kpi-value">--</div></div>
+            </div>
 
-  function showToast(m) {
-    let t = document.getElementById('toast');
-    t.innerText = m; t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 2000);
-  }
+            <div class="card" style="border-left:4px solid #10b981;">
+                <div class="card-title">🔒 PRONOSTIC LE PLUS SÛR</div>
+                <div class="grid-2">
+                    <div style="background:rgba(55,65,81,0.3);padding:15px;border-radius:10px;text-align:center;"><div class="label">Recommandation</div><div id="safeBetMain" style="font-size:28px;font-weight:700;color:#10b981;margin-top:5px;">--</div></div>
+                    <div style="background:rgba(55,65,81,0.3);padding:15px;border-radius:10px;text-align:center;"><div class="label">Total Points</div><div id="totalPoints" style="font-size:28px;font-weight:700;margin-top:5px;">--</div></div>
+                </div>
+            </div>
 
-  function copyWA() {
-    let r = document.getElementById('resultats').innerText;
-    navigator.clipboard.writeText(r);
-    showToast("Copié !");
-  }
-</script>
+            <div class="card">
+                <div class="card-title">🎲 Scores Exacts</div>
+                <div class="grid-2">
+                    <div style="background:rgba(55,65,81,0.3);padding:20px;border-radius:10px;text-align:center;"><div class="label">Score 1</div><div id="score1" style="font-size:36px;font-weight:700;margin-top:5px;">-- - --</div></div>
+                    <div style="background:rgba(55,65,81,0.3);padding:20px;border-radius:10px;text-align:center;"><div class="label">Score 2</div><div id="score2" style="font-size:36px;font-weight:700;margin-top:5px;">-- - --</div></div>
+                </div>
+            </div>
 
+            <div class="grid-2">
+                <div class="card" style="border-left:4px solid #f59e0b;"><div class="card-title">📐 Corners</div><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span id="cornNameA" style="color:#10b981;font-weight:700;">A</span><span id="cornA" style="font-weight:700;">--</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span id="cornNameB" style="color:#ef4444;font-weight:700;">B</span><span id="cornB" style="font-weight:700;">--</span></div><div style="border-top:1px solid #374151;padding-top:8px;display:flex;justify-content:space-between;"><span style="color:#94a3b8;">Total</span><span id="cornTotal" style="font-weight:700;color:#f59e0b;">--</span></div></div>
+                <div class="card" style="border-left:4px solid #3b82f6;"><div class="card-title">🎯 Tirs Cadrés</div><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span id="sotNameA" style="color:#10b981;font-weight:700;">A</span><span id="sotA" style="font-weight:700;">--</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span id="sotNameB" style="color:#ef4444;font-weight:700;">B</span><span id="sotB" style="font-weight:700;">--</span></div><div style="border-top:1px solid #374151;padding-top:8px;display:flex;justify-content:space-between;"><span style="color:#94a3b8;">Total</span><span id="sotTotal" style="font-weight:700;color:#3b82f6;">--</span></div></div>
+            </div>
+
+            <div class="card"><div class="card-title">📝 RÉSUMÉ DU MATCH</div><div id="matchSummary" class="summary-text">--</div></div>
+
+            <div class="grid-2" style="margin-top:15px;">
+                <button class="btn-primary btn-whatsapp" onclick="shareToWhatsApp()">📱 Partager sur WhatsApp</button>
+                <button class="btn-primary btn-save" onclick="saveCurrentPrediction()">💾 Sauvegarder ce pronostic</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="historyModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>📜 Historique des pronostics</h3><button onclick="closeHistory()" style="background:none;border:none;color:white;font-size:24px;">&times;</button></div><div class="modal-body" id="historyList"></div></div></div>
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ========== POINTS ET FACTEURS ==========
+        function getPoints(prefix) {
+            let weather = parseInt(document.getElementById(`weather${prefix}`).value) || 0;
+            let context = parseInt(document.getElementById(`context${prefix}`).value) || 0;
+            let form = parseInt(document.getElementById(`form${prefix}`).value) || 0;
+            let dyn = parseInt(document.getElementById(`dyn${prefix}`).value) || 0;
+            let react = parseInt(document.getElementById(`react${prefix}`).value) || 0;
+            let total = weather + context + form + dyn + react;
+            document.getElementById(`score${prefix}`).innerText = total + " pts";
+            let tags = [];
+            if(weather > 0) tags.push(`🌦️ +${weather}`);
+            if(context > 0) tags.push(`🏆 +${context}`); else if(context < 0) tags.push(`🏆 ${context}`);
+            if(form > 0) tags.push(`📈 +${form}`); else if(form < 0) tags.push(`📈 ${form}`);
+            if(dyn > 0) tags.push(`⚡ +${dyn}`); else if(dyn < 0) tags.push(`⚡ ${dyn}`);
+            if(react > 0) tags.push(`🔄 +${react}`); else if(react < 0) tags.push(`🔄 ${react}`);
+            document.getElementById(`tags${prefix}`).innerHTML = tags.map(t => `<span class="badge badge-pos">${t}</span>`).join(' ') || '<span class="badge badge-zero">Neutre</span>';
+            return total;
+        }
+
+        function updatePoints(prefix) { getPoints(prefix); updateGap(); }
+        function updateGap() {
+            let ptsA = getPoints('A'), ptsB = getPoints('B');
+            let diff = ptsA - ptsB;
+            document.getElementById('pointGap').innerHTML = (diff > 0 ? `+${diff}` : diff) + " pts";
+            let total = ptsA + ptsB;
+            let pourcentage = ptsA + ptsB > 0 ? (ptsA / (ptsA + ptsB)) * 100 : 50;
+            document.getElementById('gapBar').style.width = pourcentage + "%";
+            let preview = "";
+            if(total >= 30) preview = "🔒 Over 2.5 & BTTS";
+            else if(total >= 22) preview = "✅ Over 2.5";
+            else if(total >= 16) preview = "⚖️ Match ouvert";
+            else preview = "🛡️ Under 3.5";
+            document.getElementById('safeBetPreview').innerHTML = preview;
+            let confiance = total >= 30 ? "Très Haute" : total >= 22 ? "Haute" : total >= 16 ? "Moyenne" : "Faible";
+            document.getElementById('confidenceLevel').innerHTML = confiance;
+        }
+
+        // ========== CONVERSION POINTS → BUTS (COHÉRENTE) ==========
+        function pointsToGoals(points) {
+            if(points >= 30) return 5;
+            if(points >= 26) return 4;
+            if(points >= 22) return 3;
+            if(points >= 16) return 2;
+            if(points >= 10) return 1;
+            return 0;
+        }
+
+        function getPossibleScores(goalsA, goalsB) {
+            if(goalsA === 5 && goalsB === 4) return ['5-4', '4-4'];
+            if(goalsA === 5 && goalsB === 3) return ['5-3', '4-3'];
+            if(goalsA === 5 && goalsB === 2) return ['5-2', '4-2'];
+            if(goalsA === 5 && goalsB === 1) return ['5-1', '4-1'];
+            if(goalsA === 5 && goalsB === 0) return ['5-0', '4-0'];
+            if(goalsA === 4 && goalsB === 4) return ['4-4', '3-3'];
+            if(goalsA === 4 && goalsB === 3) return ['4-3', '3-3'];
+            if(goalsA === 4 && goalsB === 2) return ['4-2', '3-2'];
+            if(goalsA === 4 && goalsB === 1) return ['4-1', '3-1'];
+            if(goalsA === 4 && goalsB === 0) return ['4-0', '3-0'];
+            if(goalsA === 3 && goalsB === 3) return ['3-3', '2-2'];
+            if(goalsA === 3 && goalsB === 2) return ['3-2', '2-2'];
+            if(goalsA === 3 && goalsB === 1) return ['3-1', '2-1'];
+            if(goalsA === 3 && goalsB === 0) return ['3-0', '2-0'];
+            if(goalsA === 2 && goalsB === 2) return ['2-2', '1-1'];
+            if(goalsA === 2 && goalsB === 1) return ['2-1', '1-1'];
+            if(goalsA === 2 && goalsB === 0) return ['2-0', '1-0'];
+            if(goalsA === 1 && goalsB === 1) return ['1-1', '0-0'];
+            if(goalsA === 1 && goalsB === 0) return ['1-0', '0-0'];
+            if(goalsA === 0 && goalsB === 0) return ['0-0', '1-0'];
+            if(goalsA === 0 && goalsB === 1) return ['0-1', '0-2'];
+            if(goalsA === 0 && goalsB === 2) return ['0-2', '1-2'];
+            if(goalsA === 0 && goalsB === 3) return ['0-3', '1-3'];
+            return [`${goalsA}-${goalsB}`, `${Math.min(5,goalsA+1)}-${goalsB}`];
+        }
+
+        // ========== ANALYSE PRINCIPALE ==========
+        function runAnalysis() {
+            let nameA = document.getElementById('nameA').value.trim() || "Domicile";
+            let nameB = document.getElementById('nameB').value.trim() || "Extérieur";
+            let ptsA = getPoints('A'), ptsB = getPoints('B');
+            let totalPts = ptsA + ptsB;
+            let goalsA = pointsToGoals(ptsA);
+            let goalsB = pointsToGoals(ptsB);
+            let scores = getPossibleScores(goalsA, goalsB);
+            let btts = (goalsA >= 1 && goalsB >= 1) ? "OUI ✅" : "NON ❌";
+            let over25 = (totalPts >= 22) ? "OUI ✅" : "NON ❌";
+            let winner = "";
+            let confidence = "";
+            let safeBet = "";
+            if(ptsA > ptsB + 5) { winner = `Victoire ${nameA}`; confidence = "Haute"; safeBet = `🔒 ${nameA} gagne`; }
+            else if(ptsB > ptsA + 5) { winner = `Victoire ${nameB}`; confidence = "Haute"; safeBet = `🔒 ${nameB} gagne`; }
+            else if(Math.abs(ptsA - ptsB) <= 5) { winner = `Match Nul ou Serré`; confidence = "Moyenne"; safeBet = `⚖️ Double chance ${nameA} ou ${nameB}`; }
+            else { winner = `Match Équilibré`; confidence = "Faible"; safeBet = `🛡️ Under 3.5 buts`; }
+            
+            if(totalPts >= 30) safeBet = "🔒 Over 2.5 & BTTS oui";
+            else if(totalPts >= 22) safeBet = "✅ Over 2.5";
+            else if(totalPts >= 16) safeBet = "⚖️ Match ouvert, peu de certitudes";
+            else safeBet = "🛡️ Under 3.5 buts";
+
+            document.getElementById('resWinner').innerHTML = winner;
+            document.getElementById('resBtts').innerHTML = btts;
+            document.getElementById('resOver25').innerHTML = over25;
+            document.getElementById('resConf').innerHTML = confidence;
+            document.getElementById('safeBetMain').innerHTML = safeBet;
+            document.getElementById('totalPoints').innerHTML = totalPts + " pts";
+            document.getElementById('score1').innerHTML = scores[0].replace('-', ' - ');
+            document.getElementById('score2').innerHTML = scores[1].replace('-', ' - ');
+            document.getElementById('cornNameA').innerHTML = nameA;
+            document.getElementById('cornNameB').innerHTML = nameB;
+            document.getElementById('sotNameA').innerHTML = nameA;
+            document.getElementById('sotNameB').innerHTML = nameB;
+            let cornersA = Math.floor(ptsA / 5) + 3;
+            let cornersB = Math.floor(ptsB / 5) + 2;
+            document.getElementById('cornA').innerHTML = cornersA;
+            document.getElementById('cornB').innerHTML = cornersB;
+            document.getElementById('cornTotal').innerHTML = cornersA + cornersB;
+            let sotA = Math.floor(ptsA / 6) + 2;
+            let sotB = Math.floor(ptsB / 6) + 1;
+            document.getElementById('sotA').innerHTML = sotA;
+            document.getElementById('sotB').innerHTML = sotB;
+            document.getElementById('sotTotal').innerHTML = sotA + sotB;
+
+            let resume = `🏆 ${nameA} (${ptsA} pts) vs ${nameB} (${ptsB} pts)\n`;
+            resume += `📊 Analyse : ${winner}. `;
+            resume += `BTTS : ${btts}. Over 2.5 : ${over25}.\n`;
+            resume += `🎯 Scores suggérés : ${scores[0]} ou ${scores[1]}. `;
+            resume += `📐 Corners : ${cornersA+ cornersB} attendus. `;
+            resume += `💡 Pronostic sûr : ${safeBet}.`;
+            document.getElementById('matchSummary').innerHTML = resume.replace(/\n/g, '<br>');
+
+            document.getElementById('resultsArea').classList.add('show');
+            window.currentPrediction = { nameA, nameB, ptsA, ptsB, totalPts, scores, btts, over25, winner, safeBet, resume, cornersA, cornersB, sotA, sotB };
+            showToast("✅ Analyse terminée !");
+        }
+
+        function shareToWhatsApp() {
+            if(!window.currentPrediction) { showToast("❌ Lancez d'abord une analyse", true); return; }
+            let p = window.currentPrediction;
+            let text = `⚽ *PRONOSTIC FootPredict Pro* ⚽\n\n`;
+            text += `🏠 *${p.nameA}* (${p.ptsA} pts) vs ✈️ *${p.nameB}* (${p.ptsB} pts)\n`;
+            text += `📊 *Pronostic* : ${p.winner}\n`;
+            text += `🎯 *BTTS* : ${p.btts}\n`;
+            text += `📈 *Over 2.5* : ${p.over25}\n`;
+            text += `🎲 *Scores suggérés* : ${p.scores[0]} ou ${p.scores[1]}\n`;
+            text += `📐 *Corners* : ${p.cornersA + p.cornersB} (${p.cornersA} / ${p.cornersB})\n`;
+            text += `🔒 *Pronostic sûr* : ${p.safeBet}\n\n`;
+            text += `🔗 FootPredict Pro - Analyse fiable 🎯`;
+            let url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        // ========== HISTORIQUE & SAUVEGARDE ==========
+        let history = [];
+
+        function loadHistory() { try { let saved = localStorage.getItem('FootPredictPro_History'); if(saved) history = JSON.parse(saved); } catch(e){} updateHistoryDisplay(); }
+        function saveHistory() { localStorage.setItem('FootPredictPro_History', JSON.stringify(history)); updateHistoryDisplay(); }
+        function updateHistoryDisplay() {
+            let container = document.getElementById('historyList');
+            if(!container) return;
+            if(history.length === 0) { container.innerHTML = '<p style="text-align:center;padding:20px;">Aucun pronostic sauvegardé.</p>'; return; }
+            let html = '';
+            for(let i=0; i<history.length; i++) {
+                let h = history[i];
+                let estJuste = h.resultat !== null ? (h.resultat === h.prediction ? '✅' : '❌') : '⏳';
+                html += `<div class="history-item"><div style="display:flex;justify-content:space-between;"><strong>${h.date}</strong> ${estJuste}</div>`;
+                html += `<div>${h.nameA} vs ${h.nameB}</div>`;
+                html += `<div style="font-size:12px;color:#94a3b8;">Pronostic: ${h.safeBet}</div>`;
+                html += `<div style="margin-top:8px;"><select id="resultSelect_${i}" style="background:#374151;color:white;border:none;padding:6px;border-radius:6px;">`;
+                html += `<option value="">-- Résultat réel --</option>`;
+                if(h.safeBet.includes('Over')) html += `<option value="OVER_OUI">Over : OUI</option><option value="OVER_NON">Over : NON</option>`;
+                else if(h.safeBet.includes('Under')) html += `<option value="UNDER_OUI">Under : OUI</option><option value="UNDER_NON">Under : NON</option>`;
+                else html += `<option value="${h.nameA}">Victoire ${h.nameA}</option><option value="NUL">Nul</option><option value="${h.nameB}">Victoire ${h.nameB}</option>`;
+                html += `</select> <button class="btn-small btn-valid" onclick="validateHistory(${i})">Valider</button> <button class="btn-small btn-delete" onclick="deleteHistory(${i})">Supprimer</button></div></div>`;
+            }
+            container.innerHTML = html;
+        }
+        window.validateHistory = function(idx) {
+            let select = document.getElementById(`resultSelect_${idx}`);
+            if(select && select.value) {
+                history[idx].resultat = select.value;
+                saveHistory();
+                showToast("✅ Résultat enregistré !");
+            } else showToast("❌ Sélectionnez un résultat", true);
+        };
+        window.deleteHistory = function(idx) { history.splice(idx,1); saveHistory(); showToast("🗑️ Supprimé"); };
+        function saveCurrentPrediction() {
+            if(!window.currentPrediction) { showToast("❌ Lancez d'abord une analyse", true); return; }
+            let p = window.currentPrediction;
+            let now = new Date();
+            let dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            history.unshift({ date: dateStr, nameA: p.nameA, nameB: p.nameB, ptsA: p.ptsA, ptsB: p.ptsB, safeBet: p.safeBet, prediction: p.safeBet, resultat: null });
+            if(history.length > 100) history.pop();
+            saveHistory();
+            showToast("📥 Pronostic sauvegardé !");
+        }
+        function openHistory() { document.getElementById('historyModal').classList.add('show'); updateHistoryDisplay(); }
+        function closeHistory() { document.getElementById('historyModal').classList.remove('show'); }
+        function loadDemo() {
+            document.getElementById('nameA').value = "Paris SG";
+            document.getElementById('nameB').value = "Olympique Marseille";
+            document.getElementById('weatherA').value = "2"; document.getElementById('contextA').value = "0"; document.getElementById('formA').value = "1"; document.getElementById('dynA').value = "0"; document.getElementById('reactA').value = "0";
+            document.getElementById('weatherB').value = "2"; document.getElementById('contextB').value = "0"; document.getElementById('formB').value = "1"; document.getElementById('dynB').value = "0"; document.getElementById('reactB').value = "0";
+            updatePoints('A'); updatePoints('B'); updateGap(); showToast("⚡ Démo chargée !");
+        }
+        function showToast(msg, isError=false) { let toast = document.getElementById('toast'); toast.textContent = msg; toast.style.background = isError ? '#ef4444' : '#10b981'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
+        window.onload = function() { updatePoints('A'); updatePoints('B'); updateGap(); loadHistory(); };
+    </script>
 </body>
 </html>
