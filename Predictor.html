@@ -2,423 +2,624 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FootPredict Pro - Impact Direct</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ FootPredict - Complet</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0a0e1a, #111827); color: #f1f5f9; min-height: 100vh; padding-bottom: 20px; }
-        .header { background: rgba(10,14,26,0.95); border-bottom: 1px solid #1f2937; padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { font-size: 20px; font-weight: 700; }
-        .header span { color: #10b981; }
-        .btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; }
-        .btn-history { background: #1f2937; color: white; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: rgba(31,41,55,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .select-dark { background: rgba(55,65,81,0.5); border: 1px solid rgba(75,85,99,0.5); color: white; border-radius: 8px; padding: 12px 16px; width: 100%; font-size: 16px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 20px; padding-right: 40px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
-        .label-primary { color: #10b981; }
-        .label-danger { color: #ef4444; }
-        .btn-primary { background: linear-gradient(135deg, #10b981, #059669); color: white; width: 100%; padding: 16px; font-size: 18px; font-weight: 700; border-radius: 12px; border: none; margin-top: 20px; cursor: pointer; }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
-        .btn-save { background: #1f2937; color: white; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .kpi-card { background: rgba(31,41,55,0.5); border-radius: 12px; padding: 15px; text-align: center; border-top: 3px solid; }
-        .kpi-a { border-color: #10b981; }
-        .kpi-b { border-color: #8b5cf6; }
-        .kpi-c { border-color: #3b82f6; }
-        .kpi-d { border-color: #f59e0b; }
-        .kpi-value { font-size: 24px; font-weight: 700; margin-top: 5px; }
-        .kpi-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; }
-        .result-section { display: none; }
-        .result-section.show { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal.show { display: flex; }
-        .modal-content { background: #1f2937; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
-        .modal-header { padding: 20px; border-bottom: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .history-item { background: rgba(55,65,81,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; }
-        .btn-small { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; margin: 2px; }
-        .btn-valid { background: #10b981; color: white; }
-        .btn-lost { background: #ef4444; color: white; }
-        .btn-delete { background: #374151; color: white; }
-        .summary-text { background: #0f172a; border-radius: 12px; padding: 15px; margin-top: 15px; font-size: 14px; line-height: 1.5; border-left: 3px solid #10b981; }
-        .stat-detail { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #374151; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #0a0a12; color: #d0d0d8; min-height: 100vh; padding: 20px; }
+        .container { max-width: 850px; margin: 0 auto; }
+
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { font-size: 1.5rem; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
+        .header p { color: #777; font-size: 0.8rem; }
+
+        .card { background: #14141f; border: 1px solid #222232; border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .card h3 { font-size: 0.9rem; color: #999; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .icon-off { color: #f59e0b; } .icon-def { color: #3b82f6; } .icon-team { color: #a855f7; }
+
+        .teams-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+        .teams-row input { padding: 13px; background: #0a0a12; border: 2px solid #222232; border-radius: 12px; color: #fff; font-size: 1rem; font-weight: 600; text-align: center; }
+        .teams-row input:focus { outline: none; border-color: #a855f7; }
+        .teams-row .vs { font-weight: 800; color: #a855f7; font-size: 1.1rem; }
+
+        .upload-box { background: #0a0a12; border: 2px dashed #222232; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .upload-box:hover { border-color: #555; }
+        .upload-box.filled { border-color: #22c55e; border-style: solid; }
+        .upload-box i { font-size: 2rem; margin-bottom: 6px; }
+        .upload-box .upload-title { font-size: 0.8rem; font-weight: 600; color: #ccc; }
+        .upload-box .upload-sub { font-size: 0.7rem; color: #666; }
+        .upload-box img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000; border-radius: 14px; }
+        .upload-box .remove-btn { position: absolute; top: 8px; right: 8px; background: #ef4444; color: #fff; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; z-index: 3; display: none; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .upload-box.filled .remove-btn { display: flex; }
+        .upload-box input[type="file"] { display: none; }
+
+        .column-selector { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+        .column-selector span { font-size: 0.75rem; color: #888; }
+        .column-btn { flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #222232; background: #0a0a12; color: #aaa; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-align: center; }
+        .column-btn.selected-off { border-color: #f59e0b; background: rgba(245,158,11,0.1); color: #f59e0b; }
+        .column-btn.selected-def { border-color: #3b82f6; background: rgba(59,130,246,0.1); color: #3b82f6; }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+        .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid #222232; background: #0a0a12; color: #aaa; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: #f59e0b; color: #000; border-color: #f59e0b; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        @media (max-width: 500px) { .teams-row { grid-template-columns: 1fr; } .teams-row .vs { text-align: center; } }
+
+        .btn { padding: 12px 16px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; }
+        .btn-analyze { width: 100%; padding: 15px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; font-size: 1.05rem; font-weight: 700; margin-top: 8px; }
+        .btn-analyze:disabled { opacity: 0.35; cursor: not-allowed; }
+        .btn-whatsapp { background: #25D366; color: #fff; width: 100%; margin-top: 12px; }
+        .btn-save { background: #3b82f6; color: #fff; }
+        .btn-load { background: #8b5cf6; color: #fff; }
+        .btn-valid { background: #22c55e; color: #fff; }
+        .btn-invalid { background: #ef4444; color: #fff; }
+        .btn-clear { background: #374151; color: #fff; }
+
+        #statusMsg { text-align: center; font-size: 0.75rem; color: #555; margin-top: 8px; }
+
+        .ocr-progress { background: #0a0a12; border-radius: 12px; padding: 16px; text-align: center; margin-top: 14px; display: none; }
+        .spinner { width: 32px; height: 32px; border: 3px solid #222; border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .debug-box { background: #0a0a12; border: 1px solid #333; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.7rem; color: #aaa; max-height: 200px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New', monospace; display: none; }
+
+        .result-card { background: #14141f; border: 2px solid #f59e0b; border-radius: 20px; padding: 24px; margin-top: 20px; animation: fadeUp 0.5s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+
+        .score-display { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 18px 0; }
+        .score-box { background: #0a0a12; border: 2px solid #222232; border-radius: 18px; padding: 18px 26px; text-align: center; min-width: 90px; }
+        .score-box .team-label { font-size: 0.7rem; color: #777; }
+        .score-box .score-num { font-size: 2.6rem; font-weight: 800; color: #fff; }
+        .score-vs { font-size: 1.2rem; font-weight: 800; color: #f59e0b; }
+
+        .badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 14px 0; }
+        .badge { padding: 7px 15px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-over { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-under { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
+        .badge-btts-yes { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+        .badge-btts-no { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+        .stats-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.75rem; }
+        .stats-table th { background: #1a1a2e; padding: 8px; color: #aaa; font-size: 0.7rem; }
+        .stats-table td { padding: 8px; text-align: center; border-bottom: 1px solid #1a1a2e; }
+        .val-off { color: #f59e0b; font-weight: 600; }
+        .val-def { color: #3b82f6; font-weight: 600; }
+
+        .calcul-box { background: #0a0a12; border: 1px solid #333; border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 0.75rem; color: #bbb; line-height: 1.8; }
+        .calcul-box .formula { color: #f59e0b; font-weight: 600; }
+        .calcul-box .formula2 { color: #a855f7; font-weight: 600; }
+        .calcul-box .result { color: #22c55e; font-weight: 700; }
+
+        .history-item { background: #0a0a12; border: 1px solid #222232; border-radius: 14px; padding: 16px; margin-bottom: 10px; }
+        .history-item .h-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+        .history-item .h-date { font-size: 0.7rem; color: #666; }
+        .history-item .h-score { font-weight: 700; font-size: 1rem; }
+        .history-item .h-status { font-size: 0.7rem; padding: 4px 10px; border-radius: 10px; }
+        .status-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .status-valid { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .status-invalid { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .btn-xs { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; border: none; font-weight: 600; }
+
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 999; opacity: 0; transition: 0.3s; }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <h1>FootPredict <span>Pro</span> 🎯</h1>
-        <div>
-            <button class="btn btn-history" onclick="saveCurrentPrediction()">💾 Sauvegarder</button>
-            <button class="btn btn-history" onclick="openHistory()">📜 Historique</button>
-        </div>
-    </header>
+<div class="container">
+    <div class="header">
+        <h1>⚽ FootPredict</h1>
+        <p>Score Probable • Score Potentiel • Historique • WhatsApp</p>
+    </div>
 
-    <div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-analyse">📊 Analyse</button>
+        <button class="tab-btn" data-tab="tab-history">📜 Historique</button>
+        <button class="tab-btn" data-tab="tab-save">💾 Sauvegarde</button>
+    </div>
+
+    <!-- TAB ANALYSE -->
+    <div id="tab-analyse" class="tab-content active">
+        <div class="card">
+            <h3><i class="fas fa-users icon-team"></i> Match</h3>
+            <div class="teams-row">
+                <input type="text" id="team1" placeholder="Équipe 1" value="PSG">
+                <span class="vs">VS</span>
+                <input type="text" id="team2" placeholder="Équipe 2" value="Bayern Munich">
+            </div>
+        </div>
 
         <div class="card">
-            <div class="card-title">
-                📊 Équipes
-                <button class="btn btn-history" onclick="loadDemo()">⚡ Démo</button>
+            <h3><i class="fas fa-forward icon-off"></i> Image 1 : Stats OFFENSIVES</h3>
+            <div class="upload-box" id="uploadOff">
+                <i class="fas fa-chart-line" style="color:#f59e0b;"></i>
+                <span class="upload-title">Stats OFFENSIVES</span>
+                <span class="upload-sub">Total, Jeu ouvert, CPA, Contre-attaque, Pénalty, CSC, Tirs, Buts, Conversion</span>
+                <input type="file" id="inputOff" accept="image/*">
+                <button class="remove-btn" id="removeOff">✕</button>
             </div>
-            <div class="grid-2">
-                <div><label class="label label-primary">🏠 Domicile</label><input type="text" id="nameA" placeholder="Équipe A" class="select-dark" style="appearance:none; background:#1f2937;"></div>
-                <div><label class="label label-danger">✈️ Extérieur</label><input type="text" id="nameB" placeholder="Équipe B" class="select-dark" style="appearance:none; background:#1f2937;"></div>
+            <div class="column-selector">
+                <span><strong id="colOffLabel">PSG</strong> est en :</span>
+                <button class="column-btn selected-off" id="colOffGauche">⬅ Gauche</button>
+                <button class="column-btn" id="colOffDroite">Droite ➡</button>
             </div>
+            <div class="debug-box" id="debugOff"></div>
         </div>
 
         <div class="card">
-            <div class="card-title">🎯 Facteurs Contextuels</div>
-            <div class="grid-2">
-                <div>
-                    <label class="label">🌦️ Météo</label>
-                    <select id="weatherA" class="select-dark">
-                        <option value="sun">☀️ Soleil (-2)</option>
-                        <option value="normal" selected>🌙 Nuit/Normal (+3)</option>
-                        <option value="rain">🌧️ Pluie/Froid (+1)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">🏆 Contexte</label>
-                    <select id="contextA" class="select-dark">
-                        <option value="decisif">🔥 Match décisif (+4)</option>
-                        <option value="survie">💀 Joue sa survie (+3)</option>
-                        <option value="normal" selected>✅ Normal (0)</option>
-                        <option value="treve">📅 Trêve proche (-1)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">📈 Forme</label>
-                    <select id="formA" class="select-dark">
-                        <option value="bonne">✅ Bonne série (+3)</option>
-                        <option value="neutre" selected>😐 Neutre (+1)</option>
-                        <option value="irregulier">🎢 Irrégulier (0)</option>
-                        <option value="crise">📉 Crise (-2)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">⚡ Dynamique</label>
-                    <select id="dynA" class="select-dark">
-                        <option value="super_forts">💪 Super vs forts (+3)</option>
-                        <option value="normal" selected>🎯 Normal (+1)</option>
-                        <option value="contre_perf">❌ Contre-perf (-2)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">🔄 Réaction</label>
-                    <select id="reactA" class="select-dark">
-                        <option value="reagit_vite">⚡ Réagit vite (+4)</option>
-                        <option value="subit_reagit">📊 Subit puis réagit (+2)</option>
-                        <option value="subit_apres">😴 Subit après bon résultat (-1)</option>
-                        <option value="jamais" selected>❌ Ne réagit jamais (-3)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">💪 Puissance équipe</label>
-                    <select id="powerA" class="select-dark">
-                        <option value="solide">🧱 Attaque/Défense solide (+4)</option>
-                        <option value="optimiste">📈 Optimiste (+2)</option>
-                        <option value="normal" selected>😐 Normal (0)</option>
-                        <option value="desequilibre">⚠️ Déséquilibre (-3)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="label">🌦️ Météo</label>
-                    <select id="weatherB" class="select-dark">
-                        <option value="sun">☀️ Soleil (-2)</option>
-                        <option value="normal" selected>🌙 Nuit/Normal (+3)</option>
-                        <option value="rain">🌧️ Pluie/Froid (+1)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">🏆 Contexte</label>
-                    <select id="contextB" class="select-dark">
-                        <option value="decisif">🔥 Match décisif (+4)</option>
-                        <option value="survie">💀 Joue sa survie (+3)</option>
-                        <option value="normal" selected>✅ Normal (0)</option>
-                        <option value="treve">📅 Trêve proche (-1)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">📈 Forme</label>
-                    <select id="formB" class="select-dark">
-                        <option value="bonne">✅ Bonne série (+3)</option>
-                        <option value="neutre" selected>😐 Neutre (+1)</option>
-                        <option value="irregulier">🎢 Irrégulier (0)</option>
-                        <option value="crise">📉 Crise (-2)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">⚡ Dynamique</label>
-                    <select id="dynB" class="select-dark">
-                        <option value="super_forts">💪 Super vs forts (+3)</option>
-                        <option value="normal" selected>🎯 Normal (+1)</option>
-                        <option value="contre_perf">❌ Contre-perf (-2)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">🔄 Réaction</label>
-                    <select id="reactB" class="select-dark">
-                        <option value="reagit_vite">⚡ Réagit vite (+4)</option>
-                        <option value="subit_reagit">📊 Subit puis réagit (+2)</option>
-                        <option value="subit_apres">😴 Subit après bon résultat (-1)</option>
-                        <option value="jamais" selected>❌ Ne réagit jamais (-3)</option>
-                    </select>
-                    <label class="label" style="margin-top:10px;">💪 Puissance équipe</label>
-                    <select id="powerB" class="select-dark">
-                        <option value="solide">🧱 Attaque/Défense solide (+4)</option>
-                        <option value="optimiste">📈 Optimiste (+2)</option>
-                        <option value="normal" selected>😐 Normal (0)</option>
-                        <option value="desequilibre">⚠️ Déséquilibre (-3)</option>
-                    </select>
-                </div>
+            <h3><i class="fas fa-shield-alt icon-def"></i> Image 2 : Stats DÉFENSIVES concédées</h3>
+            <div class="upload-box" id="uploadDef">
+                <i class="fas fa-chart-bar" style="color:#3b82f6;"></i>
+                <span class="upload-title">Stats DÉFENSIVES</span>
+                <span class="upload-sub">Total, Jeu ouvert, CPA, Contre-attaque, Pénalty, CSC, Tirs, Buts, Conversion</span>
+                <input type="file" id="inputDef" accept="image/*">
+                <button class="remove-btn" id="removeDef">✕</button>
             </div>
-            <button class="btn-primary" onclick="runAnalysis()">🚀 LANCER L'ANALYSE</button>
+            <div class="column-selector">
+                <span><strong id="colDefLabel">PSG</strong> est en :</span>
+                <button class="column-btn selected-def" id="colDefGauche">⬅ Gauche</button>
+                <button class="column-btn" id="colDefDroite">Droite ➡</button>
+            </div>
+            <div class="debug-box" id="debugDef"></div>
         </div>
 
-        <div id="resultsArea" class="result-section">
-            <div class="kpi-grid">
-                <div class="kpi-card kpi-a"><div class="kpi-label">Pronostic</div><div id="resWinner" class="kpi-value">--</div></div>
-                <div class="kpi-card kpi-b"><div class="kpi-label">BTTS</div><div id="resBtts" class="kpi-value">--</div></div>
-                <div class="kpi-card kpi-c"><div class="kpi-label">Over 2.5</div><div id="resOver25" class="kpi-value">--</div></div>
-                <div class="kpi-card kpi-d"><div class="kpi-label">Confiance</div><div id="resConf" class="kpi-value">--</div></div>
+        <div class="ocr-progress" id="ocrProgress">
+            <div class="spinner"></div>
+            <div class="msg" id="ocrProgressMsg">Lecture OCR...</div>
+        </div>
+
+        <button class="btn btn-analyze" id="analyzeBtn" disabled>
+            <i class="fas fa-brain"></i> LIRE & CONFRONTER
+        </button>
+        <p id="statusMsg">Uploade les 2 images</p>
+
+        <div id="results"></div>
+    </div>
+
+    <!-- TAB HISTORIQUE -->
+    <div id="tab-history" class="tab-content">
+        <div class="card">
+            <h3><i class="fas fa-history"></i> Historique des pronostics</h3>
+            <div class="btn-row" style="margin-bottom:16px;">
+                <button class="btn btn-clear" id="clearHistoryBtn"><i class="fas fa-trash"></i> Effacer</button>
+                <button class="btn btn-load" id="exportHistoryBtn"><i class="fas fa-download"></i> Exporter CSV</button>
             </div>
-            <div class="card" style="border-left:4px solid #10b981;">
-                <div class="card-title">🔒 PRONOSTIC LE PLUS SÛR</div>
-                <div id="safeBetMain" style="font-size:24px;font-weight:700;color:#10b981;text-align:center;padding:15px;">--</div>
-            </div>
-            <div class="card">
-                <div class="card-title">🎲 Scores Exacts</div>
-                <div class="grid-2">
-                    <div style="background:rgba(55,65,81,0.3);padding:20px;border-radius:10px;text-align:center;"><div class="label">Score 1</div><div id="score1" style="font-size:36px;font-weight:700;">-- - --</div></div>
-                    <div style="background:rgba(55,65,81,0.3);padding:20px;border-radius:10px;text-align:center;"><div class="label">Score 2</div><div id="score2" style="font-size:36px;font-weight:700;">-- - --</div></div>
-                </div>
-            </div>
-            <div class="grid-2">
-                <div class="card" style="border-left:4px solid #f59e0b;">
-                    <div class="card-title">📐 Corners</div>
-                    <div class="stat-detail"><span id="cornNameA">A</span><span id="cornA">--</span></div>
-                    <div class="stat-detail"><span id="cornNameB">B</span><span id="cornB">--</span></div>
-                    <div class="stat-detail"><strong>Total</strong><strong id="cornTotal">--</strong></div>
-                </div>
-                <div class="card" style="border-left:4px solid #3b82f6;">
-                    <div class="card-title">🎯 Tirs Cadrés</div>
-                    <div class="stat-detail"><span id="sotNameA">A</span><span id="sotA">--</span></div>
-                    <div class="stat-detail"><span id="sotNameB">B</span><span id="sotB">--</span></div>
-                    <div class="stat-detail"><strong>Total</strong><strong id="sotTotal">--</strong></div>
-                </div>
-            </div>
-            <div class="card"><div class="card-title">📝 RÉSUMÉ DU MATCH</div><div id="matchSummary" class="summary-text">--</div></div>
-            <div class="grid-2" style="margin-top:15px;">
-                <button class="btn-primary btn-whatsapp" onclick="copyToClipboard()">📋 Copier pour WhatsApp</button>
-                <button class="btn-primary btn-save" onclick="saveCurrentPrediction()">💾 Sauvegarder</button>
-            </div>
+            <div id="historyList"><p style="color:#666; text-align:center;">Aucun historique</p></div>
         </div>
     </div>
 
-    <div id="historyModal" class="modal"><div class="modal-content"><div class="modal-header"><h3>📜 Historique des pronostics</h3><button onclick="closeHistory()" style="background:none;border:none;color:white;font-size:24px;">&times;</button></div><div class="modal-body" id="historyList"></div><div style="padding:15px; text-align:center;"><button class="btn-small btn-valid" onclick="exportHistoryCSV()">📎 Exporter CSV</button></div></div></div>
-    <div id="toast" class="toast"></div>
+    <!-- TAB SAUVEGARDE -->
+    <div id="tab-save" class="tab-content">
+        <div class="card">
+            <h3><i class="fas fa-save"></i> Sauvegarde / Chargement</h3>
+            <div class="btn-row">
+                <button class="btn btn-save" id="saveConfigBtn"><i class="fas fa-save"></i> Sauvegarder config</button>
+                <button class="btn btn-load" id="loadConfigBtn"><i class="fas fa-folder-open"></i> Charger config</button>
+                <button class="btn btn-clear" id="resetConfigBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
+            </div>
+            <p style="color:#666; font-size:0.75rem; margin-top:12px;">Sauvegarde les noms d'équipes et les préférences de colonnes.</p>
+        </div>
+    </div>
+</div>
 
-    <script>
-        function getPoints(prefix) {
-            let weather = document.getElementById(`weather${prefix}`).value;
-            let context = document.getElementById(`context${prefix}`).value;
-            let form = document.getElementById(`form${prefix}`).value;
-            let dyn = document.getElementById(`dyn${prefix}`).value;
-            let react = document.getElementById(`react${prefix}`).value;
-            let power = document.getElementById(`power${prefix}`).value;
-            let points = 0;
-            if(weather === 'sun') points += -2;
-            else if(weather === 'normal') points += 3;
-            else if(weather === 'rain') points += 1;
-            if(context === 'decisif') points += 4;
-            else if(context === 'survie') points += 3;
-            else if(context === 'treve') points += -1;
-            if(form === 'bonne') points += 3;
-            else if(form === 'neutre') points += 1;
-            else if(form === 'crise') points += -2;
-            if(dyn === 'super_forts') points += 3;
-            else if(dyn === 'normal') points += 1;
-            else if(dyn === 'contre_perf') points += -2;
-            if(react === 'reagit_vite') points += 4;
-            else if(react === 'subit_reagit') points += 2;
-            else if(react === 'subit_apres') points += -1;
-            else if(react === 'jamais') points += -3;
-            if(power === 'solide') points += 4;
-            else if(power === 'optimiste') points += 2;
-            else if(power === 'desequilibre') points += -3;
-            return points;
-        }
-        
-        function pointsToGoals(points) {
-            if(points >= 20) return 5;
-            if(points >= 16) return 4;
-            if(points >= 12) return 3;
-            if(points >= 8) return 2;
-            if(points >= 4) return 1;
-            return 0;
-        }
-        
-        function getPossibleScores(goalsA, goalsB) {
-            if(goalsA === 5 && goalsB === 5) return ['5-5', '4-4'];
-            if(goalsA === 5 && goalsB === 4) return ['5-4', '4-4'];
-            if(goalsA === 5 && goalsB === 3) return ['5-3', '4-3'];
-            if(goalsA === 5 && goalsB === 2) return ['5-2', '4-2'];
-            if(goalsA === 5 && goalsB === 1) return ['5-1', '4-1'];
-            if(goalsA === 5 && goalsB === 0) return ['5-0', '4-0'];
-            if(goalsA === 4 && goalsB === 4) return ['4-4', '3-3'];
-            if(goalsA === 4 && goalsB === 3) return ['4-3', '3-3'];
-            if(goalsA === 4 && goalsB === 2) return ['4-2', '3-2'];
-            if(goalsA === 4 && goalsB === 1) return ['4-1', '3-1'];
-            if(goalsA === 4 && goalsB === 0) return ['4-0', '3-0'];
-            if(goalsA === 3 && goalsB === 3) return ['3-3', '2-2'];
-            if(goalsA === 3 && goalsB === 2) return ['3-2', '2-2'];
-            if(goalsA === 3 && goalsB === 1) return ['3-1', '2-1'];
-            if(goalsA === 3 && goalsB === 0) return ['3-0', '2-0'];
-            if(goalsA === 2 && goalsB === 2) return ['2-2', '1-1'];
-            if(goalsA === 2 && goalsB === 1) return ['2-1', '1-1'];
-            if(goalsA === 2 && goalsB === 0) return ['2-0', '1-0'];
-            if(goalsA === 1 && goalsB === 1) return ['1-1', '0-0'];
-            if(goalsA === 1 && goalsB === 0) return ['1-0', '0-0'];
-            if(goalsA === 0 && goalsB === 0) return ['0-0', '1-0'];
-            if(goalsA === 0 && goalsB === 1) return ['0-1', '0-2'];
-            if(goalsA === 0 && goalsB === 2) return ['0-2', '1-2'];
-            if(goalsA === 0 && goalsB === 3) return ['0-3', '1-3'];
-            return [`${goalsA}-${goalsB}`, `${Math.min(5,goalsA+1)}-${goalsB}`];
-        }
-        
-        function runAnalysis() {
-            let nameA = document.getElementById('nameA').value.trim() || "Domicile";
-            let nameB = document.getElementById('nameB').value.trim() || "Extérieur";
-            let ptsA = getPoints('A');
-            let ptsB = getPoints('B');
-            let goalsA = pointsToGoals(ptsA);
-            let goalsB = pointsToGoals(ptsB);
-            let scores = getPossibleScores(goalsA, goalsB);
-            let btts = (goalsA >= 1 && goalsB >= 1);
-            let over25 = (goalsA + goalsB) >= 3;
-            let winner = "";
-            let confidence = "";
-            let safeBet = "";
-            let diff = Math.abs(goalsA - goalsB);
-            if(diff >= 3) { winner = `Victoire ${goalsA > goalsB ? nameA : nameB}`; confidence = "Très Haute"; safeBet = `🔒 ${goalsA > goalsB ? nameA : nameB} gagne`; }
-            else if(diff === 2) { winner = `Victoire ${goalsA > goalsB ? nameA : nameB}`; confidence = "Haute"; safeBet = `✅ ${goalsA > goalsB ? nameA : nameB} gagne`; }
-            else if(diff === 1) { winner = `Avantage ${goalsA > goalsB ? nameA : nameB}`; confidence = "Moyenne"; safeBet = `⚖️ Double chance ${goalsA > goalsB ? nameA : nameB} ou nul`; }
-            else { winner = `Match Nul ou Très Serré`; confidence = "Faible"; safeBet = `🛡️ Moins de 2,5 buts`; }
-            if(goalsA + goalsB >= 5) safeBet = "🔒 Plus de 3,5 buts";
-            else if(goalsA + goalsB >= 3) safeBet = "✅ Plus de 2,5 buts";
-            else safeBet = "🛡️ Moins de 2,5 buts";
-            let cornersA = Math.min(12, Math.max(2, Math.floor(ptsA / 2.5) + 2));
-            let cornersB = Math.min(12, Math.max(2, Math.floor(ptsB / 2.5) + 2));
-            let sotA = Math.min(10, Math.max(1, Math.floor(ptsA / 3) + 1));
-            let sotB = Math.min(10, Math.max(1, Math.floor(ptsB / 3) + 1));
-            document.getElementById('resWinner').innerHTML = winner;
-            document.getElementById('resBtts').innerHTML = btts ? "OUI ✅" : "NON ❌";
-            document.getElementById('resOver25').innerHTML = over25 ? "OUI ✅" : "NON ❌";
-            document.getElementById('resConf').innerHTML = confidence;
-            document.getElementById('safeBetMain').innerHTML = safeBet;
-            document.getElementById('score1').innerHTML = scores[0].replace('-', ' - ');
-            document.getElementById('score2').innerHTML = scores[1].replace('-', ' - ');
-            document.getElementById('cornNameA').innerHTML = nameA;
-            document.getElementById('cornNameB').innerHTML = nameB;
-            document.getElementById('cornA').innerHTML = cornersA;
-            document.getElementById('cornB').innerHTML = cornersB;
-            document.getElementById('cornTotal').innerHTML = cornersA + cornersB;
-            document.getElementById('sotNameA').innerHTML = nameA;
-            document.getElementById('sotNameB').innerHTML = nameB;
-            document.getElementById('sotA').innerHTML = sotA;
-            document.getElementById('sotB').innerHTML = sotB;
-            document.getElementById('sotTotal').innerHTML = sotA + sotB;
-            let resume = `🏆 ${nameA} (${ptsA} pts) vs ${nameB} (${ptsB} pts)\n📊 Analyse : ${winner}. BTTS : ${btts ? 'OUI' : 'NON'}. Over 2.5 : ${over25 ? 'OUI' : 'NON'}.\n🎯 Scores suggérés : ${scores[0]} ou ${scores[1]}.\n📐 Corners : ${cornersA+cornersB} (${cornersA}/${cornersB}). 🎯 Tirs cadrés : ${sotA+sotB} (${sotA}/${sotB}).\n💡 Pronostic sûr : ${safeBet}.`;
-            document.getElementById('matchSummary').innerHTML = resume.replace(/\n/g, '<br>');
-            document.getElementById('resultsArea').classList.add('show');
-            window.currentPrediction = { nameA, nameB, ptsA, ptsB, goalsA, goalsB, scores, btts, over25, winner, safeBet, resume, cornersA, cornersB, sotA, sotB };
-            showToast("✅ Analyse terminée !");
-        }
-        
-        function copyToClipboard() {
-            if(!window.currentPrediction) { showToast("❌ Lancez d'abord une analyse", true); return; }
-            let p = window.currentPrediction;
-            let text = `⚽ *PRONOSTIC FootPredict Pro* ⚽\n\n🏠 *${p.nameA}* (${p.ptsA} pts) vs ✈️ *${p.nameB}* (${p.ptsB} pts)\n📊 *Pronostic* : ${p.winner}\n🎯 *BTTS* : ${p.btts ? 'OUI' : 'NON'}\n📈 *Over 2.5* : ${p.over25 ? 'OUI' : 'NON'}\n🎲 *Scores* : ${p.scores[0]} ou ${p.scores[1]}\n📐 *Corners* : ${p.cornersA + p.cornersB} (${p.cornersA}/${p.cornersB})\n🎯 *Tirs cadrés* : ${p.sotA + p.sotB} (${p.sotA}/${p.sotB})\n🔒 *Pronostic sûr* : ${p.safeBet}\n\n🔗 FootPredict Pro - Analyse terrain 🎯`;
-            navigator.clipboard.writeText(text).then(() => showToast("✅ Texte copié ! Collez dans WhatsApp")).catch(() => showToast("❌ Erreur de copie", true));
-        }
-        
-        let history = [];
-        function loadHistory() { try { let saved = localStorage.getItem('FootPredictPro_History'); if(saved) history = JSON.parse(saved); } catch(e){} updateHistoryDisplay(); updateStats(); }
-        function saveHistory() { localStorage.setItem('FootPredictPro_History', JSON.stringify(history)); updateHistoryDisplay(); updateStats(); }
-        function updateHistoryDisplay() {
-            let container = document.getElementById('historyList');
-            if(!container) return;
-            if(history.length === 0) { container.innerHTML = '<p style="text-align:center;padding:20px;">Aucun pronostic sauvegardé.</p>'; return; }
-            let html = '';
-            for(let i=0; i<history.length; i++) {
-                let h = history[i];
-                let statut = h.resultat === true ? '✅ Validé' : (h.resultat === false ? '❌ Perdu' : '⏳ En attente');
-                html += `<div class="history-item"><div style="display:flex;justify-content:space-between;"><strong>${h.date}</strong> <span>${statut}</span></div>`;
-                html += `<div>${h.nameA} vs ${h.nameB}</div>`;
-                html += `<div style="font-size:12px;color:#94a3b8;">Pronostic: ${h.safeBet}</div>`;
-                html += `<div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">`;
-                html += `<button class="btn-small btn-valid" onclick="setResult(${i}, true)">✅ Validé</button>`;
-                html += `<button class="btn-small btn-lost" onclick="setResult(${i}, false)">❌ Perdu</button>`;
-                html += `<button class="btn-small btn-delete" onclick="deleteHistory(${i})">🗑️ Supprimer</button>`;
-                html += `</div></div>`;
+<div class="toast" id="toast"></div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+    // ========== ETAT ==========
+    let imageOff = null, imageDef = null;
+    let colOffTeam1 = 'gauche', colDefTeam1 = 'gauche';
+    let isProcessing = false;
+    let currentResult = null;
+    let history = JSON.parse(localStorage.getItem('fpHistory') || '[]');
+
+    // ========== DOM ==========
+    const uploadOff = document.getElementById('uploadOff');
+    const uploadDef = document.getElementById('uploadDef');
+    const inputOff = document.getElementById('inputOff');
+    const inputDef = document.getElementById('inputDef');
+    const removeOff = document.getElementById('removeOff');
+    const removeDef = document.getElementById('removeDef');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const resultsDiv = document.getElementById('results');
+    const ocrProgress = document.getElementById('ocrProgress');
+    const ocrProgressMsg = document.getElementById('ocrProgressMsg');
+    const debugOff = document.getElementById('debugOff');
+    const debugDef = document.getElementById('debugDef');
+    const team1Input = document.getElementById('team1');
+    const team2Input = document.getElementById('team2');
+    const historyList = document.getElementById('historyList');
+
+    // ========== TABS ==========
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+            if (btn.dataset.tab === 'tab-history') renderHistory();
+        });
+    });
+
+    // ========== TOAST ==========
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function updateLabels() {
+        const t1 = team1Input.value || 'Équipe 1';
+        document.getElementById('colOffLabel').textContent = t1;
+        document.getElementById('colDefLabel').textContent = t1;
+    }
+    team1Input.addEventListener('input', updateLabels);
+    team2Input.addEventListener('input', updateLabels);
+    updateLabels();
+
+    // ========== COLONNES ==========
+    document.getElementById('colOffGauche').addEventListener('click', function() {
+        colOffTeam1 = 'gauche';
+        this.classList.add('selected-off'); this.classList.remove('selected-def');
+        document.getElementById('colOffDroite').classList.remove('selected-off', 'selected-def');
+    });
+    document.getElementById('colOffDroite').addEventListener('click', function() {
+        colOffTeam1 = 'droite';
+        this.classList.add('selected-off'); this.classList.remove('selected-def');
+        document.getElementById('colOffGauche').classList.remove('selected-off', 'selected-def');
+    });
+    document.getElementById('colDefGauche').addEventListener('click', function() {
+        colDefTeam1 = 'gauche';
+        this.classList.add('selected-def'); this.classList.remove('selected-off');
+        document.getElementById('colDefDroite').classList.remove('selected-off', 'selected-def');
+    });
+    document.getElementById('colDefDroite').addEventListener('click', function() {
+        colDefTeam1 = 'droite';
+        this.classList.add('selected-def'); this.classList.remove('selected-off');
+        document.getElementById('colDefGauche').classList.remove('selected-off', 'selected-def');
+    });
+
+    // ========== UPLOAD ==========
+    function setupUpload(box, input, removeBtn, type) {
+        box.addEventListener('click', () => input.click());
+        box.addEventListener('dragover', (e) => { e.preventDefault(); box.style.borderColor = type==='off'?'#f59e0b':'#3b82f6'; });
+        box.addEventListener('dragleave', () => { box.style.borderColor = '#222232'; });
+        box.addEventListener('drop', (e) => {
+            e.preventDefault(); box.style.borderColor = '#222232';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) loadImage(file, box, type);
+        });
+        input.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) loadImage(file, box, type); });
+        removeBtn.addEventListener('click', (e) => { e.stopPropagation(); removeImage(box, type); });
+    }
+
+    function loadImage(file, box, type) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const oldImg = box.querySelector('img'); if (oldImg) oldImg.remove();
+            const img = document.createElement('img'); img.src = e.target.result;
+            box.appendChild(img); box.classList.add('filled');
+            if (type === 'off') { imageOff = e.target.result; debugOff.style.display = 'none'; }
+            else { imageDef = e.target.result; debugDef.style.display = 'none'; }
+            checkReady();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage(box, type) {
+        const img = box.querySelector('img'); if (img) img.remove();
+        box.classList.remove('filled');
+        if (type === 'off') { imageOff = null; inputOff.value = ''; debugOff.style.display = 'none'; }
+        else { imageDef = null; inputDef.value = ''; debugDef.style.display = 'none'; }
+        checkReady(); resultsDiv.innerHTML = ''; currentResult = null;
+    }
+
+    function checkReady() {
+        if (imageOff && imageDef) { analyzeBtn.disabled = false; statusMsg.textContent = '✅ Prêt'; statusMsg.style.color = '#22c55e'; }
+        else if (imageOff || imageDef) { analyzeBtn.disabled = true; statusMsg.textContent = '⚠️ Il manque une image'; statusMsg.style.color = '#f59e0b'; }
+        else { analyzeBtn.disabled = true; statusMsg.textContent = 'Uploade les 2 images'; statusMsg.style.color = '#555'; }
+    }
+
+    setupUpload(uploadOff, inputOff, removeOff, 'off');
+    setupUpload(uploadDef, inputDef, removeDef, 'def');
+
+    // ========== OCR ==========
+    async function runOCR(imageData, type) {
+        ocrProgress.style.display = 'block';
+        ocrProgressMsg.textContent = `Lecture OCR image ${type==='off'?'offensive':'défensive'}...`;
+        try {
+            const result = await Tesseract.recognize(imageData, 'eng+fra', {
+                logger: (m) => { if (m.status === 'recognizing text') ocrProgressMsg.textContent = `OCR ${type==='off'?'offensif':'défensif'} : ${Math.round(m.progress*100)}%`; }
+            });
+            return result.data.text;
+        } catch (err) { return ''; }
+    }
+
+    function extractAllStats(text, debugBox) {
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        let debugHtml = '<strong>OCR brut :</strong>\n' + text + '\n\n<strong>Paires :</strong>\n';
+        const allPairs = [], stats = { gauche: {}, droite: {} };
+
+        for (const line of lines) {
+            const match = line.match(/^(.+?)\s{2,}(\d+\.?\d*)\s{2,}(\d+\.?\d*)$/);
+            if (match) { allPairs.push({ label: match[1].trim().toLowerCase(), left: parseFloat(match[2]), right: parseFloat(match[3]) }); continue; }
+            const numbers = line.match(/(\d+\.?\d*)/g);
+            if (numbers && numbers.length === 2) {
+                const labelPart = line.replace(/[\d.]+/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+                if (labelPart.length > 0 && labelPart.length < 60 && !allPairs.find(p => p.label === labelPart)) {
+                    allPairs.push({ label: labelPart, left: parseFloat(numbers[0]), right: parseFloat(numbers[1]) });
+                }
             }
-            container.innerHTML = html;
         }
-        function setResult(idx, value) {
-            history[idx].resultat = value;
-            saveHistory();
-            showToast(value ? "✅ Pronostic validé !" : "❌ Pronostic perdu !");
-        }
-        function deleteHistory(idx) { history.splice(idx,1); saveHistory(); showToast("🗑️ Supprimé"); }
-        function updateStats() {
-            let total = history.length;
-            let justes = history.filter(h => h.resultat === true).length;
-            let faux = history.filter(h => h.resultat === false).length;
-            let taux = total > 0 ? Math.round((justes / total) * 100) : 0;
-            document.getElementById('totalPronos').innerText = total;
-            document.getElementById('justesPronos').innerText = justes;
-            document.getElementById('fauxPronos').innerText = faux;
-            document.getElementById('tauxReussite').innerText = `${taux}%`;
-        }
-        function saveCurrentPrediction() {
-            if(!window.currentPrediction) { showToast("❌ Lancez d'abord une analyse", true); return; }
-            let p = window.currentPrediction;
-            let now = new Date();
-            let dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            history.unshift({ date: dateStr, nameA: p.nameA, nameB: p.nameB, safeBet: p.safeBet, resultat: null });
-            if(history.length > 100) history.pop();
-            saveHistory();
-            showToast("📥 Pronostic sauvegardé !");
-        }
-        function exportHistoryCSV() {
-            if(history.length === 0) { showToast("📭 Aucun historique", true); return; }
-            let csv = "Date,Equipe A,Equipe B,Meilleur Pronostic,Résultat\n";
-            for(let h of history) {
-                let res = h.resultat === true ? "Validé" : (h.resultat === false ? "Perdu" : "En attente");
-                csv += `"${h.date}","${h.nameA}","${h.nameB}","${h.safeBet}","${res}"\n`;
+        for (const pair of allPairs) debugHtml += `  "${pair.label}" → G:${pair.left} | D:${pair.right}\n`;
+
+        const categories = [
+            { id: 'total', keywords: ['total'] }, { id: 'jeuOuvert', keywords: ['jeu ouvert', 'jeu'] },
+            { id: 'cpa', keywords: ['coup de pied', 'cpa', 'arrêté'] }, { id: 'contreAttaque', keywords: ['contre-attaque', 'contre attaque', 'counter'] },
+            { id: 'penalty', keywords: ['pénalty', 'penalty', 'pen'] }, { id: 'csc', keywords: ['contre son camp', 'csc', 'own goal'] },
+            { id: 'tirs', keywords: ['tirs', 'tir', 'shots'] }, { id: 'buts', keywords: ['buts', 'but', 'goals'] },
+            { id: 'conversion', keywords: ['conversion', '%'] }
+        ];
+
+        debugHtml += '\n<strong>Extraction :</strong>\n';
+        const used = new Set();
+        for (const cat of categories) {
+            let found = false;
+            for (const pair of allPairs) {
+                if (used.has(pair)) continue;
+                for (const kw of cat.keywords) {
+                    if (pair.label.includes(kw.toLowerCase()) && !(cat.id === 'buts' && (pair.label.includes('contre') || pair.label.includes('csc')))) {
+                        if (cat.id === 'buts') {
+                            let vg = pair.left > 7 && pair.left < 100 ? pair.left / 10 : pair.left;
+                            let vd = pair.right > 7 && pair.right < 100 ? pair.right / 10 : pair.right;
+                            stats.gauche.buts = vg; stats.droite.buts = vd;
+                            debugHtml += `  ✅✅ BUTS → G:${vg} | D:${vd}\n`;
+                        } else {
+                            stats.gauche[cat.id] = pair.left; stats.droite[cat.id] = pair.right;
+                            debugHtml += `  ✅ ${cat.id} → G:${pair.left} | D:${pair.right}\n`;
+                        }
+                        found = true; used.add(pair); break;
+                    }
+                }
+                if (found) break;
             }
-            let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            let link = document.createElement('a');
-            let url = URL.createObjectURL(blob);
-            link.href = url;
-            link.setAttribute('download', `pronostics_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            showToast("📥 Export CSV réussi !");
+            if (!found) { stats.gauche[cat.id] = null; stats.droite[cat.id] = null; debugHtml += `  ❌ ${cat.id}\n`; }
         }
-        function openHistory() { document.getElementById('historyModal').classList.add('show'); updateHistoryDisplay(); }
-        function closeHistory() { document.getElementById('historyModal').classList.remove('show'); }
-        function loadDemo() {
-            document.getElementById('nameA').value = "Paris SG";
-            document.getElementById('nameB').value = "OM";
-            document.getElementById('weatherA').value = "normal";
-            document.getElementById('weatherB').value = "normal";
-            document.getElementById('contextA').value = "decisif";
-            document.getElementById('contextB').value = "normal";
-            document.getElementById('formA').value = "bonne";
-            document.getElementById('formB').value = "neutre";
-            document.getElementById('dynA').value = "super_forts";
-            document.getElementById('dynB').value = "normal";
-            document.getElementById('reactA').value = "reagit_vite";
-            document.getElementById('reactB').value = "jamais";
-            document.getElementById('powerA').value = "solide";
-            document.getElementById('powerB').value = "normal";
-            showToast("⚡ Démo chargée !");
+        if (!stats.gauche.buts) {
+            for (const pair of allPairs) {
+                if (used.has(pair)) continue;
+                if (pair.left > 0 && pair.left < 5 && pair.left % 1 !== 0) {
+                    let vg = pair.left > 7 && pair.left < 100 ? pair.left / 10 : pair.left;
+                    let vd = pair.right > 7 && pair.right < 100 ? pair.right / 10 : pair.right;
+                    stats.gauche.buts = vg; stats.droite.buts = vd;
+                    debugHtml += `  🔧 buts (fallback) → G:${vg} | D:${vd}\n`; break;
+                }
+            }
         }
-        function showToast(msg, isError=false) { let toast = document.getElementById('toast'); toast.textContent = msg; toast.style.background = isError ? '#ef4444' : '#10b981'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
-        window.onload = function() { loadHistory(); };
-    </script>
+        debugBox.innerHTML = debugHtml; debugBox.style.display = 'block';
+        return stats;
+    }
+
+    // ========== ANALYSE ==========
+    analyzeBtn.addEventListener('click', async () => {
+        if (!imageOff || !imageDef || isProcessing) return;
+        isProcessing = true; analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = '<span class="spinner" style="width:20px;height:20px;"></span> OCR...';
+        resultsDiv.innerHTML = '';
+
+        const textOff = await runOCR(imageOff, 'off');
+        const textDef = await runOCR(imageDef, 'def');
+        ocrProgress.style.display = 'none';
+
+        const team1 = team1Input.value || 'Équipe 1';
+        const team2 = team2Input.value || 'Équipe 2';
+
+        const offStats = extractAllStats(textOff, debugOff);
+        const defStats = extractAllStats(textDef, debugDef);
+
+        const attTeam1 = colOffTeam1 === 'gauche' ? offStats.gauche : offStats.droite;
+        const attTeam2 = colOffTeam1 === 'gauche' ? offStats.droite : offStats.gauche;
+        const defTeam1 = colDefTeam1 === 'gauche' ? defStats.gauche : defStats.droite;
+        const defTeam2 = colDefTeam1 === 'gauche' ? defStats.droite : defStats.gauche;
+
+        const totalOff1 = attTeam1.total || 14, totalOff2 = attTeam2.total || 12;
+        const totalDef1 = defTeam1.total || 11, totalDef2 = defTeam2.total || 10;
+        const butsOff1 = attTeam1.buts || 1.5, butsOff2 = attTeam2.buts || 1.2;
+        const butsDef1 = defTeam1.buts || 1.0, butsDef2 = defTeam2.buts || 0.9;
+        const convOff1 = attTeam1.conversion || 15, convOff2 = attTeam2.conversion || 14;
+        const convDef1 = defTeam1.conversion || 10, convDef2 = defTeam2.conversion || 10;
+
+        // Score principal
+        const s1p = (butsOff1 + butsDef2) / 2, s2p = (butsOff2 + butsDef1) / 2;
+        let sc1p = Math.max(0, Math.min(7, Math.round(s1p)));
+        let sc2p = Math.max(0, Math.min(7, Math.round(s2p)));
+
+        // Score potentiel : (buts off - buts déf adverses) × conv off × conv déf
+        const s1s = (butsOff1 - butsDef2) * (convOff1 / 10) * (convDef2 / 10);
+        const s2s = (butsOff2 - butsDef1) * (convOff2 / 10) * (convDef1 / 10);
+        let sc1s = Math.max(0, Math.round(s1s));
+        let sc2s = Math.max(0, Math.round(s2s));
+
+        const totalP = sc1p + sc2p;
+        const overP = totalP >= 3 ? 'Over 2.5 🔥' : totalP === 2 ? 'Limite ⚠️' : 'Under 2.5 📉';
+        const btts = sc1p > 0 && sc2p > 0;
+
+        const tirsOff1 = attTeam1.tirs || +(totalOff1 * 0.6).toFixed(1);
+        const tirsOff2 = attTeam2.tirs || +(totalOff2 * 0.6).toFixed(1);
+        const tirsDef1 = defTeam1.tirs || +(totalDef1 * 0.6).toFixed(1);
+        const tirsDef2 = defTeam2.tirs || +(totalDef2 * 0.6).toFixed(1);
+
+        // Stocker pour WhatsApp et historique
+        currentResult = {
+            team1, team2, sc1p, sc2p, sc1s, sc2s, overP, btts,
+            butsOff1, butsOff2, butsDef1, butsDef2,
+            convOff1, convOff2, convDef1, convDef2,
+            s1p, s2p, s1s, s2s, totalOff1, totalOff2, totalDef1, totalDef2,
+            tirsOff1, tirsOff2, tirsDef1, tirsDef2,
+            attTeam1, attTeam2, defTeam1, defTeam2, date: new Date().toISOString()
+        };
+
+        resultsDiv.innerHTML = `
+            <div class="result-card">
+                <div style="text-align:center; font-size:0.8rem; color:#777;">🤖 Confrontation Attaque vs Défense</div>
+                <div class="score-display">
+                    <div class="score-box"><div class="team-label">${team1}</div><div class="score-num">${sc1p}</div></div>
+                    <div class="score-vs">—</div>
+                    <div class="score-box"><div class="team-label">${team2}</div><div class="score-num">${sc2p}</div></div>
+                </div>
+                <div style="text-align:center; font-size:0.7rem; color:#a855f7;">🚀 Potentiel : ${team1} ${sc1s} - ${sc2s} ${team2}</div>
+                <div class="badge-row">
+                    <span class="badge ${overP.includes('Over')?'badge-over':'badge-under'}">📊 ${overP}</span>
+                    <span class="badge ${btts?'badge-btts-yes':'badge-btts-no'}">⚽ BTTS : ${btts?'OUI':'NON'}</span>
+                </div>
+                <table class="stats-table">
+                    <tr><th>Stat</th><th>Att ${team1}</th><th>Att ${team2}</th><th>Déf ${team1}</th><th>Déf ${team2}</th></tr>
+                    <tr><td>Total</td><td class="val-off">${totalOff1}</td><td class="val-off">${totalOff2}</td><td class="val-def">${totalDef1}</td><td class="val-def">${totalDef2}</td></tr>
+                    <tr><td>Jeu ouvert</td><td>${attTeam1.jeuOuvert??'?'}</td><td>${attTeam2.jeuOuvert??'?'}</td><td>${defTeam1.jeuOuvert??'?'}</td><td>${defTeam2.jeuOuvert??'?'}</td></tr>
+                    <tr><td>CPA</td><td>${attTeam1.cpa??'?'}</td><td>${attTeam2.cpa??'?'}</td><td>${defTeam1.cpa??'?'}</td><td>${defTeam2.cpa??'?'}</td></tr>
+                    <tr><td>Contre-attaque</td><td>${attTeam1.contreAttaque??'?'}</td><td>${attTeam2.contreAttaque??'?'}</td><td>${defTeam1.contreAttaque??'?'}</td><td>${defTeam2.contreAttaque??'?'}</td></tr>
+                    <tr style="background:#1a1a2e;"><td><b>Buts</b></td><td class="val-off"><b>${butsOff1}</b></td><td class="val-off"><b>${butsOff2}</b></td><td class="val-def"><b>${butsDef1}</b></td><td class="val-def"><b>${butsDef2}</b></td></tr>
+                    <tr style="background:#1a1a2e;"><td><b>Conv</b></td><td class="val-off"><b>${convOff1}%</b></td><td class="val-off"><b>${convOff2}%</b></td><td class="val-def"><b>${convDef1}%</b></td><td class="val-def"><b>${convDef2}%</b></td></tr>
+                </table>
+                <div class="calcul-box">
+                    <span class="formula">Score probable ${team1}</span> = (${butsOff1} + ${butsDef2})/2 = ${s1p.toFixed(2)} → <span class="result">${sc1p}</span><br>
+                    <span class="formula">Score probable ${team2}</span> = (${butsOff2} + ${butsDef1})/2 = ${s2p.toFixed(2)} → <span class="result">${sc2p}</span><br>
+                    <span class="formula2">Score potentiel ${team1}</span> = (${butsOff1} - ${butsDef2}) × ${(convOff1/10).toFixed(1)} × ${(convDef2/10).toFixed(1)} = ${s1s.toFixed(2)} → <span class="result">${sc1s}</span><br>
+                    <span class="formula2">Score potentiel ${team2}</span> = (${butsOff2} - ${butsDef1}) × ${(convOff2/10).toFixed(1)} × ${(convDef1/10).toFixed(1)} = ${s2s.toFixed(2)} → <span class="result">${sc2s}</span>
+                </div>
+                <button class="btn btn-whatsapp" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Partager sur WhatsApp</button>
+                <div class="btn-row" style="margin-top:8px;">
+                    <button class="btn btn-valid btn-xs" onclick="validateResult(true)">✅ Validé</button>
+                    <button class="btn btn-invalid btn-xs" onclick="validateResult(false)">❌ Non validé</button>
+                </div>
+            </div>
+        `;
+
+        setTimeout(() => resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+        isProcessing = false; analyzeBtn.disabled = false;
+        analyzeBtn.innerHTML = '<i class="fas fa-brain"></i> LIRE & CONFRONTER';
+        statusMsg.textContent = '✅ Analyse terminée';
+    });
+
+    // ========== WHATSAPP ==========
+    function shareWhatsApp() {
+        if (!currentResult) return;
+        const r = currentResult;
+        const msg = `⚽ *FootPredict*%0A%0A*${r.team1}* ${r.sc1p} - ${r.sc2p} *${r.team2}*%0A🚀 Potentiel : ${r.sc1s} - ${r.sc2s}%0A📊 ${r.overP} | ⚽ BTTS : ${r.btts?'OUI':'NON'}%0A%0AButs off ${r.team1} : ${r.butsOff1} | Conv : ${r.convOff1}%%0AButs off ${r.team2} : ${r.butsOff2} | Conv : ${r.convOff2}%%0A%0APronostic par FootPredict`;
+        window.open(`https://wa.me/?text=${msg}`, '_blank');
+    }
+
+    // ========== VALIDATION ==========
+    function validateResult(valid) {
+        if (!currentResult) return;
+        currentResult.validated = valid;
+        currentResult.id = Date.now();
+        history.unshift(currentResult);
+        if (history.length > 100) history = history.slice(0, 100);
+        localStorage.setItem('fpHistory', JSON.stringify(history));
+        showToast(valid ? '✅ Pronostic validé !' : '❌ Pronostic non validé');
+        currentResult = null;
+    }
+
+    function renderHistory() {
+        if (!historyList) return;
+        if (history.length === 0) {
+            historyList.innerHTML = '<p style="color:#666; text-align:center;">Aucun historique</p>';
+            return;
+        }
+        historyList.innerHTML = history.map((h, i) => `
+            <div class="history-item">
+                <div class="h-header">
+                    <span class="h-date">${new Date(h.date).toLocaleDateString('fr-FR', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+                    <span class="h-score">${h.team1} ${h.sc1p} - ${h.sc2p} ${h.team2}</span>
+                    <span class="h-status ${h.validated === true ? 'status-valid' : h.validated === false ? 'status-invalid' : 'status-pending'}">${h.validated === true ? '✅' : h.validated === false ? '❌' : '⏳'}</span>
+                </div>
+                <div style="font-size:0.7rem; color:#888;">Potentiel : ${h.sc1s} - ${h.sc2s} | ${h.overP}</div>
+                <button class="btn btn-xs btn-invalid" style="margin-top:6px;" onclick="deleteHistory(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    }
+
+    function deleteHistory(i) {
+        history.splice(i, 1);
+        localStorage.setItem('fpHistory', JSON.stringify(history));
+        renderHistory();
+        showToast('🗑️ Entrée supprimée');
+    }
+
+    document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+        if (confirm('Effacer tout l\'historique ?')) {
+            history = [];
+            localStorage.setItem('fpHistory', JSON.stringify(history));
+            renderHistory();
+            showToast('🗑️ Historique effacé');
+        }
+    });
+
+    document.getElementById('exportHistoryBtn').addEventListener('click', () => {
+        if (history.length === 0) { showToast('⚠️ Aucun historique'); return; }
+        let csv = 'Date,Équipe 1,Score 1,Score 2,Équipe 2,Potentiel 1,Potentiel 2,Over/BTTS,Validé\n';
+        history.forEach(h => {
+            csv += `"${new Date(h.date).toLocaleString('fr-FR')}","${h.team1}",${h.sc1p},${h.sc2p},"${h.team2}",${h.sc1s},${h.sc2s},"${h.overP}",${h.validated === true ? 'Oui' : h.validated === false ? 'Non' : 'En attente'}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'footpredict-historique.csv'; a.click();
+        showToast('📥 CSV exporté');
+    });
+
+    // ========== SAUVEGARDE CONFIG ==========
+    document.getElementById('saveConfigBtn').addEventListener('click', () => {
+        const config = { team1: team1Input.value, team2: team2Input.value, colOffTeam1, colDefTeam1 };
+        localStorage.setItem('fpConfig', JSON.stringify(config));
+        showToast('💾 Configuration sauvegardée');
+    });
+
+    document.getElementById('loadConfigBtn').addEventListener('click', () => {
+        const saved = localStorage.getItem('fpConfig');
+        if (saved) {
+            const c = JSON.parse(saved);
+            team1Input.value = c.team1 || 'PSG';
+            team2Input.value = c.team2 || 'Bayern Munich';
+            colOffTeam1 = c.colOffTeam1 || 'gauche';
+            colDefTeam1 = c.colDefTeam1 || 'gauche';
+            updateLabels();
+            document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def'));
+            if (colOffTeam1 === 'gauche') document.getElementById('colOffGauche').classList.add('selected-off');
+            else document.getElementById('colOffDroite').classList.add('selected-off');
+            if (colDefTeam1 === 'gauche') document.getElementById('colDefGauche').classList.add('selected-def');
+            else document.getElementById('colDefDroite').classList.add('selected-def');
+            showToast('📂 Configuration chargée');
+        } else { showToast('⚠️ Aucune sauvegarde'); }
+    });
+
+    document.getElementById('resetConfigBtn').addEventListener('click', () => {
+        team1Input.value = 'PSG'; team2Input.value = 'Bayern Munich';
+        colOffTeam1 = 'gauche'; colDefTeam1 = 'gauche';
+        updateLabels();
+        document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def'));
+        document.getElementById('colOffGauche').classList.add('selected-off');
+        document.getElementById('colDefGauche').classList.add('selected-def');
+        showToast('🔄 Réinitialisé');
+    });
+
+    // ========== INIT ==========
+    renderHistory();
+    const saved = localStorage.getItem('fpConfig');
+    if (saved) {
+        const c = JSON.parse(saved);
+        team1Input.value = c.team1 || 'PSG'; team2Input.value = c.team2 || 'Bayern Munich';
+        colOffTeam1 = c.colOffTeam1 || 'gauche'; colDefTeam1 = c.colDefTeam1 || 'gauche';
+        updateLabels();
+    }
+</script>
+
 </body>
 </html>
