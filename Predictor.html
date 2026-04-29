@@ -104,7 +104,7 @@
         .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
         .btn-xs { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; border: none; font-weight: 600; }
 
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 999; opacity: 0; transition: 0.3s; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 999; opacity: 0; transition: 0.3s; pointer-events: none; }
         .toast.show { opacity: 1; }
     </style>
 </head>
@@ -185,8 +185,8 @@
         <div class="card">
             <h3><i class="fas fa-history"></i> Historique des pronostics</h3>
             <div class="btn-row" style="margin-bottom:16px;">
-                <button class="btn btn-clear" id="clearHistoryBtn"><i class="fas fa-trash"></i> Effacer</button>
-                <button class="btn btn-load" id="exportHistoryBtn"><i class="fas fa-download"></i> Exporter CSV</button>
+                <button class="btn btn-clear btn-xs" id="clearHistoryBtn"><i class="fas fa-trash"></i> Effacer</button>
+                <button class="btn btn-load btn-xs" id="exportHistoryBtn"><i class="fas fa-download"></i> Exporter CSV</button>
             </div>
             <div id="historyList"><p style="color:#666; text-align:center;">Aucun historique</p></div>
         </div>
@@ -196,12 +196,12 @@
     <div id="tab-save" class="tab-content">
         <div class="card">
             <h3><i class="fas fa-save"></i> Sauvegarde / Chargement</h3>
+            <p style="font-size:0.75rem; color:#888; margin-bottom:12px;">Sauvegarde les noms d'équipes et les préférences de colonnes (Gauche/Droite).</p>
             <div class="btn-row">
-                <button class="btn btn-save" id="saveConfigBtn"><i class="fas fa-save"></i> Sauvegarder config</button>
-                <button class="btn btn-load" id="loadConfigBtn"><i class="fas fa-folder-open"></i> Charger config</button>
-                <button class="btn btn-clear" id="resetConfigBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
+                <button class="btn btn-save btn-xs" id="saveConfigBtn"><i class="fas fa-save"></i> Sauvegarder</button>
+                <button class="btn btn-load btn-xs" id="loadConfigBtn"><i class="fas fa-folder-open"></i> Charger</button>
+                <button class="btn btn-clear btn-xs" id="resetConfigBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
             </div>
-            <p style="color:#666; font-size:0.75rem; margin-top:12px;">Sauvegarde les noms d'équipes et les préférences de colonnes.</p>
         </div>
     </div>
 </div>
@@ -251,8 +251,7 @@
     // ========== TOAST ==========
     function showToast(msg) {
         const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
+        t.textContent = msg; t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 2500);
     }
 
@@ -266,26 +265,18 @@
     updateLabels();
 
     // ========== COLONNES ==========
-    document.getElementById('colOffGauche').addEventListener('click', function() {
-        colOffTeam1 = 'gauche';
-        this.classList.add('selected-off'); this.classList.remove('selected-def');
-        document.getElementById('colOffDroite').classList.remove('selected-off', 'selected-def');
-    });
-    document.getElementById('colOffDroite').addEventListener('click', function() {
-        colOffTeam1 = 'droite';
-        this.classList.add('selected-off'); this.classList.remove('selected-def');
-        document.getElementById('colOffGauche').classList.remove('selected-off', 'selected-def');
-    });
-    document.getElementById('colDefGauche').addEventListener('click', function() {
-        colDefTeam1 = 'gauche';
-        this.classList.add('selected-def'); this.classList.remove('selected-off');
-        document.getElementById('colDefDroite').classList.remove('selected-off', 'selected-def');
-    });
-    document.getElementById('colDefDroite').addEventListener('click', function() {
-        colDefTeam1 = 'droite';
-        this.classList.add('selected-def'); this.classList.remove('selected-off');
-        document.getElementById('colDefGauche').classList.remove('selected-off', 'selected-def');
-    });
+    function setColumnButtons() {
+        document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def'));
+        if (colOffTeam1 === 'gauche') document.getElementById('colOffGauche').classList.add('selected-off');
+        else document.getElementById('colOffDroite').classList.add('selected-off');
+        if (colDefTeam1 === 'gauche') document.getElementById('colDefGauche').classList.add('selected-def');
+        else document.getElementById('colDefDroite').classList.add('selected-def');
+    }
+
+    document.getElementById('colOffGauche').addEventListener('click', () => { colOffTeam1 = 'gauche'; setColumnButtons(); });
+    document.getElementById('colOffDroite').addEventListener('click', () => { colOffTeam1 = 'droite'; setColumnButtons(); });
+    document.getElementById('colDefGauche').addEventListener('click', () => { colDefTeam1 = 'gauche'; setColumnButtons(); });
+    document.getElementById('colDefDroite').addEventListener('click', () => { colDefTeam1 = 'droite'; setColumnButtons(); });
 
     // ========== UPLOAD ==========
     function setupUpload(box, input, removeBtn, type) {
@@ -442,14 +433,14 @@
         let sc1p = Math.max(0, Math.min(7, Math.round(s1p)));
         let sc2p = Math.max(0, Math.min(7, Math.round(s2p)));
 
-        // Score potentiel : (buts off - buts déf adverses) × conv off × conv déf
+        // Score potentiel
         const s1s = (butsOff1 - butsDef2) * (convOff1 / 10) * (convDef2 / 10);
         const s2s = (butsOff2 - butsDef1) * (convOff2 / 10) * (convDef1 / 10);
         let sc1s = Math.max(0, Math.round(s1s));
         let sc2s = Math.max(0, Math.round(s2s));
 
         const totalP = sc1p + sc2p;
-        const overP = totalP >= 3 ? 'Over 2.5 🔥' : totalP === 2 ? 'Limite ⚠️' : 'Under 2.5 📉';
+        const overP = totalP >= 3 ? 'Over 2.5' : totalP === 2 ? 'Limite 2.5' : 'Under 2.5';
         const btts = sc1p > 0 && sc2p > 0;
 
         const tirsOff1 = attTeam1.tirs || +(totalOff1 * 0.6).toFixed(1);
@@ -457,18 +448,19 @@
         const tirsDef1 = defTeam1.tirs || +(totalDef1 * 0.6).toFixed(1);
         const tirsDef2 = defTeam2.tirs || +(totalDef2 * 0.6).toFixed(1);
 
-        // Stocker pour WhatsApp et historique
         currentResult = {
             team1, team2, sc1p, sc2p, sc1s, sc2s, overP, btts,
             butsOff1, butsOff2, butsDef1, butsDef2,
             convOff1, convOff2, convDef1, convDef2,
             s1p, s2p, s1s, s2s, totalOff1, totalOff2, totalDef1, totalDef2,
             tirsOff1, tirsOff2, tirsDef1, tirsDef2,
-            attTeam1, attTeam2, defTeam1, defTeam2, date: new Date().toISOString()
+            attTeam1, attTeam2, defTeam1, defTeam2,
+            date: new Date().toISOString(),
+            validated: null
         };
 
         resultsDiv.innerHTML = `
-            <div class="result-card">
+            <div class="result-card" id="resultCard">
                 <div style="text-align:center; font-size:0.8rem; color:#777;">🤖 Confrontation Attaque vs Défense</div>
                 <div class="score-display">
                     <div class="score-box"><div class="team-label">${team1}</div><div class="score-num">${sc1p}</div></div>
@@ -497,8 +489,8 @@
                 </div>
                 <button class="btn btn-whatsapp" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Partager sur WhatsApp</button>
                 <div class="btn-row" style="margin-top:8px;">
-                    <button class="btn btn-valid btn-xs" onclick="validateResult(true)">✅ Validé</button>
-                    <button class="btn btn-invalid btn-xs" onclick="validateResult(false)">❌ Non validé</button>
+                    <button class="btn btn-valid btn-xs" onclick="validateResult(true)"><i class="fas fa-check"></i> Pronostic validé</button>
+                    <button class="btn btn-invalid btn-xs" onclick="validateResult(false)"><i class="fas fa-times"></i> Pronostic perdu</button>
                 </div>
             </div>
         `;
@@ -513,7 +505,18 @@
     function shareWhatsApp() {
         if (!currentResult) return;
         const r = currentResult;
-        const msg = `⚽ *FootPredict*%0A%0A*${r.team1}* ${r.sc1p} - ${r.sc2p} *${r.team2}*%0A🚀 Potentiel : ${r.sc1s} - ${r.sc2s}%0A📊 ${r.overP} | ⚽ BTTS : ${r.btts?'OUI':'NON'}%0A%0AButs off ${r.team1} : ${r.butsOff1} | Conv : ${r.convOff1}%%0AButs off ${r.team2} : ${r.butsOff2} | Conv : ${r.convOff2}%%0A%0APronostic par FootPredict`;
+        const msg = `🏟️ *FootPredict - Pronostic*%0A%0A` +
+            `⚽ *${r.team1}* ${r.sc1p} - ${r.sc2p} *${r.team2}*%0A` +
+            `🚀 Potentiel offensif : ${r.sc1s} - ${r.sc2s}%0A%0A` +
+            `📊 *Analyse :*%0A` +
+            `• ${r.overP}%0A` +
+            `• Les 2 équipes marquent : ${r.btts ? '✅ OUI' : '❌ NON'}%0A%0A` +
+            `📈 *Stats clés :*%0A` +
+            `• ${r.team1} : ${r.butsOff1} buts marqués (${r.convOff1}% conversion)%0A` +
+            `• ${r.team2} : ${r.butsOff2} buts marqués (${r.convOff2}% conversion)%0A` +
+            `• ${r.team1} concède : ${r.butsDef1} buts%0A` +
+            `• ${r.team2} concède : ${r.butsDef2} buts%0A%0A` +
+            `🤖 _Pronostic généré par FootPredict OCR_`;
         window.open(`https://wa.me/?text=${msg}`, '_blank');
     }
 
@@ -525,14 +528,20 @@
         history.unshift(currentResult);
         if (history.length > 100) history = history.slice(0, 100);
         localStorage.setItem('fpHistory', JSON.stringify(history));
-        showToast(valid ? '✅ Pronostic validé !' : '❌ Pronostic non validé');
+        showToast(valid ? '✅ Pronostic validé et sauvegardé !' : '❌ Pronostic perdu et sauvegardé');
         currentResult = null;
+        // Mettre à jour les boutons
+        const card = document.getElementById('resultCard');
+        if (card) {
+            const btns = card.querySelector('.btn-row');
+            if (btns) btns.innerHTML = '<span style="color:#888; font-size:0.75rem;">' + (valid ? '✅ Validé' : '❌ Non validé') + ' • Sauvegardé dans l\'historique</span>';
+        }
     }
 
     function renderHistory() {
         if (!historyList) return;
         if (history.length === 0) {
-            historyList.innerHTML = '<p style="color:#666; text-align:center;">Aucun historique</p>';
+            historyList.innerHTML = '<p style="color:#666; text-align:center; padding:20px;">Aucun historique</p>';
             return;
         }
         historyList.innerHTML = history.map((h, i) => `
@@ -540,12 +549,26 @@
                 <div class="h-header">
                     <span class="h-date">${new Date(h.date).toLocaleDateString('fr-FR', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
                     <span class="h-score">${h.team1} ${h.sc1p} - ${h.sc2p} ${h.team2}</span>
-                    <span class="h-status ${h.validated === true ? 'status-valid' : h.validated === false ? 'status-invalid' : 'status-pending'}">${h.validated === true ? '✅' : h.validated === false ? '❌' : '⏳'}</span>
+                    <span class="h-status ${h.validated === true ? 'status-valid' : h.validated === false ? 'status-invalid' : 'status-pending'}">${h.validated === true ? '✅ Validé' : h.validated === false ? '❌ Perdu' : '⏳ En attente'}</span>
                 </div>
-                <div style="font-size:0.7rem; color:#888;">Potentiel : ${h.sc1s} - ${h.sc2s} | ${h.overP}</div>
-                <button class="btn btn-xs btn-invalid" style="margin-top:6px;" onclick="deleteHistory(${i})"><i class="fas fa-trash"></i></button>
+                <div style="font-size:0.7rem; color:#888;">Potentiel : ${h.sc1s} - ${h.sc2s} | ${h.overP} | BTTS: ${h.btts?'OUI':'NON'}</div>
+                <div style="font-size:0.65rem; color:#666;">Buts: ${h.team1} ${h.butsOff1}/${h.convOff1}% | ${h.team2} ${h.butsOff2}/${h.convOff2}%</div>
+                <div class="btn-row">
+                    ${h.validated === null ? `
+                        <button class="btn-xs btn-valid" onclick="validateHistory(${i}, true)">✅ Valider</button>
+                        <button class="btn-xs btn-invalid" onclick="validateHistory(${i}, false)">❌ Perdu</button>
+                    ` : ''}
+                    <button class="btn-xs btn-clear" onclick="deleteHistory(${i})"><i class="fas fa-trash"></i> Supprimer</button>
+                </div>
             </div>
         `).join('');
+    }
+
+    function validateHistory(i, valid) {
+        history[i].validated = valid;
+        localStorage.setItem('fpHistory', JSON.stringify(history));
+        renderHistory();
+        showToast(valid ? '✅ Pronostic validé' : '❌ Pronostic perdu');
     }
 
     function deleteHistory(i) {
@@ -566,59 +589,61 @@
 
     document.getElementById('exportHistoryBtn').addEventListener('click', () => {
         if (history.length === 0) { showToast('⚠️ Aucun historique'); return; }
-        let csv = 'Date,Équipe 1,Score 1,Score 2,Équipe 2,Potentiel 1,Potentiel 2,Over/BTTS,Validé\n';
+        let csv = 'Date,Équipe 1,Score 1,Score 2,Équipe 2,Potentiel 1,Potentiel 2,Over,BTTS,Validé\n';
         history.forEach(h => {
-            csv += `"${new Date(h.date).toLocaleString('fr-FR')}","${h.team1}",${h.sc1p},${h.sc2p},"${h.team2}",${h.sc1s},${h.sc2s},"${h.overP}",${h.validated === true ? 'Oui' : h.validated === false ? 'Non' : 'En attente'}\n`;
+            csv += `"${new Date(h.date).toLocaleString('fr-FR')}","${h.team1}",${h.sc1p},${h.sc2p},"${h.team2}",${h.sc1s},${h.sc2s},"${h.overP}","${h.btts?'OUI':'NON'}",${h.validated === true ? 'Oui' : h.validated === false ? 'Non' : 'En attente'}\n`;
         });
-        const blob = new Blob([csv], { type: 'text/csv' });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'footpredict-historique.csv'; a.click();
         showToast('📥 CSV exporté');
     });
 
     // ========== SAUVEGARDE CONFIG ==========
-    document.getElementById('saveConfigBtn').addEventListener('click', () => {
-        const config = { team1: team1Input.value, team2: team2Input.value, colOffTeam1, colDefTeam1 };
+    function saveConfig() {
+        const config = {
+            team1: team1Input.value || 'PSG',
+            team2: team2Input.value || 'Bayern Munich',
+            colOffTeam1,
+            colDefTeam1
+        };
         localStorage.setItem('fpConfig', JSON.stringify(config));
         showToast('💾 Configuration sauvegardée');
-    });
+    }
 
-    document.getElementById('loadConfigBtn').addEventListener('click', () => {
+    function loadConfig() {
         const saved = localStorage.getItem('fpConfig');
         if (saved) {
-            const c = JSON.parse(saved);
-            team1Input.value = c.team1 || 'PSG';
-            team2Input.value = c.team2 || 'Bayern Munich';
-            colOffTeam1 = c.colOffTeam1 || 'gauche';
-            colDefTeam1 = c.colDefTeam1 || 'gauche';
-            updateLabels();
-            document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def'));
-            if (colOffTeam1 === 'gauche') document.getElementById('colOffGauche').classList.add('selected-off');
-            else document.getElementById('colOffDroite').classList.add('selected-off');
-            if (colDefTeam1 === 'gauche') document.getElementById('colDefGauche').classList.add('selected-def');
-            else document.getElementById('colDefDroite').classList.add('selected-def');
-            showToast('📂 Configuration chargée');
-        } else { showToast('⚠️ Aucune sauvegarde'); }
-    });
+            try {
+                const c = JSON.parse(saved);
+                if (c.team1) team1Input.value = c.team1;
+                if (c.team2) team2Input.value = c.team2;
+                if (c.colOffTeam1) colOffTeam1 = c.colOffTeam1;
+                if (c.colDefTeam1) colDefTeam1 = c.colDefTeam1;
+                updateLabels();
+                setColumnButtons();
+                showToast('📂 Configuration chargée');
+            } catch (e) {
+                showToast('⚠️ Erreur de chargement');
+            }
+        } else {
+            showToast('⚠️ Aucune sauvegarde trouvée');
+        }
+    }
 
+    document.getElementById('saveConfigBtn').addEventListener('click', saveConfig);
+    document.getElementById('loadConfigBtn').addEventListener('click', loadConfig);
     document.getElementById('resetConfigBtn').addEventListener('click', () => {
         team1Input.value = 'PSG'; team2Input.value = 'Bayern Munich';
         colOffTeam1 = 'gauche'; colDefTeam1 = 'gauche';
         updateLabels();
-        document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def'));
-        document.getElementById('colOffGauche').classList.add('selected-off');
-        document.getElementById('colDefGauche').classList.add('selected-def');
+        setColumnButtons();
+        localStorage.removeItem('fpConfig');
         showToast('🔄 Réinitialisé');
     });
 
     // ========== INIT ==========
     renderHistory();
-    const saved = localStorage.getItem('fpConfig');
-    if (saved) {
-        const c = JSON.parse(saved);
-        team1Input.value = c.team1 || 'PSG'; team2Input.value = c.team2 || 'Bayern Munich';
-        colOffTeam1 = c.colOffTeam1 || 'gauche'; colDefTeam1 = c.colDefTeam1 || 'gauche';
-        updateLabels();
-    }
+    loadConfig(); // Chargement automatique au démarrage
 </script>
 
 </body>
