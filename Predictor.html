@@ -3,51 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ FootPredict - Final</title>
+    <title>⚽ FootPredict</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: #0a0a12; color: #d0d0d8; min-height: 100vh; padding: 20px; }
-        .container { max-width: 850px; margin: 0 auto; }
-
+        body { background: #0a0a12; color: #fff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 950px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 24px; }
         .header h1 { font-size: 1.5rem; background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
         .header p { color: #777; font-size: 0.8rem; }
-
         .card { background: #14141f; border: 1px solid #222232; border-radius: 20px; padding: 20px; margin-bottom: 16px; }
-        .card h3 { font-size: 0.9rem; color: #999; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .icon-off { color: #f59e0b; } .icon-def { color: #3b82f6; } .icon-team { color: #a855f7; }
-
+        .card h3 { font-size: 0.9rem; color: #ccc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .teams-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
         .teams-row input { padding: 13px; background: #0a0a12; border: 2px solid #222232; border-radius: 12px; color: #fff; font-size: 1rem; font-weight: 600; text-align: center; }
         .teams-row input:focus { outline: none; border-color: #a855f7; }
         .teams-row .vs { font-weight: 800; color: #a855f7; font-size: 1.1rem; }
-
         .upload-box { background: #0a0a12; border: 2px dashed #222232; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
         .upload-box:hover { border-color: #555; }
         .upload-box.filled { border-color: #22c55e; border-style: solid; }
-        .upload-box i { font-size: 2rem; margin-bottom: 6px; }
-        .upload-box .upload-title { font-size: 0.8rem; font-weight: 600; color: #ccc; }
-        .upload-box .upload-sub { font-size: 0.7rem; color: #666; }
         .upload-box img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000; border-radius: 14px; }
         .upload-box .remove-btn { position: absolute; top: 8px; right: 8px; background: #ef4444; color: #fff; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; z-index: 3; display: none; align-items: center; justify-content: center; font-size: 0.8rem; }
         .upload-box.filled .remove-btn { display: flex; }
         .upload-box input[type="file"] { display: none; }
-
         .column-selector { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
         .column-selector span { font-size: 0.75rem; color: #888; }
         .column-btn { flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #222232; background: #0a0a12; color: #aaa; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-align: center; }
         .column-btn.selected-off { border-color: #f59e0b; background: rgba(245,158,11,0.1); color: #f59e0b; }
         .column-btn.selected-def { border-color: #3b82f6; background: rgba(59,130,246,0.1); color: #3b82f6; }
-
         .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
         .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid #222232; background: #0a0a12; color: #aaa; font-weight: 600; font-size: 0.8rem; cursor: pointer; text-align: center; }
         .tab-btn.active { background: #f59e0b; color: #000; border-color: #f59e0b; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        @media (max-width: 500px) { .teams-row { grid-template-columns: 1fr; } .teams-row .vs { text-align: center; } }
-
-        .btn { padding: 12px 16px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; }        .btn-analyze { width: 100%; padding: 15px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; font-size: 1.05rem; font-weight: 700; margin-top: 8px; }
+        .btn { padding: 12px 16px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; }
+        .btn-analyze { width: 100%; padding: 15px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; font-size: 1.05rem; font-weight: 700; margin-top: 8px; }
         .btn-analyze:disabled { opacity: 0.35; cursor: not-allowed; }
         .btn-whatsapp { background: #25D366; color: #fff; width: 100%; margin-top: 12px; }
         .btn-save { background: #3b82f6; color: #fff; }
@@ -55,86 +43,69 @@
         .btn-valid { background: #22c55e; color: #fff; }
         .btn-invalid { background: #ef4444; color: #fff; }
         .btn-clear { background: #374151; color: #fff; }
-
         #statusMsg { text-align: center; font-size: 0.75rem; color: #555; margin-top: 8px; }
-
         .ocr-progress { background: #0a0a12; border-radius: 12px; padding: 16px; text-align: center; margin-top: 14px; display: none; }
         .spinner { width: 32px; height: 32px; border: 3px solid #222; border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .debug-box { background: #0a0a12; border: 1px solid #333; border-radius: 12px; padding: 12px; margin-top: 10px; font-size: 0.65rem; color: #aaa; max-height: 200px; overflow-y: auto; white-space: pre-wrap; font-family: 'Courier New', monospace; display: none; }
-
-        .result-card { background: #14141f; border: 2px solid #f59e0b; border-radius: 20px; padding: 24px; margin-top: 20px; animation: fadeUp 0.5s ease; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-
-        .score-display { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 18px 0; }
-        .score-box { background: #0a0a12; border: 2px solid #222232; border-radius: 18px; padding: 18px 26px; text-align: center; min-width: 90px; }
-        .score-box .team-label { font-size: 0.7rem; color: #777; }
-        .score-box .score-num { font-size: 2.6rem; font-weight: 800; color: #fff; }
-        .score-vs { font-size: 1.2rem; font-weight: 800; color: #f59e0b; }
-
-        .badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 14px 0; }
-        .badge { padding: 7px 15px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
-        .badge-over { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
-        .badge-under { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
-        .badge-btts-yes { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
-        .badge-btts-no { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-
-        .stats-table, .confrontation-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.75rem; }
-        .stats-table th, .confrontation-table th { background: #1a1a2e; padding: 8px; color: #aaa; font-size: 0.7rem; }
-        .stats-table td, .confrontation-table td { padding: 8px; text-align: center; border-bottom: 1px solid #1a1a2e; }
-        .stats-table td[data-missing="true"] { color: #555; font-style: italic; }
-        .val-off, .winner-bar { color: #f59e0b; font-weight: 600; }
-        .val-def, .winner-mad { color: #3b82f6; font-weight: 600; }
-
-        .calcul-box { background: #0a0a12; border: 1px solid #333; border-radius: 14px; padding: 16px; margin-top: 16px; font-size: 0.75rem; color: #bbb; line-height: 1.8; }
-        .calcul-box .formula { color: #f59e0b; font-weight: 600; }
-        .calcul-box .formula2 { color: #a855f7; font-weight: 600; }
-        .calcul-box .result { color: #22c55e; font-weight: 700; }
-
+        .stats-table, .history-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.75rem; }
+        .stats-table th, .history-table th { background: #1a1a2e; padding: 8px 6px; color: #aaa; }
+        .stats-table td, .history-table td { padding: 8px 6px; text-align: center; border-bottom: 1px solid #1a1a2e; color: #fff; }
+        .formula-header { background: #1a1a2e; border-radius: 14px; padding: 16px 20px; margin: 16px 0; text-align: center; font-size: 0.9rem; color: #fff; border: 1px solid #333; }
+        .formula-header .big { font-size: 1.1rem; color: #fff; font-weight: 700; }
+        .score-display { display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0; }
+        .score-box { background: #0a0a12; border: 3px solid #f59e0b; border-radius: 18px; padding: 20px 28px; text-align: center; min-width: 100px; }
+        .score-box.t2 { border-color: #3b82f6; }
+        .score-box .team-label { font-size: 0.75rem; color: #fff; margin-bottom: 6px; font-weight: 700; }
+        .score-box .score-num { font-size: 2.5rem; font-weight: 800; color: #fff; line-height: 1; }
+        .score-vs { font-size: 1.3rem; font-weight: 800; color: #fff; }
+        .calcul-inline { font-size: 0.78rem; color: #fff; line-height: 2; padding: 4px 0; text-align: center; }
+        .calcul-inline .r { color: #fff; font-weight: 700; }
+        .section-title { text-align: center; font-weight: 700; font-size: 1.1rem; color: #fff; margin-top: 4px; }
+        .team-t1 { font-weight: 700; color: #fff; border: 2px solid #f59e0b; border-radius: 8px; padding: 2px 8px; display: inline-block; }
+        .team-t2 { font-weight: 700; color: #fff; border: 2px solid #3b82f6; border-radius: 8px; padding: 2px 8px; display: inline-block; }
+        .confrontation-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .confrontation-table th { padding: 10px 8px; text-align: center; font-weight: 700; color: #fff; font-size: 0.9rem; }
+        .confrontation-table td { padding: 10px 8px; text-align: center; color: #fff; border-bottom: 1px solid #1a1a2e; }
+        .confrontation-table .axis-col { text-align: left; font-weight: 600; color: #ccc; width: 60px; }
+        .confrontation-table .winner-col { width: 40px; font-size: 1rem; }
+        .domination-global { text-align: center; font-size: 0.9rem; color: #fff; font-weight: 700; margin: 14px 0; }
+        .domination-detail { font-size: 0.7rem; color: #aaa; font-weight: 400; margin-top: 6px; line-height: 1.6; }
+        .prob-circles { display: flex; justify-content: center; gap: 30px; margin: 16px 0; flex-wrap: wrap; }
+        .prob-circle-item { text-align: center; }
+        .prob-circle-item .label { font-size: 0.75rem; color: #fff; margin-bottom: 6px; font-weight: 600; }
+        .prob-circle-item .pct { font-size: 1rem; font-weight: 700; color: #fff; margin-top: 6px; }
+        .prob-circle-item canvas { display: block; margin: 0 auto; }
+        .chart-box { background: #0a0a12; border: 1px solid #222232; border-radius: 16px; padding: 20px; margin-top: 16px; text-align: center; }
+        .chart-box h4 { font-size: 0.9rem; color: #fff; margin-bottom: 12px; font-weight: 700; }
+        .chart-box canvas { width: 100%; max-width: 520px; height: auto; }
+        .radar-legend { display: flex; justify-content: center; gap: 24px; margin-top: 8px; font-size: 0.8rem; font-weight: 600; }
+        .radar-legend span { display: flex; align-items: center; gap: 8px; color: #fff; }
+        .radar-legend .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+        .gauge-container { display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
+        .gauge-label { font-size: 0.85rem; color: #fff; margin-top: 8px; font-weight: 600; }
         .history-item { background: #0a0a12; border: 1px solid #222232; border-radius: 14px; padding: 16px; margin-bottom: 10px; }
         .history-item .h-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
         .history-item .h-date { font-size: 0.7rem; color: #666; }
-        .history-item .h-score { font-weight: 700; font-size: 1rem; }
-        .history-item .h-status { font-size: 0.7rem; padding: 4px 10px; border-radius: 10px; }        .status-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .history-item .h-score { font-weight: 700; font-size: 1rem; color: #fff; }
+        .history-item .h-status { font-size: 0.7rem; padding: 4px 10px; border-radius: 10px; }
+        .status-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
         .status-valid { background: rgba(34,197,94,0.15); color: #22c55e; }
         .status-invalid { background: rgba(239,68,68,0.15); color: #ef4444; }
-
         .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
         .btn-xs { padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; border: none; font-weight: 600; }
-
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 999; opacity: 0; transition: 0.3s; pointer-events: none; }
-        .toast.show { opacity: 1; }
-
         .success-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
         .success-stat { background: #0a0a12; border: 1px solid #222232; border-radius: 12px; padding: 12px; text-align: center; }
         .success-stat .s-value { font-size: 1.5rem; font-weight: 700; }
         .success-stat .s-label { font-size: 0.65rem; color: #888; margin-top: 2px; }
         .s-green { color: #22c55e; } .s-red { color: #ef4444; } .s-white { color: #fff; } .s-gold { color: #f59e0b; }
-
-        .chart-box { background: #0a0a12; border: 1px solid #222232; border-radius: 16px; padding: 16px; margin-top: 16px; text-align: center; }
-        .chart-box h4 { font-size: 0.75rem; color: #888; margin-bottom: 8px; }
-        .chart-box canvas { width: 100%; max-width: 380px; height: auto; }
-        .gauge-container { display: flex; flex-direction: column; align-items: center; }
-        .gauge-label { font-size: 0.7rem; color: #aaa; margin-top: 8px; }
-        .prob-bars { margin-top: 16px; }
-        .prob-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .prob-bar-label { width: 80px; font-size: 0.72rem; color: #aaa; text-align: right; font-weight: 600; }
-        .prob-bar-track { flex: 1; height: 22px; background: #1a1a2e; border-radius: 11px; overflow: hidden; }
-        .prob-bar-fill { height: 100%; border-radius: 11px; transition: width 0.8s ease; }
-        .prob-bar-pct { width: 42px; font-size: 0.75rem; font-weight: 700; color: #fff; }
-        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
-        @media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 999; opacity: 0; transition: 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="header">
-        <h1>⚽ FootPredict</h1>
-        <p>OCR avec prétraitement • Extraction fidèle</p>
-    </div>
-
+    <div class="header"><h1>⚽ FootPredict</h1><p>OCR • Extraction fidèle</p></div>
     <div class="tabs">
         <button class="tab-btn active" data-tab="tab-analyse">📊 Analyse</button>
         <button class="tab-btn" data-tab="tab-history">📜 Historique</button>
@@ -142,466 +113,433 @@
     </div>
 
     <div id="tab-analyse" class="tab-content active">
-        <div class="card">
-            <h3><i class="fas fa-users icon-team"></i> Match</h3>
-            <div class="teams-row">
-                <input type="text" id="team1" placeholder="Équipe 1" value="PSG">                <span class="vs">VS</span>
-                <input type="text" id="team2" placeholder="Équipe 2" value="Bayern Munich">
-            </div>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-forward icon-off"></i> Image 1 : Stats OFFENSIVES</h3>
-            <div class="upload-box" id="uploadOff">
-                <i class="fas fa-chart-line" style="color:#f59e0b;"></i>
-                <span class="upload-title">Stats OFFENSIVES</span>
-                <span class="upload-sub">Total, Jeu ouvert, Coup de pied arrêté, Contre-attaque, Pénalty, But contre son camp, Tirs, Buts, Taux de conversion</span>
-                <input type="file" id="inputOff" accept="image/*">
-                <button class="remove-btn" id="removeOff">✕</button>
-            </div>
-            <div class="column-selector">
-                <span><strong id="colOffLabel">PSG</strong> est en :</span>
-                <button class="column-btn selected-off" id="colOffGauche">⬅ Gauche</button>
-                <button class="column-btn" id="colOffDroite">Droite ➡</button>
-            </div>
-            <div class="debug-box" id="debugOff"></div>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-shield-alt icon-def"></i> Image 2 : Stats DÉFENSIVES concédées</h3>
-            <div class="upload-box" id="uploadDef">
-                <i class="fas fa-chart-bar" style="color:#3b82f6;"></i>
-                <span class="upload-title">Stats DÉFENSIVES</span>
-                <span class="upload-sub">Total, Jeu ouvert, Coup de pied arrêté, Contre-attaque, Pénalty, But contre son camp, Tirs, Buts, Taux de conversion</span>
-                <input type="file" id="inputDef" accept="image/*">
-                <button class="remove-btn" id="removeDef">✕</button>
-            </div>
-            <div class="column-selector">
-                <span><strong id="colDefLabel">PSG</strong> est en :</span>
-                <button class="column-btn selected-def" id="colDefGauche">⬅ Gauche</button>
-                <button class="column-btn" id="colDefDroite">Droite ➡</button>
-            </div>
-            <div class="debug-box" id="debugDef"></div>
-        </div>
-
-        <div class="ocr-progress" id="ocrProgress">
-            <div class="spinner"></div>
-            <div class="msg" id="ocrProgressMsg">Traitement de l'image...</div>
-        </div>
-
-        <button class="btn btn-analyze" id="analyzeBtn" disabled>
-            <i class="fas fa-brain"></i> LIRE & CONFRONTER
-        </button>
+        <div class="card"><h3>Match</h3><div class="teams-row"><input type="text" id="team1" placeholder="Équipe 1" value="Porto"><span class="vs">VS</span><input type="text" id="team2" placeholder="Équipe 2" value="Alverca"></div></div>
+        <div class="card"><h3>📊 Image 1 : Stats OFFENSIVES</h3><div class="upload-box" id="uploadOff"><span class="upload-title">Stats OFFENSIVES</span><span class="upload-sub">Clique ou dépose l'image ici</span><input type="file" id="inputOff" accept="image/*"><button class="remove-btn" id="removeOff">✕</button></div><div class="column-selector"><span><strong id="colOffLabel">Porto</strong> est en :</span><button class="column-btn selected-off" id="colOffGauche">⬅ Gauche</button><button class="column-btn" id="colOffDroite">Droite ➡</button></div><div class="debug-box" id="debugOff"></div></div>
+        <div class="card"><h3>🛡️ Image 2 : Stats DÉFENSIVES concédées</h3><div class="upload-box" id="uploadDef"><span class="upload-title">Stats DÉFENSIVES</span><span class="upload-sub">Clique ou dépose l'image ici</span><input type="file" id="inputDef" accept="image/*"><button class="remove-btn" id="removeDef">✕</button></div><div class="column-selector"><span><strong id="colDefLabel">Porto</strong> est en :</span><button class="column-btn selected-def" id="colDefGauche">⬅ Gauche</button><button class="column-btn" id="colDefDroite">Droite ➡</button></div><div class="debug-box" id="debugDef"></div></div>
+        <div class="ocr-progress" id="ocrProgress"><div class="spinner"></div><div class="msg" id="ocrProgressMsg">Traitement de l'image...</div></div>
+        <button class="btn btn-analyze" id="analyzeBtn" disabled>🔍 LIRE & CONFRONTER</button>
         <p id="statusMsg">Uploade les 2 images</p>
         <div id="results"></div>
     </div>
+
     <div id="tab-history" class="tab-content">
-        <div class="card"><h3><i class="fas fa-chart-pie"></i> Taux de réussite</h3><div class="success-stats" id="successStats"><div class="success-stat"><div class="s-value s-white">0</div><div class="s-label">Total</div></div><div class="success-stat"><div class="s-value s-green">0</div><div class="s-label">✅ Réussis</div></div><div class="success-stat"><div class="s-value s-red">0</div><div class="s-label">❌ Perdus</div></div><div class="success-stat"><div class="s-value s-gold">0%</div><div class="s-label">📈 Réussite</div></div></div></div>
-        <div class="card"><h3><i class="fas fa-history"></i> Historique des pronostics</h3><div class="btn-row" style="margin-bottom:16px;"><button class="btn btn-clear btn-xs" id="clearHistoryBtn"><i class="fas fa-trash"></i> Effacer tout</button><button class="btn btn-load btn-xs" id="exportHistoryBtn"><i class="fas fa-download"></i> Exporter CSV</button></div><div id="historyList"><p style="color:#666; text-align:center;">Aucun historique</p></div></div>
+        <div class="card"><h3>Taux de réussite</h3><div class="success-stats" id="successStats"><div class="success-stat"><div class="s-value s-white">0</div><div class="s-label">Total</div></div><div class="success-stat"><div class="s-value s-green">0</div><div class="s-label">✅ Réussis</div></div><div class="success-stat"><div class="s-value s-red">0</div><div class="s-label">❌ Perdus</div></div><div class="success-stat"><div class="s-value s-gold">0%</div><div class="s-label">📈 Réussite</div></div></div></div>
+        <div class="card"><h3>Historique des pronostics</h3><div class="btn-row" style="margin-bottom:16px;"><button class="btn btn-clear btn-xs" id="clearHistoryBtn">🗑️ Effacer tout</button><button class="btn btn-load btn-xs" id="exportHistoryBtn">📥 Exporter CSV</button></div><div id="historyList"><p style="color:#666;text-align:center;">Aucun historique</p></div></div>
     </div>
 
     <div id="tab-save" class="tab-content">
-        <div class="card"><h3><i class="fas fa-save"></i> Sauvegarde / Chargement</h3><p style="font-size:0.75rem; color:#888; margin-bottom:12px;">Sauvegarde les noms, colonnes et le dernier résultat.</p><div class="btn-row"><button class="btn btn-save btn-xs" id="saveConfigBtn"><i class="fas fa-save"></i> Sauvegarder</button><button class="btn btn-load btn-xs" id="loadConfigBtn"><i class="fas fa-folder-open"></i> Charger</button><button class="btn btn-clear btn-xs" id="resetConfigBtn"><i class="fas fa-undo"></i> Réinitialiser</button></div></div>
+        <div class="card"><h3>Sauvegarde / Chargement</h3><p style="font-size:0.75rem;color:#888;margin-bottom:12px;">Sauvegarde la configuration et le dernier résultat.</p>
+        <div class="btn-row"><button class="btn btn-save btn-xs" id="saveConfigBtn">💾 Sauvegarder</button><button class="btn btn-load btn-xs" id="loadConfigBtn">📂 Charger</button><button class="btn btn-clear btn-xs" id="resetConfigBtn">🔄 Réinitialiser</button></div></div>
     </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
 <script>
-    let imageOff = null, imageDef = null;
-    let colOffTeam1 = 'gauche', colDefTeam1 = 'gauche';
-    let isProcessing = false;
-    let currentResult = null;
-    let history = JSON.parse(localStorage.getItem('fpHistory') || '[]');
-    let savedResult = JSON.parse(localStorage.getItem('fpSavedResult') || 'null');
+    let imageOff = null, imageDef = null, colOffTeam1 = 'gauche', colDefTeam1 = 'gauche', isProcessing = false;
+    let currentResult = null, history = JSON.parse(localStorage.getItem('fpHistory') || '[]');
 
-    const uploadOff = document.getElementById('uploadOff');
-    const uploadDef = document.getElementById('uploadDef');
-    const inputOff = document.getElementById('inputOff');
-    const inputDef = document.getElementById('inputDef');
-    const removeOff = document.getElementById('removeOff');
-    const removeDef = document.getElementById('removeDef');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const statusMsg = document.getElementById('statusMsg');
-    const resultsDiv = document.getElementById('results');
-    const ocrProgress = document.getElementById('ocrProgress');
-    const ocrProgressMsg = document.getElementById('ocrProgressMsg');
-    const debugOff = document.getElementById('debugOff');
-    const debugDef = document.getElementById('debugDef');
-    const team1Input = document.getElementById('team1');
-    const team2Input = document.getElementById('team2');
-    const historyList = document.getElementById('historyList');
+    const D = (id) => document.getElementById(id);
+    const uploadOff = D('uploadOff'), uploadDef = D('uploadDef'), inputOff = D('inputOff'), inputDef = D('inputDef');
+    const removeOff = D('removeOff'), removeDef = D('removeDef'), analyzeBtn = D('analyzeBtn'), statusMsg = D('statusMsg');
+    const team1Input = D('team1'), team2Input = D('team2'), debugOff = D('debugOff'), debugDef = D('debugDef');
+    const ocrProgress = D('ocrProgress'), ocrProgressMsg = D('ocrProgressMsg'), resultsDiv = D('results'), historyList = D('historyList');
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.tab).classList.add('active');
-            if (btn.dataset.tab === 'tab-history') renderHistory();
-        });
-    });
-    function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-    function updateLabels() { const t1 = team1Input.value || 'Équipe 1'; document.getElementById('colOffLabel').textContent = t1; document.getElementById('colDefLabel').textContent = t1; }
+    document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); btn.classList.add('active'); D(btn.dataset.tab).classList.add('active'); if (btn.dataset.tab === 'tab-history') renderHistory(); }); });
+
+    function showToast(msg) { const t = D('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+    function updateLabels() { const t1 = team1Input.value || 'Équipe 1'; D('colOffLabel').textContent = t1; D('colDefLabel').textContent = t1; }
     team1Input.addEventListener('input', updateLabels); team2Input.addEventListener('input', updateLabels); updateLabels();
-    function setColumnButtons() { document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def')); if (colOffTeam1 === 'gauche') document.getElementById('colOffGauche').classList.add('selected-off'); else document.getElementById('colOffDroite').classList.add('selected-off'); if (colDefTeam1 === 'gauche') document.getElementById('colDefGauche').classList.add('selected-def'); else document.getElementById('colDefDroite').classList.add('selected-def'); }
-    document.getElementById('colOffGauche').addEventListener('click', () => { colOffTeam1 = 'gauche'; setColumnButtons(); }); document.getElementById('colOffDroite').addEventListener('click', () => { colOffTeam1 = 'droite'; setColumnButtons(); }); document.getElementById('colDefGauche').addEventListener('click', () => { colDefTeam1 = 'gauche'; setColumnButtons(); }); document.getElementById('colDefDroite').addEventListener('click', () => { colDefTeam1 = 'droite'; setColumnButtons(); });
+    function setColumnButtons() { document.querySelectorAll('.column-btn').forEach(b => b.classList.remove('selected-off', 'selected-def')); if (colOffTeam1 === 'gauche') D('colOffGauche').classList.add('selected-off'); else D('colOffDroite').classList.add('selected-off'); if (colDefTeam1 === 'gauche') D('colDefGauche').classList.add('selected-def'); else D('colDefDroite').classList.add('selected-def'); }
+    D('colOffGauche').addEventListener('click', () => { colOffTeam1 = 'gauche'; setColumnButtons(); }); D('colOffDroite').addEventListener('click', () => { colOffTeam1 = 'droite'; setColumnButtons(); }); D('colDefGauche').addEventListener('click', () => { colDefTeam1 = 'gauche'; setColumnButtons(); }); D('colDefDroite').addEventListener('click', () => { colDefTeam1 = 'droite'; setColumnButtons(); });
     function setupUpload(box, input, removeBtn, type) { box.addEventListener('click', () => input.click()); box.addEventListener('dragover', (e) => { e.preventDefault(); box.style.borderColor = type==='off'?'#f59e0b':'#3b82f6'; }); box.addEventListener('dragleave', () => { box.style.borderColor = '#222232'; }); box.addEventListener('drop', (e) => { e.preventDefault(); box.style.borderColor = '#222232'; const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('image/')) loadImage(file, box, type); }); input.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) loadImage(file, box, type); }); removeBtn.addEventListener('click', (e) => { e.stopPropagation(); removeImage(box, type); }); }
-    function loadImage(file, box, type) { const reader = new FileReader(); reader.onload = (e) => { const oldImg = box.querySelector('img'); if (oldImg) oldImg.remove(); const img = document.createElement('img'); img.src = e.target.result; box.appendChild(img); box.classList.add('filled'); if (type === 'off') { imageOff = e.target.result; debugOff.style.display = 'none'; } else { imageDef = e.target.result; debugDef.style.display = 'none'; } checkReady(); }; reader.readAsDataURL(file); }
-    function removeImage(box, type) { const img = box.querySelector('img'); if (img) img.remove(); box.classList.remove('filled'); if (type === 'off') { imageOff = null; inputOff.value = ''; debugOff.style.display = 'none'; } else { imageDef = null; inputDef.value = ''; debugDef.style.display = 'none'; } checkReady(); resultsDiv.innerHTML = ''; currentResult = null; }
+    function loadImage(file, box, type) { const reader = new FileReader(); reader.onload = (e) => { const oldImg = box.querySelector('img'); if (oldImg) oldImg.remove(); const img = document.createElement('img'); img.src = e.target.result; box.appendChild(img); box.classList.add('filled'); if (type === 'off') imageOff = e.target.result; else imageDef = e.target.result; checkReady(); }; reader.readAsDataURL(file); }
+    function removeImage(box, type) { const img = box.querySelector('img'); if (img) img.remove(); box.classList.remove('filled'); if (type === 'off') { imageOff = null; inputOff.value = ''; } else { imageDef = null; inputDef.value = ''; } checkReady(); resultsDiv.innerHTML = ''; currentResult = null; }
     function checkReady() { if (imageOff && imageDef) { analyzeBtn.disabled = false; statusMsg.textContent = '✅ Prêt'; statusMsg.style.color = '#22c55e'; } else if (imageOff || imageDef) { analyzeBtn.disabled = true; statusMsg.textContent = '⚠️ Il manque une image'; statusMsg.style.color = '#f59e0b'; } else { analyzeBtn.disabled = true; statusMsg.textContent = 'Uploade les 2 images'; statusMsg.style.color = '#555'; } }
     setupUpload(uploadOff, inputOff, removeOff, 'off'); setupUpload(uploadDef, inputDef, removeDef, 'def');
+    async function runOCR(d) { const w = await Tesseract.createWorker('fra'); const r = await w.recognize(d); await w.terminate(); return r.data.text; }
+    function cleanRows(t) { const ls = t.split('\n').map(l => l.trim()).filter(l => l.length > 0); const rs = []; for (const l of ls) { const cl = l.replace(/\|/g, ' ').replace(/\*\*/g, '').replace(/\s+/g, ' ').trim(); const ns = cl.match(/(\d+[\.,]?\d*)/g); if (!ns || ns.length < 2 || ns.length > 3) continue; const lb = cl.replace(/[\d.,%]+/g, '').replace(/\s+/g, ' ').trim().toLowerCase(); if (lb.length < 2 || lb.length > 60 || lb.split(' ').length > 5) continue; if (/[^a-zéèêëàâîïôöùûç\s\-]/.test(lb)) continue; rs.push({ label: lb, values: ns.map(n => parseFloat(n.replace(',', '.'))) }); } return rs; }
+    function matchCat(l) { if (l.includes('total') && !l.includes('taux') && !l.includes('conversion') && !l.includes('tir') && !l.includes('but')) return 'total'; if (l.includes('jeu ouvert') || (l.includes('jeu') && l.includes('ouvert'))) return 'jeuOuvert'; if (l.includes('coup de pied') || (l.includes('pied') && l.includes('arr')) || (l.includes('coup') && l.includes('pied'))) return 'coup de pied arrêté'; if (l.includes('contre-attaque') || l.includes('contre attaque') || (l.includes('contre') && !l.includes('camp') && !l.includes('pied'))) return 'contreAttaque'; if (l.includes('pénalty') || l.includes('penalty') || l.includes('penal')) return 'penalty'; if (l.includes('but contre son camp') || l.includes('contre son camp') || (l.includes('camp') && l.includes('but'))) return 'csc'; if (l.includes('tirs') || (l.includes('tir') && !l.includes('but') && !l.includes('total'))) return 'tirs'; if (l.includes('buts') || (l.includes('but') && !l.includes('camp') && !l.includes('taux') && !l.includes('tir') && !l.includes('total'))) return 'buts'; if (l.includes('taux') || l.includes('conversion') || l.includes('%')) return 'conversion'; return null; }
+    function extractStats(t) { const rs = cleanRows(t); const st = {}; const used = new Set(); for (let i = 0; i < rs.length; i++) { const c = matchCat(rs[i].label); if (c && !st[c]) { let v1 = rs[i].values[0], v2 = rs[i].values[1] || rs[i].values[0]; if (c === 'buts') { if (v1 > 7 && v1 < 100) v1 = parseFloat((v1 / 10).toFixed(1)); if (v2 > 7 && v2 < 100) v2 = parseFloat((v2 / 10).toFixed(1)); } if (c === 'tirs') { if (v1 > 50) v1 = parseFloat((v1 / 10).toFixed(1)); if (v2 > 50) v2 = parseFloat((v2 / 10).toFixed(1)); } st[c] = { v1, v2, method: 'found' }; used.add(i); } } const rem = rs.filter((_, i) => !used.has(i)); if (!st['coup de pied arrêté']) { for (const r of rem) { const l = r.label; if ((l.includes('pied') || l.includes('coup') || l.includes('arrêté') || l.includes('arrete')) && !l.includes('total') && !l.includes('jeu') && !l.includes('contre') && !l.includes('penal') && !l.includes('camp') && !l.includes('tir') && !l.includes('but') && !l.includes('taux')) { st['coup de pied arrêté'] = { v1: r.values[0], v2: r.values[1] || r.values[0], method: 'fallback' }; break; } } } if (!st['contreAttaque']) { for (const r of rem) { if (r.label.includes('contre') && !r.label.includes('camp') && !r.label.includes('pied') && !r.label.includes('coup')) { st['contreAttaque'] = { v1: r.values[0], v2: r.values[1] || r.values[0], method: 'fallback' }; break; } } } if (!st['buts']) { for (const r of rem) { const l = r.label; if ((l.includes('but') || l.includes('goal')) && !l.includes('camp') && !l.includes('taux') && !l.includes('tir') && !l.includes('total')) { let v1 = r.values[0], v2 = r.values[1] || r.values[0]; if (v1 > 7 && v1 < 100) v1 = parseFloat((v1 / 10).toFixed(1)); if (v2 > 7 && v2 < 100) v2 = parseFloat((v2 / 10).toFixed(1)); st['buts'] = { v1, v2, method: 'fallback' }; break; } } } if (!st['conversion']) { for (const r of rs) { if (r.label.includes('%') || r.label.includes('taux') || r.label.includes('conversion')) { st['conversion'] = { v1: r.values[0], v2: r.values[1] || r.values[0], method: 'fallback' }; break; } } } return st; }
+    function gv(st, side) { return function(k) { const s = st[k]; if (!s) return 0; if (side === 't1_off') return colOffTeam1 === 'gauche' ? s.v1 : s.v2; if (side === 't2_off') return colOffTeam1 === 'gauche' ? s.v2 : s.v1; if (side === 't1_def') return colDefTeam1 === 'gauche' ? s.v1 : s.v2; if (side === 't2_def') return colDefTeam1 === 'gauche' ? s.v2 : s.v1; return 0; }; }
 
-    function preprocessImage(dataUrl) { return new Promise((resolve) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); canvas.width = Math.round(img.width * 1.5); canvas.height = Math.round(img.height * 1.5); const ctx = canvas.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); const data = imageData.data; const w = canvas.width; const h = canvas.height; const copy = new Uint8ClampedArray(data); for (let y = 1; y < h - 1; y++) { for (let x = 1; x < w - 1; x++) { const idx = (y * w + x) * 4; const center = 0.299 * copy[idx] + 0.587 * copy[idx + 1] + 0.114 * copy[idx + 2]; let sum = 0; for (let dy = -1; dy <= 1; dy++) { for (let dx = -1; dx <= 1; dx++) { const nidx = ((y + dy) * w + (x + dx)) * 4; sum += 0.299 * copy[nidx] + 0.587 * copy[nidx + 1] + 0.114 * copy[nidx + 2]; } } const avg = sum / 9; let sharp = center + (center - avg) * 1.5; const threshold = 100; const value = sharp < threshold ? 0 : 255; data[idx] = value; data[idx + 1] = value; data[idx + 2] = value; } } ctx.putImageData(imageData, 0, 0); resolve(canvas.toDataURL('image/png')); }; img.src = dataUrl; }); }
-    async function runOCR(imageData, type) { ocrProgress.style.display = 'block'; ocrProgressMsg.textContent = `Prétraitement image ${type==='off'?'offensive':'défensive'}...`; const processed = await preprocessImage(imageData); ocrProgressMsg.textContent = `Lecture OCR image ${type==='off'?'offensive':'défensive'}...`; try { const result = await Tesseract.recognize(processed, 'eng+fra', { logger: (m) => { if (m.status === 'recognizing text') ocrProgressMsg.textContent = `OCR ${type==='off'?'offensif':'défensif'} : ${Math.round(m.progress*100)}%`; } }); return result.data.text; } catch (err) { return ''; } }
+    const SEUILS_RADAR = [8, 3, 0.5, 3, 80];
 
-    function extractAllStats(text, debugBox) {
-        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        let debugHtml = '<strong>📝 OCR BRUT :</strong>\n' + text + '\n\n<strong>📋 Paires trouvées :</strong>\n';
-        const allPairs = []; const stats = { gauche: {}, droite: {} };
-        
-        // 🔧 CORRECTION : Regex améliorée pour mieux capturer les nombres décimaux
-        for (const line of lines) { 
-            const match = line.match(/^(.+?)\s{2,}(\d+(?:\.\d+)?)\s{2,}(\d+(?:\.\d+)?)$/); 
-            if (match) { 
-                allPairs.push({ label: match[1].trim().toLowerCase(), left: parseFloat(match[2]), right: parseFloat(match[3]), line }); 
-                continue; 
-            } 
-            // 🔧 CORRECTION : Regex améliorée ici aussi
-            const numbers = line.match(/(\d+(?:\.\d+)?)/g); 
-            if (numbers && numbers.length === 2) { 
-                const labelPart = line.replace(/[\d.]+/g, '').replace(/\s+/g, ' ').trim().toLowerCase(); 
-                if (labelPart.length > 0 && labelPart.length < 60 && !allPairs.find(p => p.label === labelPart)) { 
-                    allPairs.push({ label: labelPart, left: parseFloat(numbers[0]), right: parseFloat(numbers[1]), line }); 
-                } 
-            } 
-        }
-        
-        allPairs.forEach((p, i) => { debugHtml += `  [${i}] "${p.label}" → G:${p.left} | D:${p.right}\n`; });
-        const categories = [ { id: 'total', keywords: ['total'] }, { id: 'jeuOuvert', keywords: ['jeu ouvert'] }, { id: 'cpa', keywords: ['coup de pied arrêté'] }, { id: 'contreAttaque', keywords: ['contre-attaque'] }, { id: 'penalty', keywords: ['pénalty'] }, { id: 'csc', keywords: ['but contre son camp'] }, { id: 'tirs', keywords: ['tirs'] }, { id: 'buts', keywords: ['buts'] }, { id: 'conversion', keywords: ['taux de conversion'] } ];
-        debugHtml += '\n<strong>🎯 RÉSULTAT :</strong>\n'; const used = new Set();
-        
-        for (const cat of categories) { 
-            let found = false; 
-            for (const pair of allPairs) { 
-                if (used.has(pair)) continue; 
-                if (pair.label.includes(cat.keywords[0].toLowerCase())) { 
-                    let vg = pair.left; 
-                    let vd = pair.right; 
-                    
-                    // 🔧 CORRECTION : Appliquer la correction aux buts, tirs et taux de conversion                    const decimalStats = ['buts', 'tirs', 'conversion'];
-                    if (decimalStats.includes(cat.id)) {
-                        const originalVg = vg;
-                        const originalVd = vd;
-                        if (vg > 7 && vg < 100) {
-                            vg = parseFloat((vg / 10).toFixed(1));
-                            debugHtml += `  ⚠️ ${cat.keywords[0]} (G): ${originalVg} → ${vg} (correction ×0.1)\n`;
-                        }
-                        if (vd > 7 && vd < 100) {
-                            vd = parseFloat((vd / 10).toFixed(1));
-                            debugHtml += `  ⚠️ ${cat.keywords[0]} (D): ${originalVd} → ${vd} (correction ×0.1)\n`;
-                        }
-                    }
-                    
-                    stats.gauche[cat.id] = vg; 
-                    stats.droite[cat.id] = vd; 
-                    used.add(pair); 
-                    debugHtml += `  ✅ ${cat.keywords[0]} → G:${vg} | D:${vd}\n`; 
-                    found = true; 
-                    break; 
-                } 
-            } 
-            if (!found) { 
-                stats.gauche[cat.id] = null; 
-                stats.droite[cat.id] = null; 
-                debugHtml += `  ❌ ${cat.keywords[0]} → non trouvé\n`; 
-            } 
-        }
-        
-        if (!stats.gauche.buts) { 
-            for (const pair of allPairs) { 
-                if (used.has(pair)) continue; 
-                const lab = pair.label; 
-                if ((lab.includes('but') || lab.includes('goal')) && !lab.includes('contre') && !lab.includes('camp') && !lab.includes('taux')) { 
-                    let vg = pair.left; 
-                    let vd = pair.right; 
-                    if (vg > 7 && vg < 100) vg = parseFloat((vg / 10).toFixed(1)); 
-                    if (vd > 7 && vd < 100) vd = parseFloat((vd / 10).toFixed(1)); 
-                    stats.gauche.buts = vg; 
-                    stats.droite.buts = vd; 
-                    debugHtml += `  🔧 buts (fallback) → G:${vg} | D:${vd}\n`; 
-                    break; 
-                } 
-            } 
-        }
-        
-        if (!stats.gauche.conversion) { 
-            for (const pair of allPairs) { 
-                if (used.has(pair)) continue; 
-                if (pair.label.includes('%') || pair.line.includes('%')) {                     stats.gauche.conversion = pair.left; 
-                    stats.droite.conversion = pair.right; 
-                    debugHtml += `  🔧 taux de conversion → G:${pair.left}% | D:${pair.right}%\n`; 
-                    break; 
-                } 
-            } 
-        }
-        
-        debugBox.innerHTML = debugHtml; 
-        debugBox.style.display = 'block'; 
-        return stats; 
-    }
-
-    function drawConfrontationRadar(canvas, r) {
+    function drawRadar(canvas, t1Name, t2Name, d1, d2, winners) {
         const ctx = canvas.getContext('2d');
-        const w = canvas.width = 380, h = canvas.height = 360;
-        const cx = w / 2, cy = h / 2;
-        const radius = Math.min(cx, cy) - 50;
+        const w = canvas.width = 500, h = canvas.height = 460;
+        const cx = w / 2, cy = h / 2 + 15;
+        const radius = Math.min(cx, cy) - 55;
         const axes = ['Total', 'Tirs', 'Buts', 'Taux', 'Domination'];
-        const n = axes.length;
-        const angleStep = (Math.PI * 2) / n;
-
-        const d1 = [r.confT1_Total, r.confT1_Tirs, r.confT1_Buts, r.confT1_Taux, r.domination / 10];
-        const d2 = [r.confT2_Total, r.confT2_Tirs, r.confT2_Buts, r.confT2_Taux, (100 - r.domination) / 10];
-        
-        // Normalisation par axe : diviser par le max des deux valeurs
-        const maxPerAxis = axes.map((_, i) => Math.max(Math.abs(d1[i]), Math.abs(d2[i]), 0.01));
+        const n = axes.length, angleStep = (Math.PI * 2) / n;
+        const maxPerAxis = SEUILS_RADAR;
 
         ctx.clearRect(0, 0, w, h);
 
-        // Grille
-        for (let level = 0.25; level <= 1; level += 0.25) {
+        for (let level = 0.2; level <= 1; level += 0.2) {
             ctx.beginPath();
-            for (let i = 0; i < n; i++) { const a = angleStep * i - Math.PI / 2; const x = cx + radius * level * Math.cos(a), y = cy + radius * level * Math.sin(a); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
-            ctx.closePath(); ctx.strokeStyle = '#1e1e30'; ctx.stroke();
+            for (let i = 0; i < n; i++) {
+                const a = angleStep * i - Math.PI / 2;
+                const x = cx + radius * level * Math.cos(a), y = cy + radius * level * Math.sin(a);
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = '#3a3a55'; ctx.lineWidth = 2; ctx.setLineDash([6, 10]); ctx.stroke(); ctx.setLineDash([]);
         }
-
-        // Axes et cadres colorés
-        const winners = [
-            d1[0] > d2[0] ? 't1' : 't2',
-            d1[1] > d2[1] ? 't1' : 't2',
-            d1[2] > d2[2] ? 't1' : 't2',
-            d1[3] > d2[3] ? 't1' : 't2',
-            d1[4] > d2[4] ? 't1' : 't2'
-        ];
 
         for (let i = 0; i < n; i++) {
             const a = angleStep * i - Math.PI / 2;
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + radius * Math.cos(a), cy + radius * Math.sin(a));
-            ctx.strokeStyle = '#2a2a3a'; ctx.stroke();
-            const lx = cx + (radius + 32) * Math.cos(a), ly = cy + (radius + 32) * Math.sin(a);
-            const tw = ctx.measureText(axes[i]).width + 16;
-            const th = 22;
-            ctx.fillStyle = winners[i] === 't1' ? '#f59e0b33' : '#3b82f633';
-            ctx.strokeStyle = winners[i] === 't1' ? '#f59e0b' : '#3b82f6';
-            ctx.lineWidth = 2;
-            ctx.beginPath(); 
-            const bx = lx - tw/2, by = ly - th/2;
-            ctx.moveTo(bx + 6, by); ctx.lineTo(bx + tw - 6, by); ctx.quadraticCurveTo(bx + tw, by, bx + tw, by + 6);
-            ctx.lineTo(bx + tw, by + th - 6); ctx.quadraticCurveTo(bx + tw, by + th, bx + tw - 6, by + th);
-            ctx.lineTo(bx + 6, by + th); ctx.quadraticCurveTo(bx, by + th, bx, by + th - 6);
-            ctx.lineTo(bx, by + 6); ctx.quadraticCurveTo(bx, by, bx + 6, by);
-            ctx.fill(); ctx.stroke();
-            ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(axes[i], lx, ly + 4);
+            ctx.strokeStyle = '#4a4a65'; ctx.lineWidth = 3; ctx.stroke();
         }
 
-        function drawCurve(data, color) {
-            ctx.beginPath();
-            for (let i = 0; i < n; i++) {
-                const a = angleStep * i - Math.PI / 2;
-                const v = Math.max(0, Math.abs(data[i])) / maxPerAxis[i];
-                const x = cx + radius * v * Math.cos(a), y = cy + radius * v * Math.sin(a);
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
-            ctx.fillStyle = color + '22'; ctx.fill();
+        const pts1 = [], pts2 = [];
+        for (let i = 0; i < n; i++) {
+            const a = angleStep * i - Math.PI / 2;
+            const v1 = Math.min(1, Math.abs(d1[i]) / maxPerAxis[i]);
+            const v2 = Math.min(1, Math.abs(d2[i]) / maxPerAxis[i]);
+            pts1.push({ x: cx + radius * v1 * Math.cos(a), y: cy + radius * v1 * Math.sin(a) });
+            pts2.push({ x: cx + radius * v2 * Math.cos(a), y: cy + radius * v2 * Math.sin(a) });
         }
-        drawCurve(d1, '#f59e0b');
-        drawCurve(d2, '#3b82f6');
 
-        // Légende
-        ctx.fillStyle = '#f59e0b'; ctx.fillRect(10, h - 55, 12, 12);
-        ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(r.team1 + ' (' + r.axesWonT1 + '/5 axes)', 26, h - 45);
-        ctx.fillStyle = '#3b82f6'; ctx.fillRect(10, h - 30, 12, 12);
-        ctx.fillText(r.team2 + ' (' + r.axesWonT2 + '/5 axes)', 26, h - 20);
+        const grad1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        grad1.addColorStop(0, '#fcd34d'); grad1.addColorStop(1, '#f59e0b');
+        ctx.beginPath(); ctx.moveTo(pts1[0].x, pts1[0].y);
+        for (let i = 1; i < n; i++) ctx.lineTo(pts1[i].x, pts1[i].y);
+        ctx.closePath(); ctx.fillStyle = 'rgba(245,158,11,0.15)'; ctx.fill(); ctx.strokeStyle = grad1; ctx.lineWidth = 4; ctx.stroke();
+
+        const grad2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+        grad2.addColorStop(0, '#93c5fd'); grad2.addColorStop(1, '#3b82f6');
+        ctx.beginPath(); ctx.moveTo(pts2[0].x, pts2[0].y);
+        for (let i = 1; i < n; i++) ctx.lineTo(pts2[i].x, pts2[i].y);
+        ctx.closePath(); ctx.fillStyle = 'rgba(59,130,246,0.15)'; ctx.fill(); ctx.strokeStyle = grad2; ctx.lineWidth = 4; ctx.stroke();
+
+        for (let i = 0; i < n; i++) {
+            ctx.beginPath(); ctx.arc(pts1[i].x, pts1[i].y, 7, 0, Math.PI * 2); ctx.fillStyle = '#f59e0b'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
+            ctx.beginPath(); ctx.arc(pts2[i].x, pts2[i].y, 7, 0, Math.PI * 2); ctx.fillStyle = '#3b82f6'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
+        }
+
+        for (let i = 0; i < n; i++) {
+            const a = angleStep * i - Math.PI / 2;
+            const lx = cx + (radius + 50) * Math.cos(a), ly = cy + (radius + 50) * Math.sin(a);
+            const tw = Math.max(ctx.measureText(axes[i]).width + 28, 80), th = 32;
+            const bx = lx - tw / 2, by = ly - th / 2;
+            ctx.fillStyle = winners[i] === 't1' ? 'rgba(245,158,11,0.3)' : 'rgba(59,130,246,0.3)';
+            ctx.strokeStyle = winners[i] === 't1' ? '#f59e0b' : '#3b82f6'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.roundRect(bx, by, tw, th, 10); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#fff'; ctx.font = 'bold 15px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(axes[i], lx, ly + 6);
+        }
+
+        const lyBase = h - 55;
+        ctx.fillStyle = '#f59e0b'; ctx.fillRect(16, lyBase, 16, 16); ctx.fillStyle = '#fff'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(t1Name, 40, lyBase + 14);
+        ctx.fillStyle = '#3b82f6'; ctx.fillRect(16, lyBase + 26, 16, 16); ctx.fillText(t2Name, 40, lyBase + 40);
+        const won1 = winners.filter(w => w === 't1').length;
+        const domTeam = won1 >= 3 ? t1Name : (won1 <= 1 ? t2Name : t1Name);
+        ctx.fillStyle = won1 >= 3 ? '#f59e0b' : (won1 <= 1 ? '#3b82f6' : '#ccc');
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText('🏆 ' + domTeam + ' domine ' + (won1 >= 3 ? won1 : 5 - won1) + '/5 axes', 16, lyBase + 62);
     }
 
     function drawGauge(canvas, domination, t1, t2) {
-        const ctx = canvas.getContext('2d'); const w = canvas.width = 300, h = canvas.height = 190;
-        const cx = w / 2, cy = h - 15, radius = Math.min(cx, cy) - 12;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width = 300, h = canvas.height = 195;
+        const cx = w / 2, cy = h - 15, radius = Math.min(cx, cy) - 15;
         ctx.clearRect(0, 0, w, h);
-        ctx.beginPath(); ctx.arc(cx, cy, radius, Math.PI, 0); ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 20; ctx.stroke();
-        for (let p = 0; p <= 100; p += 10) { const a = Math.PI + (Math.PI * p / 100); ctx.beginPath(); ctx.moveTo(cx + (radius - 14) * Math.cos(a), cy + (radius - 14) * Math.sin(a)); ctx.lineTo(cx + (radius + 14) * Math.cos(a), cy + (radius + 14) * Math.sin(a)); ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.stroke(); }
+        ctx.beginPath(); ctx.arc(cx, cy, radius, Math.PI, 0); ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 18; ctx.stroke();
+        for (let p = 0; p <= 100; p += 20) {
+            const a = Math.PI + (Math.PI * p / 100);
+            ctx.beginPath(); ctx.moveTo(cx + (radius - 11) * Math.cos(a), cy + (radius - 11) * Math.sin(a)); ctx.lineTo(cx + (radius + 11) * Math.cos(a), cy + (radius + 11) * Math.sin(a));
+            ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5; ctx.stroke();
+        }
         const angle = Math.PI + (Math.PI * domination / 100);
-        const grad = ctx.createLinearGradient(cx - radius, cy, cx + radius, cy); grad.addColorStop(0, '#3b82f6'); grad.addColorStop(0.5, '#f59e0b'); grad.addColorStop(1, '#ef4444');
-        ctx.beginPath(); ctx.arc(cx, cy, radius, Math.PI, angle); ctx.strokeStyle = grad; ctx.lineWidth = 20; ctx.stroke();
-        const nx = cx + (radius - 15) * Math.cos(angle), ny = cy + (radius - 15) * Math.sin(angle);
-        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(nx, ny); ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();        ctx.beginPath(); ctx.arc(cx, cy, 9, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(domination + '%', cx, cy - 40);
-        ctx.font = '11px sans-serif'; ctx.fillStyle = '#aaa'; ctx.fillText(domination > 50 ? t1 : t2, cx - 50, cy - 58); ctx.fillText(domination > 50 ? t2 : t1, cx + 50, cy - 58);
+        const grad = ctx.createLinearGradient(cx - radius, cy, cx + radius, cy);
+        grad.addColorStop(0, '#3b82f6'); grad.addColorStop(0.5, '#f59e0b'); grad.addColorStop(1, '#ef4444');
+        ctx.beginPath(); ctx.arc(cx, cy, radius, Math.PI, angle); ctx.strokeStyle = grad; ctx.lineWidth = 18; ctx.stroke();
+        const nx = cx + (radius - 14) * Math.cos(angle), ny = cy + (radius - 14) * Math.sin(angle);
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(nx, ny); ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, 9, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(domination + '%', cx, cy - 42);
+        ctx.font = '12px sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+        ctx.fillText(t1 + ' domine à ' + domination + '%', 10, 24);
+        ctx.fillText(t2 + ' domine à ' + (100 - domination) + '%', 10, 46);
     }
 
-    function displayResults(r) {
-        const attTeam1 = r.attTeam1, attTeam2 = r.attTeam2, defTeam1 = r.defTeam1, defTeam2 = r.defTeam2;
-        const totalP = r.sc1p + r.sc2p;
-        const overLabel = totalP >= 3 ? 'Over 2.5' : totalP === 2 ? 'Limite 2.5' : 'Under 2.5';
-        const overClass = totalP >= 3 ? 'badge-over' : totalP === 2 ? 'badge-btts-yes' : 'badge-under';
-        const bttsP = r.sc1p > 0 && r.sc2p > 0;
-        function getBarColor(pct) { if (pct >= 65) return '#22c55e'; if (pct >= 40) return '#f59e0b'; return '#ef4444'; }
+    function getProbColor(pct) {
+        if (pct >= 81) return '#22c55e';
+        if (pct >= 65) return '#3b82f6';
+        if (pct >= 41) return '#f59e0b';
+        if (pct >= 26) return '#f97316';
+        return '#ef4444';
+    }
 
-        const row = (label, v1, v2, v3, v4, cls1, cls2) => { const f = (v) => v === null || v === undefined ? '<span data-missing="true">?</span>' : v; return `<tr><td>${label}</td><td class="${cls1||''}">${f(v1)}</td><td class="${cls1||''}">${f(v2)}</td><td class="${cls2||''}">${f(v3)}</td><td class="${cls2||''}">${f(v4)}</td></tr>`; };
+    function drawProbCircle(canvas, pct) {
+        const ctx = canvas.getContext('2d');
+        const s = canvas.width = 90, h = canvas.height = 90;
+        const cx = s / 2, cy = h / 2, r = 35, lw = 10;
+        ctx.clearRect(0, 0, s, h);
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = lw; ctx.stroke();
+        const angle = (Math.PI * 2 * pct / 100) - Math.PI / 2;
+        ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, angle); ctx.strokeStyle = getProbColor(pct); ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.stroke();
+        ctx.lineCap = 'butt';
+    }
 
-        resultsDiv.innerHTML = `
-            <div class="result-card" id="resultCard">
-                <div style="text-align:center; font-size:0.8rem; color:#777;">🤖 Confrontation Attaque vs Défense</div>
-                <div class="score-display">
-                    <div class="score-box"><div class="team-label">${r.team1}</div><div class="score-num">${r.sc1p}</div></div>
-                    <div class="score-vs">—</div>
-                    <div class="score-box"><div class="team-label">${r.team2}</div><div class="score-num">${r.sc2p}</div></div>
-                </div>
-                <div style="text-align:center; font-size:0.7rem; color:#a855f7;">🚀 Potentiel : ${r.team1} ${r.sc1s} - ${r.sc2s} ${r.team2}</div>
-                <div class="badge-row">
-                    <span class="badge ${r.probOver15 >= 65 ? 'badge-over' : r.probOver15 >= 40 ? 'badge-btts-yes' : 'badge-under'}">📊 Over 1.5 → ${r.probOver15}%</span>
-                    <span class="badge ${r.probOver25 >= 65 ? 'badge-over' : r.probOver25 >= 40 ? 'badge-btts-yes' : 'badge-under'}">📊 Over 2.5 → ${r.probOver25}%</span>
-                    <span class="badge ${r.probBTTS >= 65 ? 'badge-btts-yes' : r.probBTTS >= 40 ? 'badge-btts-yes' : 'badge-btts-no'}">⚽ BTTS → ${r.probBTTS}%</span>
-                </div>
-                <table class="stats-table">
-                    <tr><th>Stat</th><th>Att ${r.team1}</th><th>Att ${r.team2}</th><th>Déf ${r.team1}</th><th>Déf ${r.team2}</th></tr>
-                    ${row('Total', r.totalOff1, r.totalOff2, r.totalDef1, r.totalDef2, 'val-off', 'val-def')}
-                    ${row('Jeu ouvert', attTeam1.jeuOuvert, attTeam2.jeuOuvert, defTeam1.jeuOuvert, defTeam2.jeuOuvert)}
-                    ${row('Coup de pied arrêté', attTeam1.cpa, attTeam2.cpa, defTeam1.cpa, defTeam2.cpa)}
-                    ${row('Contre-attaque', attTeam1.contreAttaque, attTeam2.contreAttaque, defTeam1.contreAttaque, defTeam2.contreAttaque)}
-                    ${row('Pénalty', attTeam1.penalty, attTeam2.penalty, defTeam1.penalty, defTeam2.penalty)}
-                    ${row('But contre son camp', attTeam1.csc, attTeam2.csc, defTeam1.csc, defTeam2.csc)}
-                    ${row('Tirs', r.tirsOff1, r.tirsOff2, r.tirsDef1, r.tirsDef2)}
-                    ${row('Buts', r.butsOff1, r.butsOff2, r.butsDef1, r.butsDef2, 'val-off', 'val-def')}
-                    ${row('Taux de conversion', r.convOff1+'%', r.convOff2+'%', r.convDef1+'%', r.convDef2+'%', 'val-off', 'val-def')}
-                </table>
+    function getDomMessage(dom, tDom) {
+        if (dom >= 65) return '🏆 ' + tDom + ' gagne et Potentiel Victoire';
+        if (dom >= 55) return '⚽ ' + tDom + ' domine légèrement';
+        if (dom >= 51) return '⚡ ' + tDom + ' marque mais ne perd pas';
+        return '🤝 Match parfaitement équilibré';
+    }
 
-                <div class="card" style="margin-top:16px;">
-                    <h3 style="color:#f59e0b;">⚔️ Confrontation Directe</h3>
-                    <table class="confrontation-table">
-                        <tr><th>Axe</th><th>${r.team1}</th><th>${r.team2}</th><th>Avantage</th></tr>
-                        <tr><td>Total</td><td class="${r.confT1_Total > r.confT2_Total ? 'winner-bar' : ''}">${r.confT1_Total.toFixed(2)}</td><td class="${r.confT2_Total > r.confT1_Total ? 'winner-mad' : ''}">${r.confT2_Total.toFixed(2)}</td><td>${r.confT1_Total > r.confT2_Total ? r.team1 : r.team2}</td></tr>
-                        <tr><td>Tirs</td><td class="${r.confT1_Tirs > r.confT2_Tirs ? 'winner-bar' : ''}">${r.confT1_Tirs.toFixed(2)}</td><td class="${r.confT2_Tirs > r.confT1_Tirs ? 'winner-mad' : ''}">${r.confT2_Tirs.toFixed(2)}</td><td>${r.confT1_Tirs > r.confT2_Tirs ? r.team1 : r.team2}</td></tr>
-                        <tr><td>Buts</td><td class="${r.confT1_Buts > r.confT2_Buts ? 'winner-bar' : ''}">${r.confT1_Buts.toFixed(2)}</td><td class="${r.confT2_Buts > r.confT1_Buts ? 'winner-mad' : ''}">${r.confT2_Buts.toFixed(2)}</td><td>${r.confT1_Buts > r.confT2_Buts ? r.team1 : r.team2}</td></tr>
-                        <tr><td>Taux conversion</td><td class="${r.confT1_Taux > r.confT2_Taux ? 'winner-bar' : ''}">${r.confT1_Taux.toFixed(1)}%</td><td class="${r.confT2_Taux > r.confT1_Taux ? 'winner-mad' : ''}">${r.confT2_Taux.toFixed(1)}%</td><td>${r.confT1_Taux > r.confT2_Taux ? r.team1 : r.team2}</td></tr>                    </table>
-                    <div style="text-align:center; margin-top:8px; font-weight:700; color:#f59e0b;">🏆 ${r.team1} domine ${r.axesWonT1} axes sur 5</div>
-                    <div style="text-align:center; font-size:0.7rem; color:#aaa; margin-top:4px;">
-                        Coeff ${r.team1} : ×${r.coeffT1.toFixed(2)} | Coeff ${r.team2} : ×${r.coeffT2.toFixed(2)}
-                    </div>
-                </div>
+    function teamSpan(t, isT1) { return '<span class="' + (isT1 ? 'team-t1' : 'team-t2') + '">' + t + '</span>'; }
 
-                <div class="chart-box" style="margin-top:16px;">
-                    <h4>🎯 Radar de Confrontation</h4>
-                    <canvas id="confrontationCanvas"></canvas>
-                </div>
-
-                <div class="charts-grid" style="margin-top:16px;">
-                    <div class="chart-box"><h4>⚖️ Jauge de Domination</h4><div class="gauge-container"><canvas id="gaugeCanvas"></canvas><span class="gauge-label">${r.team1}: ${r.domination}% — ${r.team2}: ${100 - r.domination}%</span></div></div>
-                    <div class="chart-box prob-bars"><h4>📈 Probabilités des paris</h4>
-                        <div class="prob-bar-row"><span class="prob-bar-label">Over 1.5</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:${r.probOver15}%;background:${getBarColor(r.probOver15)};"></div></div><span class="prob-bar-pct" style="color:${getBarColor(r.probOver15)}">${r.probOver15}%</span></div>
-                        <div class="prob-bar-row"><span class="prob-bar-label">Over 2.5</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:${r.probOver25}%;background:${getBarColor(r.probOver25)};"></div></div><span class="prob-bar-pct" style="color:${getBarColor(r.probOver25)}">${r.probOver25}%</span></div>
-                        <div class="prob-bar-row"><span class="prob-bar-label">BTTS Oui</span><div class="prob-bar-track"><div class="prob-bar-fill" style="width:${r.probBTTS}%;background:${getBarColor(r.probBTTS)};"></div></div><span class="prob-bar-pct" style="color:${getBarColor(r.probBTTS)}">${r.probBTTS}%</span></div>
-                    </div>
-                </div>
-
-                <div class="calcul-box">
-                    <span class="formula">Score ${r.team1}</span> = (${r.butsOff1} + ${r.butsDef2})/2 × ${r.coeffT1.toFixed(2)} = ${r.s1p.toFixed(2)} × ${r.coeffT1.toFixed(2)} = <span class="result">${r.sc1p}</span><br>
-                    <span class="formula">Score ${r.team2}</span> = (${r.butsOff2} + ${r.butsDef1})/2 × ${r.coeffT2.toFixed(2)} = ${r.s2p.toFixed(2)} × ${r.coeffT2.toFixed(2)} = <span class="result">${r.sc2p}</span><br>
-                    <span class="formula2">Potentiel ${r.team1}</span> = (${r.butsOff1} - ${r.butsDef2}) × ${(r.convOff1/10).toFixed(1)} × ${(r.convDef2/10).toFixed(1)} = <span class="result">${r.sc1s}</span><br>
-                    <span class="formula2">Potentiel ${r.team2}</span> = (${r.butsOff2} - ${r.butsDef1}) × ${(r.convOff2/10).toFixed(1)} × ${(r.convDef1/10).toFixed(1)} = <span class="result">${r.sc2s}</span>
-                </div>
-                <button class="btn btn-whatsapp" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Partager sur WhatsApp</button>
-                <div class="btn-row" style="margin-top:8px;">
-                    <button class="btn btn-valid btn-xs" onclick="validateCurrentResult(true)"><i class="fas fa-check"></i> Pronostic validé</button>
-                    <button class="btn btn-invalid btn-xs" onclick="validateCurrentResult(false)"><i class="fas fa-times"></i> Pronostic perdu</button>
-                </div>
-            </div>`;
-
-        setTimeout(() => {
-            const rc = document.getElementById('confrontationCanvas'); if (rc) drawConfrontationRadar(rc, r);
-            const gc = document.getElementById('gaugeCanvas'); if (gc) drawGauge(gc, r.domination, r.team1, r.team2);
-        }, 200);
-        setTimeout(() => resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+    function shareWhatsApp(r) {
+        const tDom = r.domination > 50 ? r.team1 : r.team2;
+        const dom = r.domination > 50 ? r.domination : 100 - r.domination;
+        const domMsg = getDomMessage(dom, tDom);
+        const pT1 = Math.round(r.partTotal * 100), pT2 = 100 - pT1;
+        const pTr1 = Math.round(r.partTirs * 100), pTr2 = 100 - pTr1;
+        const pB1 = Math.round(r.partButs * 100), pB2 = 100 - pB1;
+        const pTx1 = Math.round(r.partTaux * 100), pTx2 = 100 - pTx1;
+        const msg = '\uD83D\uDFE0 *' + r.team1.toUpperCase() + '*  |  \uD83D\uDD35 *' + r.team2.toUpperCase() + '*%0A%0A' +
+            '\u26BD *Score*          \uD83D\uDE80 *Potentiel*%0A' +
+            '*' + r.sc1p + '-' + r.sc2p + '*               *' + r.sc1s + '-' + r.sc2s + '*%0A%0A' +
+            '\u2694\uFE0F *Confrontation*%0A' +
+            'Total : ' + pT1 + '%25 ' + (r.confT1_Total > r.confT2_Total ? '\uD83D\uDFE0' : '') + '  ' + pT2 + '%25 ' + (r.confT2_Total > r.confT1_Total ? '\uD83D\uDD35' : '') + '%0A' +
+            'Tirs  : ' + pTr1 + '%25 ' + (r.confT1_Tirs > r.confT2_Tirs ? '\uD83D\uDFE0' : '') + '  ' + pTr2 + '%25 ' + (r.confT2_Tirs > r.confT1_Tirs ? '\uD83D\uDD35' : '') + '%0A' +
+            'Buts  : ' + pB1 + '%25 ' + (r.confT1_Buts > r.confT2_Buts ? '\uD83D\uDFE0' : '') + '  ' + pB2 + '%25 ' + (r.confT2_Buts > r.confT1_Buts ? '\uD83D\uDD35' : '') + '%0A' +
+            'Taux  : ' + pTx1 + '%25 ' + (r.confT1_Taux > r.confT2_Taux ? '\uD83D\uDFE0' : '') + '  ' + pTx2 + '%25 ' + (r.confT2_Taux > r.confT1_Taux ? '\uD83D\uDD35' : '') + '%0A%0A' +
+            '\u2696\uFE0F *Domination*%0A' +
+            '*' + r.team1 + ' ' + r.domination + '%25* — *' + r.team2 + ' ' + (100 - r.domination) + '%25*%0A' +
+            '\u2192 ' + domMsg + '%0A%0A' +
+            '\uD83D\uDCCA *Probabilités*%0A' +
+            '*Over 1.5 : ' + r.probOver15 + '%25*   *Over 2.5 : ' + r.probOver25 + '%25*   *BTTS : ' + r.probBTTS + '%25*%0A%0A' +
+            '\uD83E\uDD16 Généré par FootPredict OCR';
+        window.open('https://wa.me/?text=' + msg, '_blank');
     }
 
     analyzeBtn.addEventListener('click', async () => {
         if (!imageOff || !imageDef || isProcessing) return;
-        isProcessing = true; analyzeBtn.disabled = true;
-        analyzeBtn.innerHTML = '<span class="spinner" style="width:20px;height:20px;"></span> Traitement...';
-        resultsDiv.innerHTML = '';
+        isProcessing = true; analyzeBtn.disabled = true; ocrProgress.style.display = 'block'; resultsDiv.innerHTML = '';
+        ocrProgressMsg.textContent = 'Lecture...';
+        const tOff = await runOCR(imageOff), tDef = await runOCR(imageDef);
+        debugOff.innerHTML = '<strong>OCR Offensif :</strong>\n' + tOff; debugOff.style.display = 'block';
+        debugDef.innerHTML = '<strong>OCR Défensif :</strong>\n' + tDef; debugDef.style.display = 'block';
+        const stOff = extractStats(tOff), stDef = extractStats(tDef);
+        const t1 = team1Input.value || 'Équipe 1', t2 = team2Input.value || 'Équipe 2';
+        const t1off = gv(stOff, 't1_off'), t2off = gv(stOff, 't2_off'), t1def = gv(stDef, 't1_def'), t2def = gv(stDef, 't2_def');
+        const bo = t1off('buts'), bd = t2off('buts'), bd1 = t1def('buts'), bd2 = t2def('buts');
+        const co = t1off('conversion'), cd = t2off('conversion'), cd1 = t1def('conversion'), cd2 = t2def('conversion');
+        const to = t1off('total'), tt = t2off('total'), td1 = t1def('total'), td2 = t2def('total');
+        const tro = t1off('tirs'), trt = t2off('tirs'), trd1 = t1def('tirs'), trd2 = t2def('tirs');
 
-        const textOff = await runOCR(imageOff, 'off');
-        const textDef = await runOCR(imageDef, 'def');
-        ocrProgress.style.display = 'none';
-        const team1 = team1Input.value || 'Équipe 1', team2 = team2Input.value || 'Équipe 2';
-        const offStats = extractAllStats(textOff, debugOff), defStats = extractAllStats(textDef, debugDef);
+        // NOUVELLES FORMULES
+        const F = (so, sdAdv, cdAdv) => ((so + sdAdv) / 2) * (cdAdv / 100);
+        const cT1 = F(to, td2, cd2), cT2 = F(tt, td1, cd1);
+        const cTr1 = F(tro, trd2, cd2), cTr2 = F(trt, trd1, cd1);
+        const cB1 = F(bo, bd2, cd2), cB2 = F(bd, bd1, cd1);
+        const FB = (co2, cdAdv) => ((co2 + cdAdv) / 2) * (cdAdv / 100);
+        const cTx1 = FB(co, cd2), cTx2 = FB(cd, cd1);
 
-        const attTeam1 = colOffTeam1 === 'gauche' ? offStats.gauche : offStats.droite;
-        const attTeam2 = colOffTeam1 === 'gauche' ? offStats.droite : offStats.gauche;
-        const defTeam1 = colDefTeam1 === 'gauche' ? defStats.gauche : defStats.droite;
-        const defTeam2 = colDefTeam1 === 'gauche' ? defStats.droite : defStats.gauche;
+        const partTotal = cT1 / (cT1 + cT2 + 0.001);
+        const partTirs = cTr1 / (cTr1 + cTr2 + 0.001);
+        const partButs = cB1 / (cB1 + cB2 + 0.001);
+        const partTaux = cTx1 / (cTx1 + cTx2 + 0.001);
 
-        const totalOff1 = attTeam1.total || 14, totalOff2 = attTeam2.total || 12, totalDef1 = defTeam1.total || 11, totalDef2 = defTeam2.total || 10;
-        const butsOff1 = attTeam1.buts || 1.5, butsOff2 = attTeam2.buts || 1.2, butsDef1 = defTeam1.buts || 1.0, butsDef2 = defTeam2.buts || 0.9;
-        const convOff1 = attTeam1.conversion || 15, convOff2 = attTeam2.conversion || 14, convDef1 = defTeam1.conversion || 10, convDef2 = defTeam2.conversion || 10;
-        const tirsOff1 = attTeam1.tirs || +(totalOff1 * 0.6).toFixed(1), tirsOff2 = attTeam2.tirs || +(totalOff2 * 0.6).toFixed(1);
-        const tirsDef1 = defTeam1.tirs || +(totalDef1 * 0.6).toFixed(1), tirsDef2 = defTeam2.tirs || +(totalDef2 * 0.6).toFixed(1);
+        const dominationRaw = (partTotal + partTirs + partButs + partTaux) / 4;
+        const domination = Math.round(dominationRaw * 100);
+        const dom1 = domination;
+        const dom2 = 100 - domination;
 
-        const s1p = (butsOff1 + butsDef2) / 2, s2p = (butsOff2 + butsDef1) / 2;
-        const s1s = (butsOff1 - butsDef2) * (convOff1 / 10) * (convDef2 / 10);
-        const s2s = (butsOff2 - butsDef1) * (convOff2 / 10) * (convDef1 / 10);
-        let sc1s = Math.max(0, Math.round(s1s)), sc2s = Math.max(0, Math.round(s2s));
+        const axesWonT1 = (cT1 > cT2 ? 1 : 0) + (cTr1 > cTr2 ? 1 : 0) + (cB1 > cB2 ? 1 : 0) + (cTx1 > cTx2 ? 1 : 0);
+
+        const scoreT1 = Math.max(0, Math.round(bo * (domination / 100)));
+        const scoreT2 = Math.max(0, Math.round(bd * ((100 - domination) / 100)));
+
+        const potT1 = Math.round(Math.max(0, (bo - bd2) * (co / 10) * (cd2 / 10)));
+        const potT2 = Math.round(Math.max(0, (bd - bd1) * (cd / 10) * (cd1 / 10)));
+
+        const totalGoals = scoreT1 + scoreT2;
+        const probOver15 = totalGoals >= 3 ? Math.min(95, 65 + (totalGoals - 3) * 10) : totalGoals === 2 ? Math.min(60, 40 + (scoreT1 + scoreT2) * 5) : Math.max(5, 20 - totalGoals * 5);
+        const probOver25 = totalGoals >= 4 ? Math.min(90, 65 + (totalGoals - 4) * 10) : totalGoals === 3 ? Math.min(60, 40 + (scoreT1 + scoreT2) * 3) : Math.max(5, 15 - totalGoals * 5);
+
+        const bothScore = scoreT1 > 0 && scoreT2 > 0;
+        const bothPot = potT1 > 0 && potT2 > 0;
+        const minScore = Math.min(scoreT1, scoreT2);
+        let probBTTS;
+        if (bothScore && bothPot) { probBTTS = Math.min(90, 50 + minScore * 15 + 5); }
+        else if (bothScore || bothPot) { probBTTS = Math.min(85, 50 + minScore * 15 - 5); }
+        else { probBTTS = 20; }
+
+        const d1 = [cT1, cTr1, cB1, cTx1, dom1];
+        const d2 = [cT2, cTr2, cB2, cTx2, dom2];
+        const winners = [cT1 > cT2 ? 't1' : 't2', cTr1 > cTr2 ? 't1' : 't2', cB1 > cB2 ? 't1' : 't2', cTx1 > cTx2 ? 't1' : 't2', dom1 > dom2 ? 't1' : 't2'];
+
+        currentResult = {
+            team1: t1, team2: t2, sc1p: scoreT1, sc2p: scoreT2, sc1s: potT1, sc2s: potT2,
+            confT1_Total: cT1, confT1_Tirs: cTr1, confT1_Buts: cB1, confT1_Taux: cTx1,
+            confT2_Total: cT2, confT2_Tirs: cTr2, confT2_Buts: cB2, confT2_Taux: cTx2,
+            partTotal, partTirs, partButs, partTaux,
+            axesWonT1, axesWonT2: 4 - axesWonT1,
+            probOver15, probOver25, probBTTS,
+            domination, butsOff1: bo, butsOff2: bd, butsDef1: bd1, butsDef2: bd2,
+            convOff1: co, convOff2: cd, convDef1: cd1, convDef2: cd2,
+            totalOff1: to, totalOff2: tt, totalDef1: td1, totalDef2: td2,
+            tirsOff1: tro, tirsOff2: trt, tirsDef1: trd1, tirsDef2: trd2,
+            attTeam1: t1off, attTeam2: t2off, defTeam1: t1def, defTeam2: t2def
+        };
+
+        const pT1 = Math.round(partTotal * 100), pT2 = 100 - pT1;
+        const pTr1 = Math.round(partTirs * 100), pTr2 = 100 - pTr1;
+        const pB1 = Math.round(partButs * 100), pB2 = 100 - pB1;
+        const pTx1 = Math.round(partTaux * 100), pTx2 = 100 - pTx1;
+        const domMsg = getDomMessage(domination, t1);
+
+        const CATS = ['total','jeuOuvert','coup de pied arrêté','contreAttaque','penalty','csc','tirs','buts','conversion'];
+        const LABELS = ['Total','Jeu ouvert','Coup de pied arrêté','Contre-attaque','Pénalty','But contre son camp','Tirs','Buts','Taux de conversion'];
+
+        let html = '';
+
+        // Tableau des données extraites
+        html += '<div class="card"><h3>📊 Données extraites</h3><table class="stats-table"><tr><th>Stat</th><th>' + teamSpan(t1, true) + ' Off</th><th>' + teamSpan(t2, false) + ' Off</th><th>' + teamSpan(t1, true) + ' Déf</th><th>' + teamSpan(t2, false) + ' Déf</th></tr>';
+        for (let i = 0; i < CATS.length; i++) html += '<tr><td>' + LABELS[i] + '</td><td>' + t1off(CATS[i]) + '</td><td>' + t2off(CATS[i]) + '</td><td>' + t1def(CATS[i]) + '</td><td>' + t2def(CATS[i]) + '</td></tr>';
+        html += '</table></div>';
+
+        // Formule
+        html += '<div class="formula-header"><span class="big">Force = ((Stat Off + Stat Déf Adv) / 2) × Taux Déf Adv</span></div>';
 
         // Confrontation
-        const confT1_Total = totalOff1 * convOff1 / 100 - totalDef2 * convDef2 / 100;
-        const confT1_Tirs = tirsOff1 * convOff1 / 100 - tirsDef2 * convDef2 / 100;
-        const confT1_Buts = butsOff1 * convOff1 / 100 - butsDef2 * convDef2 / 100;
-        const confT1_Taux = convOff1 - convDef2;
-        const confT2_Total = totalOff2 * convOff2 / 100 - totalDef1 * convDef1 / 100;
-        const confT2_Tirs = tirsOff2 * convOff2 / 100 - tirsDef1 * convDef1 / 100;
-        const confT2_Buts = butsOff2 * convOff2 / 100 - butsDef1 * convDef1 / 100;
-        const confT2_Taux = convOff2 - convDef1;
+        html += '<div class="card"><table class="confrontation-table">';
+        html += '<tr><th></th><th>' + teamSpan(t1, true) + '</th><th>' + teamSpan(t2, false) + '</th><th></th></tr>';
+        html += '<tr><td class="axis-col">Total</td><td>' + cT1.toFixed(3) + ' (' + pT1 + '%)</td><td>' + cT2.toFixed(3) + ' (' + pT2 + '%)</td><td class="winner-col">' + (cT1 > cT2 ? '🟠' : '🔵') + '</td></tr>';
+        html += '<tr><td class="axis-col">Tirs</td><td>' + cTr1.toFixed(3) + ' (' + pTr1 + '%)</td><td>' + cTr2.toFixed(3) + ' (' + pTr2 + '%)</td><td class="winner-col">' + (cTr1 > cTr2 ? '🟠' : '🔵') + '</td></tr>';
+        html += '<tr><td class="axis-col">Buts</td><td>' + cB1.toFixed(3) + ' (' + pB1 + '%)</td><td>' + cB2.toFixed(3) + ' (' + pB2 + '%)</td><td class="winner-col">' + (cB1 > cB2 ? '🟠' : '🔵') + '</td></tr>';
+        html += '<tr><td class="axis-col">Taux</td><td>' + cTx1.toFixed(3) + ' (' + pTx1 + '%)</td><td>' + cTx2.toFixed(3) + ' (' + pTx2 + '%)</td><td class="winner-col">' + (cTx1 > cTx2 ? '🟠' : '🔵') + '</td></tr>';
+        html += '</table></div>';
 
-        const coeffT1 = 1 + Math.abs(confT1_Buts);
-        const coeffT2 = 1 + Math.abs(confT2_Buts);
-        const scoreConfT1 = Math.round(s1p * coeffT1);
-        const scoreConfT2 = Math.round(s2p * coeffT2);
+        // Domination globale
+        html += '<div class="domination-global">⚖️ Domination : ' + teamSpan(t1, true) + ' ' + domination + '% — ' + (100 - domination) + '% ' + teamSpan(t2, false);
+        html += '<div class="domination-detail">Détail : Total ' + pT1 + '% + Tirs ' + pTr1 + '% + Buts ' + pB1 + '% + Taux ' + pTx1 + '% = ' + (pT1 + pTr1 + pB1 + pTx1) + '% / 4 = ' + domination + '%</div></div>';
 
-        const axesWonT1 = (confT1_Total > confT2_Total ? 1 : 0) + (confT1_Tirs > confT2_Tirs ? 1 : 0) + (confT1_Buts > confT2_Buts ? 1 : 0) + (confT1_Taux > confT2_Taux ? 1 : 0);
-        const axesWonT2 = 4 - axesWonT1;
-        const totalGoals = scoreConfT1 + scoreConfT2;
-        const probOver15 = Math.min(95, Math.max(5, Math.round((totalGoals + 1) / 4 * 100)));
-        const probOver25 = Math.min(90, Math.max(5, Math.round(totalGoals / 3.5 * 100)));
-        const probBTTS = Math.min(88, Math.max(5, Math.round((scoreConfT1 + scoreConfT2) / 3.2 * 100)));
-        const totalForce = s1p + s1s + s2p + s2s;
-        const domination = totalForce > 0 ? Math.round(((s1p + s1s) / totalForce) * 100) : 50;
+        // Probabilités
+        html += '<div class="card"><div class="prob-circles">';
+        html += '<div class="prob-circle-item"><div class="label">Over 1.5</div><canvas id="probCircle1" width="90" height="90"></canvas><div class="pct">' + probOver15 + '%</div></div>';
+        html += '<div class="prob-circle-item"><div class="label">Over 2.5</div><canvas id="probCircle2" width="90" height="90"></canvas><div class="pct">' + probOver25 + '%</div></div>';
+        html += '<div class="prob-circle-item"><div class="label">BTTS</div><canvas id="probCircle3" width="90" height="90"></canvas><div class="pct">' + probBTTS + '%</div></div>';
+        html += '</div></div>';
 
-        currentResult = { team1, team2, sc1p: scoreConfT1, sc2p: scoreConfT2, sc1s, sc2s, butsOff1, butsOff2, butsDef1, butsDef2, convOff1, convOff2, convDef1, convDef2, s1p, s2p, s1s, s2s, totalOff1, totalOff2, totalDef1, totalDef2, tirsOff1, tirsOff2, tirsDef1, tirsDef2, probOver15, probOver25, probBTTS, domination, attTeam1, attTeam2, defTeam1, defTeam2, confT1_Total, confT1_Tirs, confT1_Buts, confT1_Taux, confT2_Total, confT2_Tirs, confT2_Buts, confT2_Taux, axesWonT1, axesWonT2, coeffT1, coeffT2, date: new Date().toISOString(), validated: null, id: Date.now() };
-        history.unshift(currentResult); if (history.length > 100) history = history.slice(0, 100);
-        localStorage.setItem('fpHistory', JSON.stringify(history)); savedResult = currentResult; localStorage.setItem('fpSavedResult', JSON.stringify(savedResult));
-        displayResults(currentResult);
-        isProcessing = false; analyzeBtn.disabled = false;
-        analyzeBtn.innerHTML = '<i class="fas fa-brain"></i> LIRE & CONFRONTER'; statusMsg.textContent = '✅ Analyse terminée';    });
+        // Score Probable
+        html += '<div class="card">';
+        html += '<div class="formula-header"><span class="big">Score = Buts offensifs × Domination %</span></div>';
+        html += '<div class="calcul-inline">' + teamSpan(t1, true) + ' = ' + bo + ' × ' + (domination / 100).toFixed(2) + ' = ' + (bo * domination / 100).toFixed(2) + ' → <span class="r">' + scoreT1 + '</span></div>';
+        html += '<div class="calcul-inline">' + teamSpan(t2, false) + ' = ' + bd + ' × ' + ((100 - domination) / 100).toFixed(2) + ' = ' + (bd * (100 - domination) / 100).toFixed(2) + ' → <span class="r">' + scoreT2 + '</span></div>';
+        html += '<div class="score-display"><div class="score-box"><div class="team-label">' + teamSpan(t1, true) + '</div><div class="score-num">' + scoreT1 + '</div></div><div class="score-vs">VS</div><div class="score-box t2"><div class="team-label">' + teamSpan(t2, false) + '</div><div class="score-num">' + scoreT2 + '</div></div></div>';
+        html += '<div class="section-title">⚽ SCORE PROBABLE</div>';
+        html += '</div>';
 
-    function shareWhatsApp() { const r = currentResult || savedResult; if (!r) return; const msg = `🏟️ *FootPredict - Pronostic*%0A%0A⚽ *Score confrontation :* ${r.team1} ${r.sc1p} - ${r.sc2p} ${r.team2}%0A📊 Over 1.5: ${r.probOver15}% | Over 2.5: ${r.probOver25}% | BTTS: ${r.probBTTS}% %0A%0A🚀 *Score potentiel :* ${r.team1} ${r.sc1s} - ${r.sc2s} ${r.team2}%0A⚔️ *Confrontation :* ${r.team1} ${r.axesWonT1}/4 axes gagnés%0A⚖️ Domination ${r.team1}: ${r.domination}%%0A%0A🤖 _FootPredict OCR_`; window.open(`https://wa.me/?text=${msg}`, '_blank'); }
-    function validateCurrentResult(valid) { if (!currentResult) return; currentResult.validated = valid; const idx = history.findIndex(h => h.id === currentResult.id); if (idx !== -1) { history[idx].validated = valid; localStorage.setItem('fpHistory', JSON.stringify(history)); } savedResult = currentResult; localStorage.setItem('fpSavedResult', JSON.stringify(savedResult)); showToast(valid ? '✅ Pronostic validé' : '❌ Pronostic perdu'); }
-    function updateSuccessStats() { const total = history.length, valid = history.filter(h => h.validated === true).length, invalid = history.filter(h => h.validated === false).length, rate = (valid + invalid) > 0 ? Math.round((valid / (valid + invalid)) * 100) : 0; const container = document.getElementById('successStats'); if (container) { container.innerHTML = `<div class="success-stat"><div class="s-value s-white">${total}</div><div class="s-label">Total</div></div><div class="success-stat"><div class="s-value s-green">${valid}</div><div class="s-label">✅ Réussis</div></div><div class="success-stat"><div class="s-value s-red">${invalid}</div><div class="s-label">❌ Perdus</div></div><div class="success-stat"><div class="s-value s-gold">${rate}%</div><div class="s-label">📈 Réussite</div></div>`; } }
-    function renderHistory() { updateSuccessStats(); if (!historyList) return; if (history.length === 0) { historyList.innerHTML = '<p style="color:#666; text-align:center; padding:20px;">Aucun historique</p>'; return; } historyList.innerHTML = history.map((h, i) => `<div class="history-item"><div class="h-header"><span class="h-date">${new Date(h.date).toLocaleDateString('fr-FR', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span><span class="h-score">${h.team1} ${h.sc1p} - ${h.sc2p} ${h.team2}</span><span class="h-status ${h.validated === true ? 'status-valid' : h.validated === false ? 'status-invalid' : 'status-pending'}">${h.validated === true ? '✅ Validé' : h.validated === false ? '❌ Perdu' : '⏳ En attente'}</span></div><div style="font-size:0.7rem; color:#888;">🚀 Potentiel : ${h.sc1s} - ${h.sc2s} | ⚔️ ${h.axesWonT1}/4 axes</div><div class="btn-row">${h.validated === null ? `<button class="btn-xs btn-valid" onclick="validateHistory(${i}, true)">✅ Valider</button><button class="btn-xs btn-invalid" onclick="validateHistory(${i}, false)">❌ Perdu</button>` : `<span style="font-size:0.7rem; color:#888;">${h.validated ? '✅ Validé' : '❌ Perdu'}</span>`}<button class="btn-xs btn-clear" onclick="deleteHistory(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''); }
-    function validateHistory(i, valid) { history[i].validated = valid; localStorage.setItem('fpHistory', JSON.stringify(history)); renderHistory(); showToast(valid ? '✅ Pronostic validé' : '❌ Pronostic perdu'); }
-    function deleteHistory(i) { history.splice(i, 1); localStorage.setItem('fpHistory', JSON.stringify(history)); renderHistory(); showToast('🗑️ Entrée supprimée'); }
-    document.getElementById('clearHistoryBtn').addEventListener('click', () => { if (confirm('Effacer tout l\'historique ?')) { history = []; localStorage.setItem('fpHistory', JSON.stringify(history)); renderHistory(); showToast('🗑️ Historique effacé'); } });
-    document.getElementById('exportHistoryBtn').addEventListener('click', () => { if (history.length === 0) { showToast('⚠️ Aucun historique'); return; } let csv = 'Date,Équipe 1,Score 1,Score 2,Équipe 2,Potentiel 1,Potentiel 2,Validé\n'; history.forEach(h => { csv += `"${new Date(h.date).toLocaleString('fr-FR')}","${h.team1}",${h.sc1p},${h.sc2p},"${h.team2}",${h.sc1s},${h.sc2s},${h.validated === true ? 'Oui' : h.validated === false ? 'Non' : 'En attente'}\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'footpredict-historique.csv'; a.click(); showToast('📥 CSV exporté'); });
-    document.getElementById('saveConfigBtn').addEventListener('click', () => { const config = { team1: team1Input.value || 'PSG', team2: team2Input.value || 'Bayern Munich', colOffTeam1, colDefTeam1 }; localStorage.setItem('fpConfig', JSON.stringify(config)); if (currentResult) localStorage.setItem('fpSavedResult', JSON.stringify(currentResult)); showToast('💾 Configuration et résultat sauvegardés'); });
-    document.getElementById('loadConfigBtn').addEventListener('click', () => { const saved = localStorage.getItem('fpConfig'), savedRes = localStorage.getItem('fpSavedResult'); if (saved) { try { const c = JSON.parse(saved); if (c.team1) team1Input.value = c.team1; if (c.team2) team2Input.value = c.team2; if (c.colOffTeam1) colOffTeam1 = c.colOffTeam1; if (c.colDefTeam1) colDefTeam1 = c.colDefTeam1; updateLabels(); setColumnButtons(); } catch (e) {} } if (savedRes) { try { savedResult = JSON.parse(savedRes); currentResult = savedResult; displayResults(savedResult); } catch (e) {} } showToast(saved || savedRes ? '📂 Configuration et résultat chargés' : '⚠️ Aucune sauvegarde'); });
-    document.getElementById('resetConfigBtn').addEventListener('click', () => { team1Input.value = 'PSG'; team2Input.value = 'Bayern Munich'; colOffTeam1 = 'gauche'; colDefTeam1 = 'gauche'; updateLabels(); setColumnButtons(); localStorage.removeItem('fpConfig'); localStorage.removeItem('fpSavedResult'); savedResult = null; currentResult = null; resultsDiv.innerHTML = ''; showToast('🔄 Réinitialisé'); });
+        // Score Potentiel
+        html += '<div class="card">';
+        html += '<div class="formula-header"><span class="big">Potentiel = (Buts Off − Buts Déf Adv) × (Tx Off/10) × (Tx Déf Adv/10)</span></div>';
+        html += '<div class="calcul-inline">' + teamSpan(t1, true) + ' = (' + bo + ' − ' + bd2 + ') × (' + co + '/10) × (' + cd2 + '/10) = ' + (bo - bd2).toFixed(1) + ' × ' + (co / 10).toFixed(1) + ' × ' + (cd2 / 10).toFixed(1) + ' = <span class="r">' + potT1 + '</span></div>';
+        html += '<div class="calcul-inline">' + teamSpan(t2, false) + ' = (' + bd + ' − ' + bd1 + ') × (' + cd + '/10) × (' + cd1 + '/10) = ' + (bd - bd1).toFixed(1) + ' × ' + (cd / 10).toFixed(1) + ' × ' + (cd1 / 10).toFixed(1) + ' = <span class="r">' + potT2 + '</span></div>';
+        html += '<div class="score-display"><div class="score-box"><div class="team-label">' + teamSpan(t1, true) + '</div><div class="score-num">' + potT1 + '</div></div><div class="score-vs">VS</div><div class="score-box t2"><div class="team-label">' + teamSpan(t2, false) + '</div><div class="score-num">' + potT2 + '</div></div></div>';
+        html += '<div class="section-title">🚀 SCORE POTENTIEL</div>';
+        html += '</div>';
+
+        // Jauge
+        html += '<div class="card">';
+        html += '<div class="gauge-container"><canvas id="gaugeCanvas"></canvas><span class="gauge-label">' + teamSpan(t1, true) + ' ' + domination + '% — ' + teamSpan(t2, false) + ' ' + (100 - domination) + '%</span></div>';
+        html += '<div style="text-align:center;margin-top:8px;font-weight:700;font-size:0.95rem;color:#fff;">→ ' + domMsg + '</div>';
+        html += '</div>';
+
+        // Radar
+        html += '<div class="chart-box"><h4>🎯 Radar de Confrontation</h4><canvas id="radarCanvas"></canvas><div class="radar-legend"><span><span class="dot" style="background:#f59e0b;"></span> ' + t1 + '</span><span><span class="dot" style="background:#3b82f6;"></span> ' + t2 + '</span></div></div>';
+
+        // WhatsApp
+        html += '<button class="btn btn-whatsapp" onclick="shareWhatsApp(currentResult)"><i class="fab fa-whatsapp"></i> Partager sur WhatsApp</button>';
+
+        resultsDiv.innerHTML = html;
+        setTimeout(() => {
+            const rc = D('radarCanvas'); if (rc) drawRadar(rc, t1, t2, d1, d2, winners);
+            const gc = D('gaugeCanvas'); if (gc) drawGauge(gc, domination, t1, t2);
+            const pc1 = D('probCircle1'); if (pc1) drawProbCircle(pc1, probOver15);
+            const pc2 = D('probCircle2'); if (pc2) drawProbCircle(pc2, probOver25);
+            const pc3 = D('probCircle3'); if (pc3) drawProbCircle(pc3, probBTTS);
+        }, 200);
+        ocrProgress.style.display = 'none'; isProcessing = false; analyzeBtn.disabled = false; statusMsg.textContent = '✅ Analyse terminée';
+    });
+
+    function renderHistory() {
+        if (history.length === 0) { historyList.innerHTML = '<p style="color:#666;text-align:center;padding:20px;">Aucun historique</p>'; return; }
+        const valid = history.filter(h => h.status === 'valid').length, invalid = history.filter(h => h.status === 'invalid').length, rate = (valid + invalid) > 0 ? Math.round((valid / (valid + invalid)) * 100) : 0;
+        D('successStats').innerHTML = '<div class="success-stat"><div class="s-value s-white">' + history.length + '</div><div class="s-label">Total</div></div><div class="success-stat"><div class="s-value s-green">' + valid + '</div><div class="s-label">✅ Réussis</div></div><div class="success-stat"><div class="s-value s-red">' + invalid + '</div><div class="s-label">❌ Perdus</div></div><div class="success-stat"><div class="s-value s-gold">' + rate + '%</div><div class="s-label">📈 Réussite</div></div>';
+        historyList.innerHTML = history.map((h, i) => {
+            const sc = h.status === 'valid' ? 'status-valid' : h.status === 'invalid' ? 'status-invalid' : 'status-pending';
+            const st = h.status === 'valid' ? '✅ Validé' : h.status === 'invalid' ? '❌ Perdu' : '⏳ En cours';
+            return '<div class="history-item"><div class="h-header"><span class="h-date">' + new Date(h.date).toLocaleString('fr-FR') + '</span><span class="h-score">' + h.team1 + ' ' + h.scoreT1 + ' - ' + h.scoreT2 + ' ' + h.team2 + '</span><span class="h-status ' + sc + '">' + st + '</span></div><div style="font-size:0.7rem;color:#888;">Potentiel : ' + h.potT1 + ' - ' + h.potT2 + ' | ' + h.axesWon + '/4 axes</div><div class="btn-row">' + (h.status === 'pending' ? '<button class="btn-valid btn-xs" onclick="updateStatus(' + i + ',\'valid\')">✅ Validé</button><button class="btn-invalid btn-xs" onclick="updateStatus(' + i + ',\'invalid\')">❌ Perdu</button>' : '<span style="font-size:0.7rem;color:#888;">' + st + '</span>') + '<button class="btn-clear btn-xs" onclick="deleteEntry(' + i + ')">🗑️</button></div></div>';
+        }).join('');
+    }
+
+    window.updateStatus = function(i, s) { history[i].status = s; localStorage.setItem('fpHistory', JSON.stringify(history)); renderHistory(); showToast(s === 'valid' ? '✅ Validé' : '❌ Perdu'); };
+    window.deleteEntry = function(i) { history.splice(i, 1); localStorage.setItem('fpHistory', JSON.stringify(history)); renderHistory(); showToast('🗑️ Supprimé'); };
+    D('clearHistoryBtn').addEventListener('click', () => { if (confirm('Effacer tout ?')) { history = []; localStorage.setItem('fpHistory', '[]'); renderHistory(); showToast('🗑️ Effacé'); } });
+    D('exportHistoryBtn').addEventListener('click', () => { if (history.length === 0) { showToast('Aucun historique'); return; } let csv = 'Date,Équipe 1,Score 1,Score 2,Équipe 2,Potentiel 1,Potentiel 2,Statut\n'; history.forEach(h => { csv += '"' + new Date(h.date).toLocaleString('fr-FR') + '","' + h.team1 + '",' + h.scoreT1 + ',' + h.scoreT2 + ',"' + h.team2 + '",' + h.potT1 + ',' + h.potT2 + ',' + (h.status === 'valid' ? 'Validé' : h.status === 'invalid' ? 'Perdu' : 'En cours') + '\n'; }); const b = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'footpredict_historique.csv'; a.click(); showToast('📥 CSV exporté'); });
+
+    D('saveConfigBtn').addEventListener('click', () => { const c = { team1: team1Input.value, team2: team2Input.value, colOffTeam1, colDefTeam1 }; localStorage.setItem('fpConfig', JSON.stringify(c)); if (currentResult) { localStorage.setItem('fpSavedResult', JSON.stringify(currentResult)); const entry = { date: new Date().toISOString(), team1: currentResult.team1, team2: currentResult.team2, scoreT1: currentResult.sc1p, scoreT2: currentResult.sc2p, potT1: currentResult.sc1s, potT2: currentResult.sc2s, axesWon: currentResult.axesWonT1, status: 'pending' }; history.unshift(entry); if (history.length > 500) history = history.slice(0, 500); localStorage.setItem('fpHistory', JSON.stringify(history)); } showToast('💾 Config et résultat sauvegardés'); });
+    D('loadConfigBtn').addEventListener('click', () => { const c = JSON.parse(localStorage.getItem('fpConfig') || 'null'), sr = JSON.parse(localStorage.getItem('fpSavedResult') || 'null'); if (c) { team1Input.value = c.team1 || ''; team2Input.value = c.team2 || ''; colOffTeam1 = c.colOffTeam1 || 'gauche'; colDefTeam1 = c.colDefTeam1 || 'gauche'; setColumnButtons(); updateLabels(); } if (sr) { currentResult = sr; showLoadedResult(sr); showToast('📂 Configuration et résultat chargés'); } else if (c) { showToast('📂 Configuration chargée (pas de résultat)'); } else { showToast('Aucune sauvegarde'); } });
+    D('resetConfigBtn').addEventListener('click', () => { localStorage.removeItem('fpConfig'); localStorage.removeItem('fpSavedResult'); team1Input.value = 'Porto'; team2Input.value = 'Alverca'; colOffTeam1 = 'gauche'; colDefTeam1 = 'gauche'; setColumnButtons(); updateLabels(); showToast('🔄 Config réinitialisée (historique conservé)'); });
+
+    function showLoadedResult(r) {
+        currentResult = r;
+        const t1 = r.team1, t2 = r.team2;
+        const pT1 = Math.round(r.partTotal * 100), pT2 = 100 - pT1;
+        const pTr1 = Math.round(r.partTirs * 100), pTr2 = 100 - pTr1;
+        const pB1 = Math.round(r.partButs * 100), pB2 = 100 - pB1;
+        const pTx1 = Math.round(r.partTaux * 100), pTx2 = 100 - pTx1;
+        const domMsg = getDomMessage(r.domination, t1);
+        const d1 = [r.confT1_Total, r.confT1_Tirs, r.confT1_Buts, r.confT1_Taux, r.domination];
+        const d2 = [r.confT2_Total, r.confT2_Tirs, r.confT2_Buts, r.confT2_Taux, 100 - r.domination];
+        const winners = [r.confT1_Total > r.confT2_Total ? 't1' : 't2', r.confT1_Tirs > r.confT2_Tirs ? 't1' : 't2', r.confT1_Buts > r.confT2_Buts ? 't1' : 't2', r.confT1_Taux > r.confT2_Taux ? 't1' : 't2', r.domination > 50 ? 't1' : 't2'];
+
+        let html = '';
+        html += '<div class="formula-header"><span class="big">Force = ((Stat Off + Stat Déf Adv) / 2) × Taux Déf Adv</span></div>';
+        html += '<div class="card"><table class="confrontation-table">';
+        html += '<tr><th></th><th>' + teamSpan(t1, true) + '</th><th>' + teamSpan(t2, false) + '</th><th></th></tr>';
+        html += '<tr><td class="axis-col">Total</td><td>' + r.confT1_Total.toFixed(3) + ' (' + pT1 + '%)</td><td>' + r.confT2_Total.toFixed(3) + ' (' + pT2 + '%)</td><td class="winner-col">' + (r.confT1_Total > r.confT2_Total ? '🟠' : '🔵') + '</td></tr>';
+        html += '<tr><td class="axis-col">Tirs</td><td>' + r.confT1_Tirs.toFixed(3) + ' (' + pTr1 + '%)</td><td>' + r.confT2_Tirs.toFixed(3) + ' (' + pTr2 + '%)</td><td class="winner-col">' + (r.confT1_Tirs > r.confT2_Tirs ? '🟠' : '🔵') + '</td></tr>';
+        html += '<tr><td class="axis-col">Buts</td><td>' + r.confT1_Buts.toFixed(3) + ' (' + pB1 + '%)</td><td>' + r.confT2_Buts.toFixed(3) + ' (' + pB2 + '%)</td><td class="winner-col">' + (r.confT1_Buts > r.confT2_Buts ? '🟠' : '🔵') + '</td></tr>';
+        html += '<tr><td class="axis-col">Taux</td><td>' + r.confT1_Taux.toFixed(3) + ' (' + pTx1 + '%)</td><td>' + r.confT2_Taux.toFixed(3) + ' (' + pTx2 + '%)</td><td class="winner-col">' + (r.confT1_Taux > r.confT2_Taux ? '🟠' : '🔵') + '</td></tr>';
+        html += '</table></div>';
+        html += '<div class="domination-global">⚖️ Domination : ' + teamSpan(t1, true) + ' ' + r.domination + '% — ' + (100 - r.domination) + '% ' + teamSpan(t2, false);
+        html += '<div class="domination-detail">Détail : Total ' + pT1 + '% + Tirs ' + pTr1 + '% + Buts ' + pB1 + '% + Taux ' + pTx1 + '% = ' + (pT1 + pTr1 + pB1 + pTx1) + '% / 4 = ' + r.domination + '%</div></div>';
+        html += '<div class="card"><div class="prob-circles">';
+        html += '<div class="prob-circle-item"><div class="label">Over 1.5</div><canvas id="probCircle1" width="90" height="90"></canvas><div class="pct">' + r.probOver15 + '%</div></div>';
+        html += '<div class="prob-circle-item"><div class="label">Over 2.5</div><canvas id="probCircle2" width="90" height="90"></canvas><div class="pct">' + r.probOver25 + '%</div></div>';
+        html += '<div class="prob-circle-item"><div class="label">BTTS</div><canvas id="probCircle3" width="90" height="90"></canvas><div class="pct">' + r.probBTTS + '%</div></div>';
+        html += '</div></div>';
+        html += '<div class="card"><div class="formula-header"><span class="big">Score = Buts offensifs × Domination %</span></div>';
+        html += '<div class="score-display"><div class="score-box"><div class="team-label">' + teamSpan(t1, true) + '</div><div class="score-num">' + r.sc1p + '</div></div><div class="score-vs">VS</div><div class="score-box t2"><div class="team-label">' + teamSpan(t2, false) + '</div><div class="score-num">' + r.sc2p + '</div></div></div>';
+        html += '<div class="section-title">⚽ SCORE PROBABLE</div></div>';
+        html += '<div class="card"><div class="formula-header"><span class="big">Potentiel = (Buts Off − Buts Déf Adv) × (Tx Off/10) × (Tx Déf Adv/10)</span></div>';
+        html += '<div class="score-display"><div class="score-box"><div class="team-label">' + teamSpan(t1, true) + '</div><div class="score-num">' + r.sc1s + '</div></div><div class="score-vs">VS</div><div class="score-box t2"><div class="team-label">' + teamSpan(t2, false) + '</div><div class="score-num">' + r.sc2s + '</div></div></div>';
+        html += '<div class="section-title">🚀 SCORE POTENTIEL</div></div>';
+        html += '<div class="card"><div class="gauge-container"><canvas id="gaugeCanvas"></canvas><span class="gauge-label">' + teamSpan(t1, true) + ' ' + r.domination + '% — ' + teamSpan(t2, false) + ' ' + (100 - r.domination) + '%</span></div>';
+        html += '<div style="text-align:center;margin-top:8px;font-weight:700;font-size:0.95rem;color:#fff;">→ ' + domMsg + '</div></div>';
+        html += '<div class="chart-box"><h4>🎯 Radar de Confrontation</h4><canvas id="radarCanvas"></canvas><div class="radar-legend"><span><span class="dot" style="background:#f59e0b;"></span> ' + t1 + '</span><span><span class="dot" style="background:#3b82f6;"></span> ' + t2 + '</span></div></div>';
+        html += '<button class="btn btn-whatsapp" onclick="shareWhatsApp(currentResult)"><i class="fab fa-whatsapp"></i> Partager sur WhatsApp</button>';
+
+        resultsDiv.innerHTML = html;
+        setTimeout(() => {
+            const rc = D('radarCanvas'); if (rc) drawRadar(rc, t1, t2, d1, d2, winners);
+            const gc = D('gaugeCanvas'); if (gc) drawGauge(gc, r.domination, t1, t2);
+            const pc1 = D('probCircle1'); if (pc1) drawProbCircle(pc1, r.probOver15);
+            const pc2 = D('probCircle2'); if (pc2) drawProbCircle(pc2, r.probOver25);
+            const pc3 = D('probCircle3'); if (pc3) drawProbCircle(pc3, r.probBTTS);
+        }, 200);
+    }
+
     renderHistory();
-    const savedCfg = localStorage.getItem('fpConfig'); if (savedCfg) { try { const c = JSON.parse(savedCfg); if (c.team1) team1Input.value = c.team1; if (c.team2) team2Input.value = c.team2; if (c.colOffTeam1) colOffTeam1 = c.colOffTeam1; if (c.colDefTeam1) colDefTeam1 = c.colDefTeam1; updateLabels(); setColumnButtons(); } catch (e) {} }
-    const savedRes = localStorage.getItem('fpSavedResult'); if (savedRes) { try { savedResult = JSON.parse(savedRes); currentResult = savedResult; displayResults(savedResult); } catch (e) {} }
+    const savedCfg = JSON.parse(localStorage.getItem('fpConfig') || 'null');
+    if (savedCfg) { team1Input.value = savedCfg.team1 || 'Porto'; team2Input.value = savedCfg.team2 || 'Alverca'; colOffTeam1 = savedCfg.colOffTeam1 || 'gauche'; colDefTeam1 = savedCfg.colDefTeam1 || 'gauche'; setColumnButtons(); updateLabels(); }
 </script>
 </body>
 </html>
