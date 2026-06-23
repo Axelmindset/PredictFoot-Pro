@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse de Match - xG System</title>
+    <title>Analyse de Match</title>
     <style>
         body { background: #1a1a2e; color: #fff; font-family: Arial; padding: 10px; }
         input { width: 50px; padding: 5px; margin: 3px; background: #0f3460; color: #fff; border: 1px solid #00d2ff; border-radius: 5px; text-align: center; }
@@ -56,9 +56,7 @@
 
 <script>
 function g(id) { var v = parseInt(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
-
 function factorial(n) { var r = 1; for (var i = 2; i <= n; i++) r *= i; return r; }
-
 function poisson(k, x) { if (x <= 0.001) x = 0.001; return Math.pow(x, k) * Math.exp(-x) / factorial(k); }
 
 function off(d) {
@@ -137,9 +135,7 @@ function calculer() {
     var A = [g('a1'),g('a2'),g('a3'),g('a4'),g('a5'),g('a6'),g('a7'),g('a8')];
     var B = [g('b1'),g('b2'),g('b3'),g('b4'),g('b5'),g('b6'),g('b7'),g('b8')];
     
-    var oA = off(A), dA = def(A);
-    var oB = off(B), dB = def(B);
-    
+    var oA = off(A), dA = def(A), oB = off(B), dB = def(B);
     var cA = conditions(A), cB = conditions(B);
     var sA = synergies(A), sB = synergies(B);
     
@@ -153,12 +149,10 @@ function calculer() {
     
     var adjA = xGA * (xGAB / 2.0);
     var adjB = xGB * (xGAA / 2.0);
-    
     var scA = arrondir(adjA), scB = arrondir(adjB);
     
     var capA = (A[2]+A[1]+A[3]+A[0]+A[6])/25*100;
     var capB = (B[2]+B[1]+B[3]+B[0]+B[6])/25*100;
-    
     var tAo = tab15('o', capA), tBo = tab15('o', capB);
     
     var pA = [], pB = [], sumA = 0, sumB = 0;
@@ -223,23 +217,12 @@ function calculer() {
     }
     
     var html = '<div class="green">🟢 xG GLOBAL : ' + xGG + '</div>';
-    
-    html += '<p>📊 <b>xG DU MATCH</b><br>';
-    html += nomA + ' : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2) = <b>' + adjA.toFixed(2) + '</b><br>';
-    html += nomB + ' : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2) = <b>' + adjB.toFixed(2) + '</b><br>';
-    html += '🎯 <b>SCORE PROBABLE : ' + scA + '-' + scB + '</b></p>';
-    
-    html += '<p>📈 <b>PROBABILITÉS</b><br>';
-    html += '🏆 1N2 : ' + nomA + ' ' + vA + '% | Nul ' + vN + '% | ' + nomB + ' ' + vB + '%<br>';
-    html += '📈 OVER 2.5 : ' + ov25 + '% | ⚽ BTTS : ' + btts + '%<br>';
-    html += '⏱️ 1ER BUT : ' + nomA + ' ' + firstA + '% | ' + nomB + ' ' + (100-firstA) + '%</p>';
-    
-    html += '<p>💰 <b>CÔTES</b><br>';
-    html += '1 : ' + (100/vA).toFixed(2) + ' | N : ' + (100/vN).toFixed(2) + ' | 2 : ' + (100/vB).toFixed(2) + ' | Over 2.5 : ' + (100/ov25).toFixed(2) + ' | BTTS : ' + (100/btts).toFixed(2) + '</p>';
+    html += '<p>📊 <b>xG DU MATCH</b><br>' + nomA + ' : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2) = <b>' + adjA.toFixed(2) + '</b><br>' + nomB + ' : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2) = <b>' + adjB.toFixed(2) + '</b><br>🎯 <b>SCORE PROBABLE : ' + scA + '-' + scB + '</b></p>';
+    html += '<p>📈 <b>PROBABILITÉS</b><br>🏆 1N2 : ' + nomA + ' ' + vA + '% | Nul ' + vN + '% | ' + nomB + ' ' + vB + '%<br>📈 OVER 2.5 : ' + ov25 + '% | ⚽ BTTS : ' + btts + '%<br>⏱️ 1ER BUT : ' + nomA + ' ' + firstA + '% | ' + nomB + ' ' + (100-firstA) + '%</p>';
+    html += '<p>💰 <b>CÔTES</b><br>1 : ' + (100/vA).toFixed(2) + ' | N : ' + (100/vN).toFixed(2) + ' | 2 : ' + (100/vB).toFixed(2) + ' | Over 2.5 : ' + (100/ov25).toFixed(2) + ' | BTTS : ' + (100/btts).toFixed(2) + '</p>';
     
     html += '<p>🔄 <b>CROISEMENT</b></p>';
     html += '<p style="font-size:11px;">Connexion forte quand <b>' + nomA + '</b> a une probabilité de marquer X buts proche de la probabilité que <b>' + nomB + '</b> encaisse X buts.</p>';
-    
     html += '<table><tr><th>Buts</th><th>' + nomA + ' marque</th><th>' + nomB + ' encaisse</th><th>Croisement</th></tr>';
     for (var k = 0; k < 4; k++) {
         var c = (hA===k) ? ' class="orange"' : '';
@@ -256,9 +239,7 @@ function calculer() {
     html += '</table>';
     if (hB !== -1) html += '<p class="explain">🔵 ' + nomB + ' trouve le chemin dans ' + nomA + ' : probabilité de marquer ' + hB + ' but(s) (' + pB[hB].toFixed(1) + '%) ≈ ' + nomA + ' encaisse ' + hB + ' but(s) (' + eA[hB] + '%).</p>';
     
-    html += '<p>🎯 <b>TOP 3 SCORES :</b> ';
-    for (var s = 0; s < 3; s++) html += top3[s].i + '-' + top3[s].j + ' ' + (top3[s].p*100).toFixed(1) + '%' + (s<2?' | ':'');
-    html += '</p>';
+    html += '<p>🎯 <b>TOP 3 SCORES :</b> ' + top3[0].i + '-' + top3[0].j + ' ' + (top3[0].p*100).toFixed(1) + '% | ' + top3[1].i + '-' + top3[1].j + ' ' + (top3[1].p*100).toFixed(1) + '% | ' + top3[2].i + '-' + top3[2].j + ' ' + (top3[2].p*100).toFixed(1) + '%</p>';
     
     if (sig) html += '<div class="signal-box">' + sig + '</div>';
     
