@@ -1,64 +1,31 @@
-Le xG Global et l'Over 2.5 sont encore faux. Le problème vient des probabilités qui dépassent 100% dans les calculs intermédiaires.
-
-Voici la version corrigée et testée :
-
 ```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse de Match</title>
+    <title>Test xG Global</title>
     <style>
-        body { background: #1a1a2e; color: #fff; font-family: Arial; padding: 10px; }
+        body { background: #1a1a2e; color: #fff; font-family: Arial; padding: 20px; }
+        .block { background: #0f3460; padding: 15px; margin: 10px 0; border-radius: 10px; }
+        .green { background: #00ff88; color: #000; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; }
+        button { padding: 15px; background: #e94560; color: #fff; border: none; border-radius: 10px; font-size: 18px; width: 100%; cursor: pointer; }
         input { width: 50px; padding: 5px; margin: 3px; background: #0f3460; color: #fff; border: 1px solid #00d2ff; border-radius: 5px; text-align: center; }
-        .nom { width: 120px; }
-        button { padding: 15px; background: #e94560; color: #fff; border: none; border-radius: 10px; font-size: 18px; width: 100%; margin: 10px 0; cursor: pointer; }
-        .team { background: #16213e; padding: 15px; margin: 10px 0; border-radius: 10px; }
-        .result { background: #0f3460; padding: 15px; margin: 10px 0; border-radius: 10px; display: none; }
-        .green { background: #00ff88; color: #000; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; margin: 10px 0; }
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
-        td, th { border: 1px solid #1a1a2e; padding: 5px; text-align: center; }
-        th { background: #e94560; }
-        .orange { background: #ff8c00; color: #000; font-weight: bold; }
-        .blue { background: #00aaff; color: #000; font-weight: bold; }
-        .explain { font-size: 11px; color: #ccc; margin-top: 2px; }
     </style>
 </head>
 <body>
 
-    <h2 style="text-align:center;color:#00d2ff;">⚽ ANALYSE DE MATCH</h2>
+    <h2>TEST xG GLOBAL - ESPAGNE vs ARABIE SAOUDITE</h2>
     
-    <div class="team">
-        <h3 style="color:#e94560;">Équipe A <input class="nom" id="nomA" value="Espagne"></h3>
-        A gagné le match <input id="a1" value="3"><br>
-        Les deux équipes marquent <input id="a2" value="1"><br>
-        Plus de 2,5 buts <input id="a3" value="3"><br>
-        Marquera le premier but <input id="a4" value="4"><br>
-        A encaissé le premier but <input id="a5" value="0"><br>
-        Nul ou victoire <input id="a6" value="5"><br>
-        Vainqueur 1re mi-temps <input id="a7" value="3"><br>
-        Clean sheets <input id="a8" value="4"><br>
-    </div>
+    <p>Espagne : <input id="a1" value="3"> <input id="a2" value="1"> <input id="a3" value="3"> <input id="a4" value="4"> <input id="a5" value="0"> <input id="a6" value="5"> <input id="a7" value="3"> <input id="a8" value="4"></p>
+    <p>Arabie : <input id="b1" value="2"> <input id="b2" value="3"> <input id="b3" value="2"> <input id="b4" value="3"> <input id="b5" value="2"> <input id="b6" value="3"> <input id="b7" value="1"> <input id="b8" value="0"></p>
     
-    <div class="team">
-        <h3 style="color:#00d2ff;">Équipe B <input class="nom" id="nomB" value="Arabie Saoudite"></h3>
-        A gagné le match <input id="b1" value="2"><br>
-        Les deux équipes marquent <input id="b2" value="3"><br>
-        Plus de 2,5 buts <input id="b3" value="2"><br>
-        Marquera le premier but <input id="b4" value="3"><br>
-        A encaissé le premier but <input id="b5" value="2"><br>
-        Nul ou victoire <input id="b6" value="3"><br>
-        Vainqueur 1re mi-temps <input id="b7" value="1"><br>
-        Clean sheets <input id="b8" value="0"><br>
-    </div>
+    <button onclick="tester()">TESTER</button>
     
-    <button onclick="calculer()">ANALYSER LE MATCH</button>
-    
-    <div class="result" id="resultat"></div>
+    <div class="result" id="out"></div>
 
 <script>
-function g(id) { var v = parseInt(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function g(id) { return parseInt(document.getElementById(id).value) || 0; }
 
 function factorial(n) { var r = 1; for (var i = 2; i <= n; i++) r *= i; return r; }
 
@@ -128,22 +95,12 @@ function synergies(d) {
     return [o, f];
 }
 
-function arrondir(x) {
-    if (x < 0.5) return 0; if (x < 1.5) return 1; if (x < 2.5) return 2;
-    if (x < 3.5) return 3; if (x < 4.5) return 4; return 5;
-}
-
-function calculer() {
-    var nomA = document.getElementById('nomA').value || 'A';
-    var nomB = document.getElementById('nomB').value || 'B';
-    
+function tester() {
     var A = [g('a1'),g('a2'),g('a3'),g('a4'),g('a5'),g('a6'),g('a7'),g('a8')];
     var B = [g('b1'),g('b2'),g('b3'),g('b4'),g('b5'),g('b6'),g('b7'),g('b8')];
     
-    var oA = off(A);
-    var dA = def(A);
-    var oB = off(B);
-    var dB = def(B);
+    var oA = off(A), dA = def(A);
+    var oB = off(B), dB = def(B);
     
     var cA = conditions(A), cB = conditions(B);
     var sA = synergies(A), sB = synergies(B);
@@ -159,118 +116,65 @@ function calculer() {
     var adjA = xGA * (xGAB / 2.0);
     var adjB = xGB * (xGAA / 2.0);
     
-    var scA = arrondir(adjA), scB = arrondir(adjB);
-    
     var capA = (A[2]+A[1]+A[3]+A[0]+A[6])/25*100;
     var capB = (B[2]+B[1]+B[3]+B[0]+B[6])/25*100;
     
     var tAo = tab15('o', capA), tBo = tab15('o', capB);
     
     var pA = [], pB = [];
+    var sumA = 0, sumB = 0;
     for (var k = 0; k < 6; k++) {
         var vA = (poisson(k, adjA)*100 + tAo[k]) / 2;
         var vB = (poisson(k, adjB)*100 + tBo[k]) / 2;
-        pA.push(Math.min(vA, 99.9));
-        pB.push(Math.min(vB, 99.9));
+        pA.push(vA); sumA += vA;
+        pB.push(vB); sumB += vB;
     }
     
-    var dcA = (A[7]+(5-A[1])+(5-A[4])+A[5])/20*100;
-    var dcB = (B[7]+(5-B[1])+(5-B[4])+B[5])/20*100;
+    // Normaliser si somme > 100%
+    if (sumA > 100) { for (var k = 0; k < 6; k++) pA[k] = pA[k] * 100 / sumA; }
+    if (sumB > 100) { for (var k = 0; k < 6; k++) pB[k] = pB[k] * 100 / sumB; }
     
-    var eA = tab15('d', dcA), eB = tab15('d', dcB);
+    var html = '<div class="block">';
+    html += '<p>Off A : ' + oA + ' | Def A : ' + dA + '</p>';
+    html += '<p>Off B : ' + oB + ' | Def B : ' + dB + '</p>';
+    html += '<p>xG A brut : ' + xGA.toFixed(2) + ' | xGA A : ' + xGAA.toFixed(2) + '</p>';
+    html += '<p>xG B brut : ' + xGB.toFixed(2) + ' | xGA B : ' + xGAB.toFixed(2) + '</p>';
+    html += '<p>xG ajusté A : ' + adjA.toFixed(2) + ' | xG ajusté B : ' + adjB.toFixed(2) + '</p>';
+    html += '<p>Capacité A : ' + capA.toFixed(0) + '% | Capacité B : ' + capB.toFixed(0) + '%</p>';
     
-    var crA = [], crB = [];
-    for (var k = 0; k < 4; k++) {
-        crA.push(+(pA[k] * eB[k] / 100).toFixed(1));
-        crB.push(+(pB[k] * eA[k] / 100).toFixed(1));
-    }
+    html += '<p><b>Probabilités A :</b> ';
+    for (var k = 0; k < 6; k++) html += k + 'b:' + pA[k].toFixed(1) + '% ';
+    html += '| Somme : ' + sumA.toFixed(1) + '%</p>';
     
-    var btts = +((pA[1] + pB[1]) / 2).toFixed(1);
+    html += '<p><b>Probabilités B :</b> ';
+    for (var k = 0; k < 6; k++) html += k + 'b:' + pB[k].toFixed(1) + '% ';
+    html += '| Somme : ' + sumB.toFixed(1) + '%</p>';
     
-    var p0 = +(pA[0]*pB[0]/10000).toFixed(4);
-    var p1 = +((pA[1]*pB[0] + pA[0]*pB[1])/10000).toFixed(4);
-    var p2 = +((pA[2]*pB[0] + pA[1]*pB[1] + pA[0]*pB[2])/10000).toFixed(4);
-    var p3 = +((pA[3]*pB[0] + pA[2]*pB[1] + pA[1]*pB[2] + pA[0]*pB[3])/10000).toFixed(4);
-    var p4 = +((pA[4]*pB[0] + pA[3]*pB[1] + pA[2]*pB[2] + pA[1]*pB[3] + pA[0]*pB[4])/10000).toFixed(4);
-    var p5 = +(1 - p0 - p1 - p2 - p3 - p4).toFixed(4);
+    var p0 = pA[0]*pB[0]/10000;
+    var p1 = (pA[1]*pB[0] + pA[0]*pB[1])/10000;
+    var p2 = (pA[2]*pB[0] + pA[1]*pB[1] + pA[0]*pB[2])/10000;
+    var p3 = (pA[3]*pB[0] + pA[2]*pB[1] + pA[1]*pB[2] + pA[0]*pB[3])/10000;
+    var p4 = (pA[4]*pB[0] + pA[3]*pB[1] + pA[2]*pB[2] + pA[1]*pB[3] + pA[0]*pB[4])/10000;
+    var p5 = 1 - p0 - p1 - p2 - p3 - p4;
     if (p5 < 0) p5 = 0;
     
-    var ov25 = +((1-p0-p1-p2)*100).toFixed(1);
-    var xGG = +(1*p1 + 2*p2 + 3*p3 + 4*p4 + 5*p5).toFixed(2);
+    var sumP = p0+p1+p2+p3+p4+p5;
     
-    var scores = [];
-    for (var i = 0; i < 6; i++) {
-        for (var j = 0; j < 6; j++) {
-            scores.push({i:i, j:j, p: pA[i]*pB[j]/10000});
-        }
-    }
-    scores.sort(function(a,b){return b.p-a.p;});
-    var top3 = scores.slice(0,3);
+    html += '<p>P(0)=' + (p0*100).toFixed(2) + '% P(1)=' + (p1*100).toFixed(2) + '% P(2)=' + (p2*100).toFixed(2) + '% P(3)=' + (p3*100).toFixed(2) + '% P(4)=' + (p4*100).toFixed(2) + '% P(5)=' + (p5*100).toFixed(2) + '%</p>';
+    html += '<p>Somme P(0..5) : ' + (sumP*100).toFixed(1) + '%</p>';
     
-    var diff = oA - oB;
-    var vA,vN,vB;
-    if (diff>20){vA=75;vN=18;vB=7;}else if(diff>=15){vA=70;vN=20;vB=10;}else if(diff>=10){vA=60;vN=25;vB=15;}
-    else if(diff>=5){vA=50;vN=30;vB=20;}else if(diff>=0){vA=40;vN=33;vB=27;}else if(diff>=-4){vA=27;vN=33;vB=40;}
-    else if(diff>=-9){vA=20;vN=30;vB=50;}else if(diff>=-14){vA=15;vN=25;vB=60;}else if(diff>=-20){vA=10;vN=20;vB=70;}else{vA=7;vN=18;vB=75;}
+    var xGG = 0*p0 + 1*p1 + 2*p2 + 3*p3 + 4*p4 + 5*p5;
+    var ov25 = (1-p0-p1-p2)*100;
     
-    var firstA = Math.round((A[3]+A[6])/(A[3]+A[6]+B[3]+B[6])*100);
-    if (isNaN(firstA)) firstA = 50;
+    html += '<div class="green">xG Global = ' + xGG.toFixed(2) + '</div>';
+    html += '<p>Over 2.5 = ' + ov25.toFixed(1) + '%</p>';
+    html += '</div>';
     
-    var hA = -1, hB = -1;
-    for (var k = 0; k < 4; k++) {
-        if (Math.abs(pA[k]-eB[k])<=5 && pA[k]>10 && hA===-1) hA = k;
-        if (Math.abs(pB[k]-eA[k])<=5 && pB[k]>10 && hB===-1) hB = k;
-    }
-    
-    var sig = '';
-    var hasBTTS = false;
-    for (var s = 0; s < top3.length; s++) {
-        if (top3[s].i >= 1 && top3[s].j >= 1) { hasBTTS = true; break; }
-    }
-    if (Math.abs(pA[1]-pB[1])<=5 && hasBTTS) {
-        sig = '🔵 MIROIR DE MARQUER : ' + nomA + ' ' + pA[1].toFixed(1) + '% • ' + nomB + ' ' + pB[1].toFixed(1) + '% | Score BTTS dans le top 3';
-    }
-    
-    var html = '<div class="green">🟢 xG GLOBAL : ' + xGG + '</div>';
-    html += '<p>📊 <b>xG DU MATCH</b><br>' + nomA + ' : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2) = <b>' + adjA.toFixed(2) + '</b><br>' + nomB + ' : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2) = <b>' + adjB.toFixed(2) + '</b><br>🎯 <b>SCORE PROBABLE : ' + scA + '-' + scB + '</b></p>';
-    html += '<p>📈 <b>PROBABILITÉS</b><br>🏆 1N2 : ' + nomA + ' ' + vA + '% | Nul ' + vN + '% | ' + nomB + ' ' + vB + '%<br>📈 OVER 2.5 : ' + ov25 + '% | ⚽ BTTS : ' + btts + '%<br>⏱️ 1ER BUT : ' + nomA + ' ' + firstA + '% | ' + nomB + ' ' + (100-firstA) + '%</p>';
-    html += '<p>💰 <b>CÔTES</b><br>1 : ' + (100/vA).toFixed(2) + ' | N : ' + (100/vN).toFixed(2) + ' | 2 : ' + (100/vB).toFixed(2) + ' | Over 2.5 : ' + (100/ov25).toFixed(2) + ' | BTTS : ' + (100/btts).toFixed(2) + '</p>';
-    
-    html += '<p>🔄 <b>CROISEMENT</b></p>';
-    html += '<p style="font-size:11px;">Connexion forte quand <b>' + nomA + '</b> a une probabilité de marquer X buts proche de la probabilité que <b>' + nomB + '</b> encaisse X buts.</p>';
-    html += '<table><tr><th>Buts</th><th>' + nomA + ' marque</th><th>' + nomB + ' encaisse</th><th>Croisement</th></tr>';
-    for (var k = 0; k < 4; k++) {
-        var c = (hA===k) ? ' class="orange"' : '';
-        html += '<tr' + c + '><td>' + k + '</td><td>' + pA[k].toFixed(1) + '%</td><td>' + eB[k] + '%</td><td>' + crA[k] + '%</td></tr>';
-    }
-    html += '</table>';
-    if (hA !== -1) html += '<p class="explain">🟠 ' + nomA + ' trouve le chemin dans ' + nomB + ' : probabilité de marquer ' + hA + ' but(s) (' + pA[hA].toFixed(1) + '%) ≈ ' + nomB + ' encaisse ' + hA + ' but(s) (' + eB[hA] + '%).</p>';
-    
-    html += '<table><tr><th>Buts</th><th>' + nomB + ' marque</th><th>' + nomA + ' encaisse</th><th>Croisement</th></tr>';
-    for (var k = 0; k < 4; k++) {
-        var c = (hB===k) ? ' class="blue"' : '';
-        html += '<tr' + c + '><td>' + k + '</td><td>' + pB[k].toFixed(1) + '%</td><td>' + eA[k] + '%</td><td>' + crB[k] + '%</td></tr>';
-    }
-    html += '</table>';
-    if (hB !== -1) html += '<p class="explain">🔵 ' + nomB + ' trouve le chemin dans ' + nomA + ' : probabilité de marquer ' + hB + ' but(s) (' + pB[hB].toFixed(1) + '%) ≈ ' + nomA + ' encaisse ' + hB + ' but(s) (' + eA[hB] + '%).</p>';
-    
-    html += '<p>🎯 <b>TOP 3 SCORES :</b> ';
-    for (var s = 0; s < 3; s++) html += top3[s].i + '-' + top3[s].j + ' ' + (top3[s].p*100).toFixed(1) + '%' + (s<2?' | ':'');
-    html += '</p>';
-    
-    if (sig) html += '<p style="background:#00aaff;color:#000;padding:8px;border-radius:5px;">' + sig + '</p>';
-    
-    document.getElementById('resultat').innerHTML = html;
-    document.getElementById('resultat').style.display = 'block';
+    document.getElementById('out').innerHTML = html;
 }
 </script>
 </body>
 </html>
 ```
 
-Les corrections clés :
-
-· pA[k]*pB[j]/10000 pour les scores (car pA et pB sont déjà en %)
-· Math.min(vA, 99.9) pour éviter les probas > 100%
-· Tous les calculs de p0 à p5 en /10000
-· ov25 et xGG corrects maintenant
+Ce code affiche toutes les étapes intermédiaires pour voir où ça bloque.
