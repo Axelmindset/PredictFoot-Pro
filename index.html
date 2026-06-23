@@ -6,876 +6,437 @@
     <title>PrédictFoot Pro - xG</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
     <style>
-        /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0b0f19;
-            color: #e8edf5;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            max-width: 1100px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        /* ===== HEADER ===== */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #10b981, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .header span {
-            font-size: 14px;
-            color: #94a3b8;
-            background: #1e293b;
-            padding: 6px 16px;
-            border-radius: 40px;
-            border: 1px solid #2d3a4f;
-        }
-
-        /* ===== CARTES ===== */
-        .card {
-            background: #141c2b;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #1e2a3d;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #e2e8f0;
-        }
-        .card-title i {
-            color: #10b981;
-        }
-
-        /* ===== GRILLE ===== */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
-        }
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        .grid-5 {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-        }
-
-        /* ===== CHAMPS ===== */
-        .field-group {
-            margin-bottom: 16px;
-        }
-        .field-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-        .field-group input,
-        .field-group select {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: 1px solid #1e2a3d;
-            background: #0f172a;
-            color: #f1f5f9;
-            font-size: 16px;
-            font-weight: 500;
-            transition: border 0.2s, box-shadow 0.2s;
-        }
-        .field-group input:focus,
-        .field-group select:focus {
-            border-color: #10b981;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
-        }
-        .field-group input::placeholder {
-            color: #475569;
-        }
-
-        /* ===== BOUTONS ===== */
-        .btn {
-            padding: 14px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn:active {
-            transform: scale(0.97);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
-        }
-        .btn-primary:hover {
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-        .btn-secondary {
-            background: #1e293b;
-            color: #e2e8f0;
-            border: 1px solid #2d3a4f;
-        }
-        .btn-secondary:hover {
-            background: #2d3a4f;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
-        }
-        .btn-success:hover {
-            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
-        }
-        .btn-block {
-            width: 100%;
-            justify-content: center;
-        }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
-
-        /* ===== RÉSULTATS ===== */
-        #results {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        #results.show {
-            display: block;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-card {
-            background: #0f172a;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #1e2a3d;
-        }
-        .result-label {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #64748b;
-            margin-bottom: 6px;
-        }
-        .result-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #f1f5f9;
-        }
-        .result-value .highlight {
-            color: #10b981;
-        }
-        .result-value .danger {
-            color: #ef4444;
-        }
-        .result-value .warning {
-            color: #f59e0b;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .badge-green { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
-        .badge-red { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
-        .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
-        .badge-gray { background: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid #64748b; }
-
-        .divider {
-            border: none;
-            border-top: 1px solid #1e2a3d;
-            margin: 20px 0;
-        }
-
-        /* ===== TABLEAU BON SENS ===== */
-        .bonsens-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-        .bonsens-table th,
-        .bonsens-table td {
-            padding: 10px 14px;
-            text-align: center;
-            border-bottom: 1px solid #1e2a3d;
-        }
-        .bonsens-table th {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #94a3b8;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .bonsens-table td {
-            font-weight: 600;
-            font-size: 18px;
-        }
-        .bonsens-table .team-name {
-            text-align: left;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-        .bonsens-table .highlight-cell {
-            color: #10b981;
-        }
-
-        /* ===== TOP 3 ===== */
-        .top3-item {
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid #1e2a3d;
-        }
-        .top3-score {
-            font-size: 28px;
-            font-weight: 700;
-            color: #f1f5f9;
-        }
-        .top3-prob {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-            .grid-3 { grid-template-columns: 1fr; }
-            .grid-4 { grid-template-columns: 1fr 1fr; }
-            .grid-5 { grid-template-columns: 1fr 1fr; }
-            .header h1 { font-size: 20px; }
-            .btn-group { flex-direction: column; }
-            .btn { width: 100%; justify-content: center; }
-        }
-        @media (max-width: 480px) {
-            .grid-4 { grid-template-columns: 1fr; }
-            .grid-5 { grid-template-columns: 1fr; }
-            .result-value { font-size: 20px; }
-        }
-
-        /* ===== TOAST ===== */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1e293b;
-            color: #f1f5f9;
-            padding: 16px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-            border-left: 4px solid #10b981;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            z-index: 999;
-            max-width: 400px;
-        }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .toast.error {
-            border-left-color: #ef4444;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0b0f19; color: #e8edf5; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { max-width: 1100px; width: 100%; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+        .header h1 { font-size: 26px; font-weight: 700; background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header span { font-size: 14px; color: #94a3b8; background: #1e293b; padding: 6px 16px; border-radius: 40px; border: 1px solid #2d3a4f; }
+        .card { background: #141c2b; border-radius: 20px; padding: 24px; margin-bottom: 24px; border: 1px solid #1e2a3d; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #e2e8f0; }
+        .card-title i { color: #10b981; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .field-group { margin-bottom: 16px; }
+        .field-group label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; margin-bottom: 6px; }
+        .field-group input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #1e2a3d; background: #0f172a; color: #f1f5f9; font-size: 16px; font-weight: 500; transition: border 0.2s, box-shadow 0.2s; }
+        .field-group input:focus { border-color: #10b981; outline: none; box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+        .btn { padding: 14px 28px; border-radius: 40px; font-weight: 600; font-size: 16px; border: none; cursor: pointer; transition: transform 0.15s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 14px rgba(16,185,129,0.3); }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+        .btn-secondary { background: #1e293b; color: #e2e8f0; border: 1px solid #2d3a4f; }
+        .btn-secondary:hover { background: #2d3a4f; }
+        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
+        .btn-success:hover { box-shadow: 0 6px 20px rgba(34,197,94,0.4); }
+        .btn-block { width: 100%; justify-content: center; }
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+        #results { display: none; animation: fadeIn 0.5s ease; }
+        #results.show { display: block; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .result-card { background: #0f172a; border-radius: 16px; padding: 20px; border: 1px solid #1e2a3d; }
+        .result-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 6px; }
+        .result-value { font-size: 24px; font-weight: 700; color: #f1f5f9; }
+        .badge { display: inline-block; padding: 4px 14px; border-radius: 40px; font-size: 13px; font-weight: 600; }
+        .badge-green { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981; }
+        .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid #ef4444; }
+        .badge-yellow { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        .badge-gray { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid #64748b; }
+        .bonsens-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        .bonsens-table th, .bonsens-table td { padding: 10px 14px; text-align: center; border-bottom: 1px solid #1e2a3d; }
+        .bonsens-table th { font-size: 12px; text-transform: uppercase; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px; }
+        .bonsens-table td { font-weight: 600; font-size: 18px; }
+        .bonsens-table .team-name { text-align: left; font-weight: 600; color: #e2e8f0; }
+        .bonsens-table .highlight-cell { color: #10b981; }
+        .top3-item { background: #0f172a; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #1e2a3d; }
+        .top3-score { font-size: 28px; font-weight: 700; color: #f1f5f9; }
+        .top3-prob { font-size: 14px; color: #94a3b8; margin-top: 4px; }
+        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; } .header h1 { font-size: 20px; } .btn-group { flex-direction: column; } .btn { width: 100%; justify-content: center; } }
+        @media (max-width: 480px) { .grid-4, .grid-5 { grid-template-columns: 1fr; } .result-value { font-size: 20px; } }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #1e293b; color: #f1f5f9; padding: 16px 24px; border-radius: 40px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.5); border-left: 4px solid #10b981; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; z-index: 999; max-width: 400px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.error { border-left-color: #ef4444; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-
-        <!-- ===== HEADER ===== -->
-        <div class="header">
-            <h1>⚽ PrédictFoot Pro</h1>
-            <span>v2.1 · xG System</span>
-        </div>
-
-        <!-- ===== SAISIE ===== -->
-        <div class="card">
-            <div class="card-title"><i>📊</i> Données du match</div>
-            <div class="grid-2">
-                <!-- Équipe A -->
-                <div>
-                    <div class="field-group">
-                        <label>🏠 Équipe A</label>
-                        <input type="text" id="nameA" placeholder="Nom" value="POR" />
-                    </div>
-                    <div class="field-group">
-                        <label>Buts marqués / match</label>
-                        <input type="number" id="goalsScoredA" value="1.9" step="0.1" />
-                    </div>
-                    <div class="field-group">
-                        <label>Buts encaissés / match</label>
-                        <input type="number" id="goalsConcededA" value="0.6" step="0.1" />
-                    </div>
-                </div>
-                <!-- Équipe B -->
-                <div>
-                    <div class="field-group">
-                        <label>✈️ Équipe B</label>
-                        <input type="text" id="nameB" placeholder="Nom" value="UZB" />
-                    </div>
-                    <div class="field-group">
-                        <label>Buts marqués / match</label>
-                        <input type="number" id="goalsScoredB" value="1.0" step="0.1" />
-                    </div>
-                    <div class="field-group">
-                        <label>Buts encaissés / match</label>
-                        <input type="number" id="goalsConcededB" value="1.6" step="0.1" />
-                    </div>
-                </div>
-            </div>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
-                <button class="btn btn-primary" id="analyserBtn" style="flex:1;">🚀 Analyser</button>
-                <button class="btn btn-secondary" onclick="loadDemo()">⚡ Démo</button>
-            </div>
-        </div>
-
-        <!-- ===== RÉSULTATS ===== -->
-        <div id="results">
-
-            <!-- Résumé KPI -->
-            <div class="grid-4" id="kpiGrid"></div>
-
-            <!-- Pronostic sûr & Score probable -->
-            <div class="card">
-                <div class="grid-2">
-                    <div>
-                        <div class="result-label">🔒 Pronostic le plus sûr</div>
-                        <div id="safeBet" style="font-size:28px; font-weight:700; color:#10b981; margin-top:6px;">--</div>
-                    </div>
-                    <div>
-                        <div class="result-label">🎯 Score probable</div>
-                        <div id="probableScore" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top 3 scores -->
-            <div class="card">
-                <div class="card-title"><i>🎲</i> Scores les plus probables</div>
-                <div class="grid-3" id="top3Container"></div>
-            </div>
-
-            <!-- Probabilités détaillées -->
-            <div class="card">
-                <div class="card-title"><i>📈</i> Probabilités</div>
-                <div class="grid-2" id="probaGrid"></div>
-            </div>
-
-            <!-- Tableau "Bon Sens" -->
-            <div class="card">
-                <div class="card-title"><i>🧠</i> Ce que le bon sens dit</div>
-                <div id="bonSensContainer"></div>
-                <div id="bonSensText" style="margin-top:14px; color:#94a3b8; font-size:14px; line-height:1.6;"></div>
-            </div>
-
-            <!-- Côtes -->
-            <div class="card">
-                <div class="card-title"><i>💰</i> Côtes estimées</div>
-                <div class="grid-5" id="oddsGrid"></div>
-            </div>
-
-            <!-- Résumé texte -->
-            <div class="card">
-                <div class="card-title"><i>📋</i> Résumé du match</div>
-                <div id="summaryText" style="font-size:15px; line-height:1.7; color:#cbd5e1;"></div>
-            </div>
-
-            <!-- Boutons action -->
-            <div class="btn-group">
-                <button class="btn btn-success" id="saveBtn" style="flex:1;">💾 Sauvegarder ce pronostic</button>
-                <button class="btn btn-secondary" id="whatsappBtn" style="flex:1;">📱 Copier WhatsApp</button>
-            </div>
-
-        </div>
-
-        <!-- ===== TOAST ===== -->
-        <div id="toast" class="toast"></div>
-
+<div class="container">
+    <div class="header">
+        <h1>⚽ PrédictFoot Pro</h1>
+        <span>v2.2 · xG System</span>
     </div>
 
-    <script>
-        // ============================================================
-        //  CŒUR DES FORMULES (validées)
-        // ============================================================
+    <div class="card">
+        <div class="card-title"><i>📊</i> Données du match</div>
+        <div class="grid-2">
+            <div>
+                <div class="field-group"><label>🏠 Équipe A</label><input type="text" id="nameA" placeholder="Nom" value="POR" /></div>
+                <div class="field-group"><label>Buts marqués / match</label><input type="number" id="goalsScoredA" value="0.6" step="0.1" /></div>
+                <div class="field-group"><label>Buts encaissés / match</label><input type="number" id="goalsConcededA" value="1.8" step="0.1" /></div>
+            </div>
+            <div>
+                <div class="field-group"><label>✈️ Équipe B</label><input type="text" id="nameB" placeholder="Nom" value="UZB" /></div>
+                <div class="field-group"><label>Buts marqués / match</label><input type="number" id="goalsScoredB" value="3.1" step="0.1" /></div>
+                <div class="field-group"><label>Buts encaissés / match</label><input type="number" id="goalsConcededB" value="1.6" step="0.1" /></div>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+            <button class="btn btn-primary" id="analyserBtn" style="flex:1;">🚀 Analyser</button>
+            <button class="btn btn-secondary" onclick="loadDemo()">⚡ Démo</button>
+        </div>
+    </div>
 
-        // ÉTAPE 1 : xG
-        function computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA) {
-            const xgA = (goalsScoredA * goalsConcededB + goalsConcededB) / 2;
-            const xgB = (goalsScoredB * goalsConcededA + goalsConcededA) / 2;
-            return { xgA, xgB };
+    <div id="results">
+        <div class="grid-4" id="kpiGrid"></div>
+        <div class="card">
+            <div class="grid-2">
+                <div><div class="result-label">🔒 Pronostic le plus sûr</div><div id="safeBet" style="font-size:28px; font-weight:700; color:#10b981; margin-top:6px;">--</div></div>
+                <div><div class="result-label">🎯 Score probable</div><div id="probableScore" style="font-size:28px; font-weight:700; margin-top:6px;">--</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>🎲</i> Scores les plus probables</div>
+            <div class="grid-3" id="top3Container"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>📈</i> Probabilités</div>
+            <div class="grid-2" id="probaGrid"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>🧠</i> Ce que le bon sens dit</div>
+            <div id="bonSensContainer"></div>
+            <div id="bonSensText" style="margin-top:14px; color:#94a3b8; font-size:14px; line-height:1.6;"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>💰</i> Côtes estimées</div>
+            <div class="grid-5" id="oddsGrid"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>📋</i> Résumé du match</div>
+            <div id="summaryText" style="font-size:15px; line-height:1.7; color:#cbd5e1;"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" id="saveBtn" style="flex:1;">💾 Sauvegarder</button>
+            <button class="btn btn-secondary" id="whatsappBtn" style="flex:1;">📱 WhatsApp</button>
+        </div>
+    </div>
+    <div id="toast" class="toast"></div>
+</div>
+
+<script>
+    // ============================================================
+    //  FORMULES
+    // ============================================================
+
+    function computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA) {
+        const xgA = (goalsScoredA * goalsConcededB + goalsConcededB) / 2;
+        const xgB = (goalsScoredB * goalsConcededA + goalsConcededA) / 2;
+        return { xgA, xgB };
+    }
+
+    function computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA) {
+        const xgaA = (goalsConcededA * goalsScoredB + goalsScoredB) / 2;
+        const xgaB = (goalsConcededB * goalsScoredA + goalsScoredA) / 2;
+        return { xgaA, xgaB };
+    }
+
+    function confront(xgA, xgB, xgaA, xgaB) {
+        const moyXGA = (xgaA + xgaB) / 2;
+        const adjA = xgA * (xgaB / moyXGA);
+        const adjB = xgB * (xgaA / moyXGA);
+        return { adjA, adjB };
+    }
+
+    function poisson(lambda, k) {
+        if (k === 0) return Math.exp(-lambda);
+        let fact = 1;
+        for (let i = 2; i <= k; i++) fact *= i;
+        return Math.pow(lambda, k) * Math.exp(-lambda) / fact;
+    }
+
+    function poissonProbs(lambda, maxK = 6) {
+        const probs = [];
+        for (let k = 0; k <= maxK; k++) {
+            probs.push(poisson(lambda, k));
         }
+        let sum = probs.reduce((a, b) => a + b, 0);
+        probs.push(1 - sum);
+        return probs;
+    }
 
-        // ÉTAPE 2 : xGA
-        function computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA) {
-            const xgaA = (goalsConcededA * goalsScoredB + goalsScoredB) / 2;
-            const xgaB = (goalsConcededB * goalsScoredA + goalsScoredA) / 2;
-            return { xgaA, xgaB };
+    function getTableau15(capacite) {
+        const table = [
+            { max: 14, probs: [0.85, 0.12, 0.02, 0.01, 0, 0, 0] },
+            { max: 29, probs: [0.75, 0.18, 0.05, 0.02, 0, 0, 0] },
+            { max: 44, probs: [0.65, 0.22, 0.09, 0.03, 0.01, 0, 0] },
+            { max: 59, probs: [0.55, 0.25, 0.13, 0.05, 0.02, 0, 0] },
+            { max: 74, probs: [0.45, 0.27, 0.16, 0.08, 0.03, 0.01, 0] },
+            { max: 89, probs: [0.38, 0.28, 0.18, 0.10, 0.04, 0.02, 0] },
+            { max: 100, probs: [0.32, 0.28, 0.20, 0.12, 0.05, 0.03, 0] }
+        ];
+        const pct = Math.min(100, capacite * 100);
+        for (let row of table) {
+            if (pct <= row.max) return row.probs;
         }
+        return table[table.length - 1].probs;
+    }
 
-        // ÉTAPE 3 : Confrontation
-        function confront(xgA, xgB, xgaA, xgaB) {
-            const moyXGA = (xgaA + xgaB) / 2;
-            const adjA = xgA * (xgaB / moyXGA);
-            const adjB = xgB * (xgaA / moyXGA);
-            return { adjA, adjB };
-        }
+    function combineProbs(poissonProbs, tableauProbs) {
+        return poissonProbs.map((p, i) => (p + tableauProbs[i]) / 2);
+    }
 
-        // ÉTAPE 4 : Loi de Poisson
-        function poisson(lambda, k) {
-            if (k === 0) return Math.exp(-lambda);
-            let fact = 1;
-            for (let i = 2; i <= k; i++) fact *= i;
-            return Math.pow(lambda, k) * Math.exp(-lambda) / fact;
-        }
+    // ============================================================
+    //  ANALYSE (CORRIGÉE)
+    // ============================================================
 
-        function poissonProbs(lambda, maxK = 5) {
-            const probs = [];
-            for (let k = 0; k <= maxK; k++) {
-                probs.push(poisson(lambda, k));
+    function analyzeMatch(nameA, nameB, goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB) {
+        const { xgA, xgB } = computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA);
+        const { xgaA, xgaB } = computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA);
+        const { adjA, adjB } = confront(xgA, xgB, xgaA, xgaB);
+
+        const poissonA = poissonProbs(adjA);
+        const poissonB = poissonProbs(adjB);
+
+        const capA = xgA / (xgA + xgB);
+        const capB = xgB / (xgA + xgB);
+
+        const tabA = getTableau15(capA);
+        const tabB = getTableau15(capB);
+
+        const finalA = combineProbs(poissonA, tabA);
+        const finalB = combineProbs(poissonB, tabB);
+
+        // 1N2
+        let winA = 0, draw = 0, winB = 0;
+        for (let i = 0; i <= 6; i++) {
+            for (let j = 0; j <= 6; j++) {
+                const prob = finalA[i] * finalB[j];
+                if (i > j) winA += prob;
+                else if (i === j) draw += prob;
+                else winB += prob;
             }
-            let sum = probs.reduce((a, b) => a + b, 0);
-            probs.push(1 - sum); // index 6 = 5+
-            return probs;
         }
 
-        // ÉTAPE 5 : Tableau 15
-        function getTableau15(capacite) {
-            const table = [
-                { max: 14, probs: [0.85, 0.12, 0.02, 0.01, 0, 0, 0] },
-                { max: 29, probs: [0.75, 0.18, 0.05, 0.02, 0, 0, 0] },
-                { max: 44, probs: [0.65, 0.22, 0.09, 0.03, 0.01, 0, 0] },
-                { max: 59, probs: [0.55, 0.25, 0.13, 0.05, 0.02, 0, 0] },
-                { max: 74, probs: [0.45, 0.27, 0.16, 0.08, 0.03, 0.01, 0] },
-                { max: 89, probs: [0.38, 0.28, 0.18, 0.10, 0.04, 0.02, 0] },
-                { max: 100, probs: [0.32, 0.28, 0.20, 0.12, 0.05, 0.03, 0] }
-            ];
-            const pct = Math.min(100, capacite * 100);
-            for (let row of table) {
-                if (pct <= row.max) return row.probs;
+        // Over 2.5
+        let under25 = 0;
+        for (let i = 0; i <= 2; i++) {
+            for (let j = 0; j <= 2; j++) {
+                if (i + j <= 2) under25 += finalA[i] * finalB[j];
             }
-            return table[table.length - 1].probs;
         }
+        const over25 = 1 - under25;
 
-        // ÉTAPE 6 : Moyenne Poisson + Tableau 15
-        function combineProbs(poissonProbs, tableauProbs) {
-            return poissonProbs.map((p, i) => (p + tableauProbs[i]) / 2);
-        }
+        // BTTS
+        const probA1 = 1 - finalA[0];
+        const probB1 = 1 - finalB[0];
+        const btts = probA1 * probB1;
 
-        // ============================================================
-        //  ANALYSE COMPLÈTE (CORRIGÉE)
-        // ============================================================
-
-        function analyzeMatch(nameA, nameB, goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB) {
-            // 1. xG
-            const { xgA, xgB } = computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA);
-            // 2. xGA
-            const { xgaA, xgaB } = computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA);
-            // 3. Confrontation
-            const { adjA, adjB } = confront(xgA, xgB, xgaA, xgaB);
-
-            // 4. Poisson
-            const poissonA = poissonProbs(adjA);
-            const poissonB = poissonProbs(adjB);
-
-            // 5. Capacité offensive (pour Tableau 15)
-            const capA = xgA / (xgA + xgB);
-            const capB = xgB / (xgA + xgB);
-
-            // 6. Tableau 15
-            const tabA = getTableau15(capA);
-            const tabB = getTableau15(capB);
-
-            // 7. Moyenne
-            const finalA = combineProbs(poissonA, tabA);
-            const finalB = combineProbs(poissonB, tabB);
-
-            // ===== PROBABILITÉS DÉRIVÉES =====
-
-            // 1N2
-            let winA = 0,
-                draw = 0,
-                winB = 0;
-            for (let i = 0; i <= 6; i++) {
-                for (let j = 0; j <= 6; j++) {
-                    const prob = finalA[i] * finalB[j];
-                    if (i > j) winA += prob;
-                    else if (i === j) draw += prob;
-                    else winB += prob;
-                }
+        // TOP 3 SCORES (CORRIGÉ)
+        const scores = [];
+        for (let i = 0; i <= 6; i++) {
+            for (let j = 0; j <= 6; j++) {
+                const prob = finalA[i] * finalB[j];
+                if (prob > 0.001) scores.push({ score: `${i}-${j}`, prob });
             }
-
-            // Over 2.5
-            let under25 = 0;
-            for (let i = 0; i <= 2; i++) {
-                for (let j = 0; j <= 2; j++) {
-                    if (i + j <= 2) under25 += finalA[i] * finalB[j];
-                }
-            }
-            const over25 = 1 - under25;
-
-            // BTTS
-            const probA1 = 1 - finalA[0];
-            const probB1 = 1 - finalB[0];
-            const btts = probA1 * probB1;
-
-            // Top 3 scores
-            const scores = [];
-            for (let i = 0; i <= 5; i++) {
-                for (let j = 0; j <= 5; j++) {
-                    const prob = finalA[i] * finalB[j];
-                    if (prob > 0.001) scores.push({ score: `${i}-${j}`, prob });
-                }
-            }
-            scores.sort((a, b) => b.prob - a.prob);
-            const top3 = scores.slice(0, 3);
-
-            // Côtes
-            const odds = {
-                winA: 1 / winA,
-                draw: 1 / draw,
-                winB: 1 / winB,
-                over25: 1 / over25,
-                btts: 1 / btts
-            };
-
-            // ===== TABLEAU "BON SENS" =====
-            const pA1 = 1 - finalA[0];
-            const pA2 = finalA[2] + finalA[3] + finalA[4] + finalA[5] + finalA[6];
-            const pB1 = 1 - finalB[0];
-            const pB2 = finalB[2] + finalB[3] + finalB[4] + finalB[5] + finalB[6];
-
-            // ===== SCORE PROBABLE (CORRIGÉ) =====
-            // On prend le score le plus probable si sa probabilité > 5%, sinon on arrondit les xG ajustés
-            let maxProbScore = "0-0";
-            if (scores.length && scores[0].prob > 0.05) {
-                maxProbScore = scores[0].score;
-            } else {
-                maxProbScore = `${Math.round(adjA)}-${Math.round(adjB)}`;
-                // Vérification de cohérence : si adjA ou adjB est > 0, on ne met pas 0-0
-                if (adjA < 0.5 && adjB < 0.5) {
-                    // Si les deux sont < 0.5, on garde 0-0
-                } else {
-                    // Sinon on affiche l'arrondi
-                }
-            }
-
-            // Correction supplémentaire : si le score probable est 0-0 mais que les xG sont > 0.5, on force un score
-            if (maxProbScore === "0-0" && (adjA > 0.5 || adjB > 0.5)) {
-                maxProbScore = `${Math.round(adjA)}-${Math.round(adjB)}`;
-            }
-
-            // ===== PRONOSTIC SÛR =====
-            let safeBet = "";
-            if (winA > 0.55) safeBet = `Victoire ${nameA}`;
-            else if (winB > 0.55) safeBet = `Victoire ${nameB}`;
-            else if (over25 > 0.55) safeBet = "Over 2.5";
-            else if (btts > 0.55) safeBet = "BTTS oui";
-            else safeBet = "Match serré, peu de buts";
-
-            // ===== RÉSUMÉ =====
-            let summary = `${nameA} (${xgA.toFixed(2)} xG) affronte ${nameB} (${xgB.toFixed(2)} xG). `;
-            if (winA > 0.55) summary += `${nameA} est favori. `;
-            else if (winB > 0.55) summary += `${nameB} est favori. `;
-            else summary += `Match équilibré. `;
-            summary += `Score probable : ${maxProbScore}. `;
-            summary += `Over 2.5 : ${over25 > 0.5 ? 'OUI' : 'NON'}. BTTS : ${btts > 0.5 ? 'OUI' : 'NON'}.`;
-
-            // ===== SAUVEGARDE =====
-            const saveData = {
-                nameA,
-                nameB,
-                xgA,
-                xgB,
-                adjA,
-                adjB,
-                winA,
-                winB,
-                draw,
-                over25,
-                btts,
-                safeBet,
-                top3,
-                maxProbScore,
-                pA1,
-                pA2,
-                pB1,
-                pB2,
-                summary,
-                odds
-            };
-
-            return {
-                saveData,
-                display: {
-                    xgA,
-                    xgB,
-                    adjA,
-                    adjB,
-                    winA,
-                    winB,
-                    draw,
-                    over25,
-                    btts,
-                    safeBet,
-                    top3,
-                    maxProbScore,
-                    pA1,
-                    pA2,
-                    pB1,
-                    pB2,
-                    summary,
-                    odds,
-                    finalA,
-                    finalB
-                }
-            };
         }
+        scores.sort((a, b) => b.prob - a.prob);
+        const top3 = scores.slice(0, 3);
 
-        // ============================================================
-        //  INTERFACE
-        // ============================================================
+        // SCORE PROBABLE (CORRIGÉ)
+        const maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
 
-        let currentResult = null;
+        // Côtes
+        const odds = {
+            winA: 1 / winA,
+            draw: 1 / draw,
+            winB: 1 / winB,
+            over25: 1 / over25,
+            btts: 1 / btts
+        };
 
-        function getValues() {
-            const nameA = document.getElementById('nameA').value.trim() || 'A';
-            const nameB = document.getElementById('nameB').value.trim() || 'B';
-            const gsA = parseFloat(document.getElementById('goalsScoredA').value) || 0;
-            const gcA = parseFloat(document.getElementById('goalsConcededA').value) || 0;
-            const gsB = parseFloat(document.getElementById('goalsScoredB').value) || 0;
-            const gcB = parseFloat(document.getElementById('goalsConcededB').value) || 0;
-            return { nameA, nameB, gsA, gcA, gsB, gcB };
-        }
+        // Bon Sens
+        const pA1 = 1 - finalA[0];
+        const pA2 = finalA[2] + finalA[3] + finalA[4] + finalA[5] + finalA[6];
+        const pB1 = 1 - finalB[0];
+        const pB2 = finalB[2] + finalB[3] + finalB[4] + finalB[5] + finalB[6];
 
-        function runAnalysis() {
-            const { nameA, nameB, gsA, gcA, gsB, gcB } = getValues();
-            const result = analyzeMatch(nameA, nameB, gsA, gcA, gsB, gcB);
-            currentResult = result;
-            renderResults(result);
-            document.getElementById('results').classList.add('show');
-        }
+        let safeBet = "";
+        if (winA > 0.55) safeBet = `Victoire ${nameA}`;
+        else if (winB > 0.55) safeBet = `Victoire ${nameB}`;
+        else if (over25 > 0.55) safeBet = "Over 2.5";
+        else if (btts > 0.55) safeBet = "BTTS oui";
+        else safeBet = "Match serré, peu de buts";
 
-        function renderResults(r) {
-            const d = r.display;
+        let summary = `${nameA} (${xgA.toFixed(2)} xG) affronte ${nameB} (${xgB.toFixed(2)} xG). `;
+        if (winA > 0.55) summary += `${nameA} est favori. `;
+        else if (winB > 0.55) summary += `${nameB} est favori. `;
+        else summary += `Match équilibré. `;
+        summary += `Score probable : ${maxProbScore}. `;
+        summary += `Over 2.5 : ${over25 > 0.5 ? 'OUI' : 'NON'}. BTTS : ${btts > 0.5 ? 'OUI' : 'NON'}.`;
 
-            // KPI
-            document.getElementById('kpiGrid').innerHTML = `
-                    <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.winA * 100).toFixed(1)}%</div></div>
-                    <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.draw * 100).toFixed(1)}%</div></div>
-                    <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.winB * 100).toFixed(1)}%</div></div>
-                    <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.over25 * 100).toFixed(1)}%</div></div>
-                `;
+        return {
+            saveData: { nameA, nameB, xgA, xgB, adjA, adjB, winA, winB, draw, over25, btts, safeBet, top3, maxProbScore, pA1, pA2, pB1, pB2, summary, odds },
+            display: { xgA, xgB, adjA, adjB, winA, winB, draw, over25, btts, safeBet, top3, maxProbScore, pA1, pA2, pB1, pB2, summary, odds, finalA, finalB }
+        };
+    }
 
-            // Pronostic sûr & Score probable
-            document.getElementById('safeBet').textContent = d.safeBet;
-            document.getElementById('probableScore').textContent = d.maxProbScore;
+    // ============================================================
+    //  INTERFACE
+    // ============================================================
 
-            // Top 3
-            document.getElementById('top3Container').innerHTML = d.top3.map(s => `
-                    <div class="top3-item">
-                        <div class="top3-score">${s.score}</div>
-                        <div class="top3-prob">${(s.prob * 100).toFixed(1)}%</div>
-                    </div>
-                `).join('');
+    let currentResult = null;
 
-            // Probabilités détaillées
-            document.getElementById('probaGrid').innerHTML = `
-                    <div class="result-card">
-                        <div class="result-label">${r.saveData.nameA}</div>
-                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-                            ${d.finalA.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="result-card">
-                        <div class="result-label">${r.saveData.nameB}</div>
-                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-                            ${d.finalB.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
-                        </div>
-                    </div>
-                `;
+    function getValues() {
+        const nameA = document.getElementById('nameA').value.trim() || 'A';
+        const nameB = document.getElementById('nameB').value.trim() || 'B';
+        const gsA = parseFloat(document.getElementById('goalsScoredA').value) || 0;
+        const gcA = parseFloat(document.getElementById('goalsConcededA').value) || 0;
+        const gsB = parseFloat(document.getElementById('goalsScoredB').value) || 0;
+        const gcB = parseFloat(document.getElementById('goalsConcededB').value) || 0;
+        return { nameA, nameB, gsA, gcA, gsB, gcB };
+    }
 
-            // Tableau "Bon Sens"
-            document.getElementById('bonSensContainer').innerHTML = `
-                    <table class="bonsens-table">
-                        <thead><tr><th>Équipe</th><th>Probabilité de marquer ≥ 1 but</th><th>Probabilité de marquer ≥ 2 buts</th></tr></thead>
-                        <tbody>
-                            <tr><td class="team-name">${r.saveData.nameA}</td><td class="highlight-cell">${(d.pA1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pA2 * 100).toFixed(1)}%</td></tr>
-                            <tr><td class="team-name">${r.saveData.nameB}</td><td class="highlight-cell">${(d.pB1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pB2 * 100).toFixed(1)}%</td></tr>
-                        </tbody>
-                    </table>
-                `;
-            document.getElementById('bonSensText').innerHTML = `
-                    ➡️ ${r.saveData.nameA} a ${(d.pA1*100).toFixed(1)}% de chances de marquer au moins 1 but, contre ${(d.pB1*100).toFixed(1)}% pour ${r.saveData.nameB}.<br>
-                    ➡️ ${r.saveData.nameA} a ${(d.pA2*100).toFixed(1)}% de chances de marquer au moins 2 buts, contre ${(d.pB2*100).toFixed(1)}% pour ${r.saveData.nameB}.
-                `;
+    function runAnalysis() {
+        const { nameA, nameB, gsA, gcA, gsB, gcB } = getValues();
+        const result = analyzeMatch(nameA, nameB, gsA, gcA, gsB, gcB);
+        currentResult = result;
+        renderResults(result);
+        document.getElementById('results').classList.add('show');
+    }
 
-            // Côtes
-            const o = d.odds;
-            document.getElementById('oddsGrid').innerHTML = `
-                    <div class="result-card"><div class="result-label">1 (${r.saveData.nameA})</div><div class="result-value">${o.winA.toFixed(2)}</div></div>
-                    <div class="result-card"><div class="result-label">Nul</div><div class="result-value">${o.draw.toFixed(2)}</div></div>
-                    <div class="result-card"><div class="result-label">2 (${r.saveData.nameB})</div><div class="result-value">${o.winB.toFixed(2)}</div></div>
-                    <div class="result-card"><div class="result-label">Over 2.5</div><div class="result-value">${o.over25.toFixed(2)}</div></div>
-                    <div class="result-card"><div class="result-label">BTTS</div><div class="result-value">${o.btts.toFixed(2)}</div></div>
-                `;
+    function renderResults(r) {
+        const d = r.display;
 
-            // Résumé
-            document.getElementById('summaryText').textContent = d.summary;
-        }
+        document.getElementById('kpiGrid').innerHTML = `
+            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.winA * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.draw * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.winB * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.over25 * 100).toFixed(1)}%</div></div>
+        `;
 
-        // ============================================================
-        //  SAUVEGARDE & WHATSAPP
-        // ============================================================
+        document.getElementById('safeBet').textContent = d.safeBet;
+        document.getElementById('probableScore').textContent = d.maxProbScore;
 
-        function savePrediction() {
-            if (!currentResult) {
-                showToast("❌ Lancez d'abord une analyse", true);
-                return;
-            }
-            const r = currentResult.saveData;
-            const d = currentResult.display;
-            const entry = {
-                date: new Date().toLocaleString(),
-                nameA: r.nameA,
-                nameB: r.nameB,
-                score: r.maxProbScore,
-                safeBet: r.safeBet,
-                over25: d.over25 > 0.5 ? 'OUI' : 'NON',
-                btts: d.btts > 0.5 ? 'OUI' : 'NON',
-                winA: (d.winA * 100).toFixed(1),
-                winB: (d.winB * 100).toFixed(1),
-                draw: (d.draw * 100).toFixed(1),
-                pA1: (d.pA1 * 100).toFixed(1),
-                pB1: (d.pB1 * 100).toFixed(1)
-            };
-            let history = JSON.parse(localStorage.getItem('predictFootHistory') || '[]');
-            history.unshift(entry);
-            localStorage.setItem('predictFootHistory', JSON.stringify(history));
-            showToast("✅ Pronostic sauvegardé !");
-        }
+        document.getElementById('top3Container').innerHTML = d.top3.map(s => `
+            <div class="top3-item">
+                <div class="top3-score">${s.score}</div>
+                <div class="top3-prob">${(s.prob * 100).toFixed(1)}%</div>
+            </div>
+        `).join('');
 
-        function shareWhatsApp() {
-            if (!currentResult) {
-                showToast("❌ Lancez d'abord une analyse", true);
-                return;
-            }
-            const r = currentResult.saveData;
-            const d = currentResult.display;
-            const text =
-                `⚽ *PRONOSTIC ${r.nameA} vs ${r.nameB}* ⚽\n` +
-                `📊 xG : ${r.nameA} ${r.xgA.toFixed(2)} | ${r.nameB} ${r.xgB.toFixed(2)}\n` +
-                `🎯 Score probable : ${r.maxProbScore}\n` +
-                `🏆 ${r.nameA} ${(d.winA*100).toFixed(1)}% | Nul ${(d.draw*100).toFixed(1)}% | ${r.nameB} ${(d.winB*100).toFixed(1)}%\n` +
-                `📈 Over 2.5 : ${(d.over25*100).toFixed(1)}% | BTTS : ${(d.btts*100).toFixed(1)}%\n` +
-                `🔒 Pronostic sûr : ${r.safeBet}\n` +
-                `🧠 ${r.nameA} ≥1 but : ${(d.pA1*100).toFixed(1)}% | ≥2 buts : ${(d.pA2*100).toFixed(1)}%\n` +
-                `🧠 ${r.nameB} ≥1 but : ${(d.pB1*100).toFixed(1)}% | ≥2 buts : ${(d.pB2*100).toFixed(1)}%\n` +
-                `🎲 Top 3 : ${d.top3.map(s => `${s.score} (${(s.prob*100).toFixed(1)}%)`).join(' | ')}\n` +
-                `💰 Côtes : 1 ${d.odds.winA.toFixed(2)} | N ${d.odds.draw.toFixed(2)} | 2 ${d.odds.winB.toFixed(2)}`;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast("✅ Texte copié ! Collez dans WhatsApp");
-            }).catch(() => {
-                showToast("❌ Erreur de copie", true);
-            });
-        }
+        document.getElementById('probaGrid').innerHTML = `
+            <div class="result-card">
+                <div class="result-label">${r.saveData.nameA}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                    ${d.finalA.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="result-label">${r.saveData.nameB}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                    ${d.finalB.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
+                </div>
+            </div>
+        `;
 
-        function loadDemo() {
-            document.getElementById('nameA').value = 'POR';
-            document.getElementById('goalsScoredA').value = '1.9';
-            document.getElementById('goalsConcededA').value = '0.6';
-            document.getElementById('nameB').value = 'UZB';
-            document.getElementById('goalsScoredB').value = '1.0';
-            document.getElementById('goalsConcededB').value = '1.6';
-            showToast("⚡ Démo chargée !");
-        }
+        document.getElementById('bonSensContainer').innerHTML = `
+            <table class="bonsens-table">
+                <thead><tr><th>Équipe</th><th>Probabilité de marquer ≥ 1 but</th><th>Probabilité de marquer ≥ 2 buts</th></tr></thead>
+                <tbody>
+                    <tr><td class="team-name">${r.saveData.nameA}</td><td class="highlight-cell">${(d.pA1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pA2 * 100).toFixed(1)}%</td></tr>
+                    <tr><td class="team-name">${r.saveData.nameB}</td><td class="highlight-cell">${(d.pB1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pB2 * 100).toFixed(1)}%</td></tr>
+                </tbody>
+            </table>
+        `;
+        document.getElementById('bonSensText').innerHTML = `
+            ➡️ ${r.saveData.nameA} a ${(d.pA1*100).toFixed(1)}% de chances de marquer au moins 1 but, contre ${(d.pB1*100).toFixed(1)}% pour ${r.saveData.nameB}.<br>
+            ➡️ ${r.saveData.nameA} a ${(d.pA2*100).toFixed(1)}% de chances de marquer au moins 2 buts, contre ${(d.pB2*100).toFixed(1)}% pour ${r.saveData.nameB}.
+        `;
 
-        // ============================================================
-        //  TOAST
-        // ============================================================
+        const o = d.odds;
+        document.getElementById('oddsGrid').innerHTML = `
+            <div class="result-card"><div class="result-label">1 (${r.saveData.nameA})</div><div class="result-value">${o.winA.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">Nul</div><div class="result-value">${o.draw.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">2 (${r.saveData.nameB})</div><div class="result-value">${o.winB.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">Over 2.5</div><div class="result-value">${o.over25.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">BTTS</div><div class="result-value">${o.btts.toFixed(2)}</div></div>
+        `;
 
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = 'toast' + (isError ? ' error' : '');
-            setTimeout(() => toast.classList.add('show'), 50);
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
-        }
+        document.getElementById('summaryText').textContent = d.summary;
+    }
 
-        // ============================================================
-        //  ÉVÉNEMENTS
-        // ============================================================
+    // ============================================================
+    //  SAUVEGARDE / WHATSAPP
+    // ============================================================
 
-        document.getElementById('analyserBtn').addEventListener('click', runAnalysis);
-        document.getElementById('saveBtn').addEventListener('click', savePrediction);
-        document.getElementById('whatsappBtn').addEventListener('click', shareWhatsApp);
+    function savePrediction() {
+        if (!currentResult) { showToast("❌ Lancez d'abord une analyse", true); return; }
+        const r = currentResult.saveData;
+        const d = currentResult.display;
+        const entry = {
+            date: new Date().toLocaleString(),
+            nameA: r.nameA,
+            nameB: r.nameB,
+            score: r.maxProbScore,
+            safeBet: r.safeBet,
+            over25: d.over25 > 0.5 ? 'OUI' : 'NON',
+            btts: d.btts > 0.5 ? 'OUI' : 'NON',
+            winA: (d.winA * 100).toFixed(1),
+            winB: (d.winB * 100).toFixed(1),
+            draw: (d.draw * 100).toFixed(1),
+            pA1: (d.pA1 * 100).toFixed(1),
+            pB1: (d.pB1 * 100).toFixed(1)
+        };
+        let history = JSON.parse(localStorage.getItem('predictFootHistory') || '[]');
+        history.unshift(entry);
+        localStorage.setItem('predictFootHistory', JSON.stringify(history));
+        showToast("✅ Pronostic sauvegardé !");
+    }
 
-        // ============================================================
-        //  DÉMARRAGE
-        // ============================================================
+    function shareWhatsApp() {
+        if (!currentResult) { showToast("❌ Lancez d'abord une analyse", true); return; }
+        const r = currentResult.saveData;
+        const d = currentResult.display;
+        const text =
+            `⚽ *PRONOSTIC ${r.nameA} vs ${r.nameB}* ⚽\n` +
+            `📊 xG : ${r.nameA} ${r.xgA.toFixed(2)} | ${r.nameB} ${r.xgB.toFixed(2)}\n` +
+            `🎯 Score probable : ${r.maxProbScore}\n` +
+            `🏆 ${r.nameA} ${(d.winA*100).toFixed(1)}% | Nul ${(d.draw*100).toFixed(1)}% | ${r.nameB} ${(d.winB*100).toFixed(1)}%\n` +
+            `📈 Over 2.5 : ${(d.over25*100).toFixed(1)}% | BTTS : ${(d.btts*100).toFixed(1)}%\n` +
+            `🔒 Pronostic sûr : ${r.safeBet}\n` +
+            `🧠 ${r.nameA} ≥1 but : ${(d.pA1*100).toFixed(1)}% | ≥2 buts : ${(d.pA2*100).toFixed(1)}%\n` +
+            `🧠 ${r.nameB} ≥1 but : ${(d.pB1*100).toFixed(1)}% | ≥2 buts : ${(d.pB2*100).toFixed(1)}%\n` +
+            `🎲 Top 3 : ${d.top3.map(s => `${s.score} (${(s.prob*100).toFixed(1)}%)`).join(' | ')}\n` +
+            `💰 Côtes : 1 ${d.odds.winA.toFixed(2)} | N ${d.odds.draw.toFixed(2)} | 2 ${d.odds.winB.toFixed(2)}`;
+        navigator.clipboard.writeText(text).then(() => showToast("✅ Texte copié !")).catch(() => showToast("❌ Erreur de copie", true));
+    }
 
-        // Auto-run au chargement avec les valeurs par défaut
-        setTimeout(runAnalysis, 300);
-    </script>
+    function loadDemo() {
+        document.getElementById('nameA').value = 'POR';
+        document.getElementById('goalsScoredA').value = '0.6';
+        document.getElementById('goalsConcededA').value = '1.8';
+        document.getElementById('nameB').value = 'UZB';
+        document.getElementById('goalsScoredB').value = '3.1';
+        document.getElementById('goalsConcededB').value = '1.6';
+        showToast("⚡ Démo chargée !");
+    }
 
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast' + (isError ? ' error' : '');
+        setTimeout(() => toast.classList.add('show'), 50);
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    document.getElementById('analyserBtn').addEventListener('click', runAnalysis);
+    document.getElementById('saveBtn').addEventListener('click', savePrediction);
+    document.getElementById('whatsappBtn').addEventListener('click', shareWhatsApp);
+
+    setTimeout(runAnalysis, 300);
+</script>
 </body>
 </html>
