@@ -91,6 +91,11 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
+        .grid-5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
 
         /* ===== CHAMPS ===== */
         .field-group {
@@ -294,12 +299,14 @@
             .grid-2 { grid-template-columns: 1fr; }
             .grid-3 { grid-template-columns: 1fr; }
             .grid-4 { grid-template-columns: 1fr 1fr; }
+            .grid-5 { grid-template-columns: 1fr 1fr; }
             .header h1 { font-size: 20px; }
             .btn-group { flex-direction: column; }
             .btn { width: 100%; justify-content: center; }
         }
         @media (max-width: 480px) {
             .grid-4 { grid-template-columns: 1fr; }
+            .grid-5 { grid-template-columns: 1fr; }
             .result-value { font-size: 20px; }
         }
 
@@ -337,7 +344,7 @@
         <!-- ===== HEADER ===== -->
         <div class="header">
             <h1>⚽ PrédictFoot Pro</h1>
-            <span>v2.0 · xG System</span>
+            <span>v2.1 · xG System</span>
         </div>
 
         <!-- ===== SAISIE ===== -->
@@ -352,7 +359,7 @@
                     </div>
                     <div class="field-group">
                         <label>Buts marqués / match</label>
-                        <input type="number" id="goalsScoredA" value="1.4" step="0.1" />
+                        <input type="number" id="goalsScoredA" value="1.9" step="0.1" />
                     </div>
                     <div class="field-group">
                         <label>Buts encaissés / match</label>
@@ -423,7 +430,7 @@
             <!-- Côtes -->
             <div class="card">
                 <div class="card-title"><i>💰</i> Côtes estimées</div>
-                <div class="grid-4" id="oddsGrid"></div>
+                <div class="grid-5" id="oddsGrid"></div>
             </div>
 
             <!-- Résumé texte -->
@@ -485,7 +492,6 @@
             for (let k = 0; k <= maxK; k++) {
                 probs.push(poisson(lambda, k));
             }
-            // 5+ = reste
             let sum = probs.reduce((a, b) => a + b, 0);
             probs.push(1 - sum); // index 6 = 5+
             return probs;
@@ -515,7 +521,7 @@
         }
 
         // ============================================================
-        //  ANALYSE COMPLÈTE
+        //  ANALYSE COMPLÈTE (CORRIGÉE)
         // ============================================================
 
         function analyzeMatch(nameA, nameB, goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB) {
@@ -597,8 +603,25 @@
             const pB1 = 1 - finalB[0];
             const pB2 = finalB[2] + finalB[3] + finalB[4] + finalB[5] + finalB[6];
 
-            // ===== SCORE PROBABLE =====
-            const maxProbScore = scores.length ? scores[0].score : "0-0";
+            // ===== SCORE PROBABLE (CORRIGÉ) =====
+            // On prend le score le plus probable si sa probabilité > 5%, sinon on arrondit les xG ajustés
+            let maxProbScore = "0-0";
+            if (scores.length && scores[0].prob > 0.05) {
+                maxProbScore = scores[0].score;
+            } else {
+                maxProbScore = `${Math.round(adjA)}-${Math.round(adjB)}`;
+                // Vérification de cohérence : si adjA ou adjB est > 0, on ne met pas 0-0
+                if (adjA < 0.5 && adjB < 0.5) {
+                    // Si les deux sont < 0.5, on garde 0-0
+                } else {
+                    // Sinon on affiche l'arrondi
+                }
+            }
+
+            // Correction supplémentaire : si le score probable est 0-0 mais que les xG sont > 0.5, on force un score
+            if (maxProbScore === "0-0" && (adjA > 0.5 || adjB > 0.5)) {
+                maxProbScore = `${Math.round(adjA)}-${Math.round(adjB)}`;
+            }
 
             // ===== PRONOSTIC SÛR =====
             let safeBet = "";
@@ -696,11 +719,11 @@
 
             // KPI
             document.getElementById('kpiGrid').innerHTML = `
-                <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.winA * 100).toFixed(1)}%</div></div>
-                <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.draw * 100).toFixed(1)}%</div></div>
-                <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.winB * 100).toFixed(1)}%</div></div>
-                <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.over25 * 100).toFixed(1)}%</div></div>
-            `;
+                    <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.winA * 100).toFixed(1)}%</div></div>
+                    <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.draw * 100).toFixed(1)}%</div></div>
+                    <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.winB * 100).toFixed(1)}%</div></div>
+                    <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.over25 * 100).toFixed(1)}%</div></div>
+                `;
 
             // Pronostic sûr & Score probable
             document.getElementById('safeBet').textContent = d.safeBet;
@@ -708,52 +731,52 @@
 
             // Top 3
             document.getElementById('top3Container').innerHTML = d.top3.map(s => `
-                <div class="top3-item">
-                    <div class="top3-score">${s.score}</div>
-                    <div class="top3-prob">${(s.prob * 100).toFixed(1)}%</div>
-                </div>
-            `).join('');
+                    <div class="top3-item">
+                        <div class="top3-score">${s.score}</div>
+                        <div class="top3-prob">${(s.prob * 100).toFixed(1)}%</div>
+                    </div>
+                `).join('');
 
             // Probabilités détaillées
             document.getElementById('probaGrid').innerHTML = `
-                <div class="result-card">
-                    <div class="result-label">${r.saveData.nameA}</div>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-                        ${d.finalA.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
+                    <div class="result-card">
+                        <div class="result-label">${r.saveData.nameA}</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                            ${d.finalA.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
+                        </div>
                     </div>
-                </div>
-                <div class="result-card">
-                    <div class="result-label">${r.saveData.nameB}</div>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-                        ${d.finalB.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
+                    <div class="result-card">
+                        <div class="result-label">${r.saveData.nameB}</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                            ${d.finalB.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
             // Tableau "Bon Sens"
             document.getElementById('bonSensContainer').innerHTML = `
-                <table class="bonsens-table">
-                    <thead><tr><th>Équipe</th><th>Probabilité de marquer ≥ 1 but</th><th>Probabilité de marquer ≥ 2 buts</th></tr></thead>
-                    <tbody>
-                        <tr><td class="team-name">${r.saveData.nameA}</td><td class="highlight-cell">${(d.pA1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pA2 * 100).toFixed(1)}%</td></tr>
-                        <tr><td class="team-name">${r.saveData.nameB}</td><td class="highlight-cell">${(d.pB1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pB2 * 100).toFixed(1)}%</td></tr>
-                    </tbody>
-                </table>
-            `;
+                    <table class="bonsens-table">
+                        <thead><tr><th>Équipe</th><th>Probabilité de marquer ≥ 1 but</th><th>Probabilité de marquer ≥ 2 buts</th></tr></thead>
+                        <tbody>
+                            <tr><td class="team-name">${r.saveData.nameA}</td><td class="highlight-cell">${(d.pA1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pA2 * 100).toFixed(1)}%</td></tr>
+                            <tr><td class="team-name">${r.saveData.nameB}</td><td class="highlight-cell">${(d.pB1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pB2 * 100).toFixed(1)}%</td></tr>
+                        </tbody>
+                    </table>
+                `;
             document.getElementById('bonSensText').innerHTML = `
-                ➡️ ${r.saveData.nameA} a ${(d.pA1*100).toFixed(1)}% de chances de marquer au moins 1 but, contre ${(d.pB1*100).toFixed(1)}% pour ${r.saveData.nameB}.<br>
-                ➡️ ${r.saveData.nameA} a ${(d.pA2*100).toFixed(1)}% de chances de marquer au moins 2 buts, contre ${(d.pB2*100).toFixed(1)}% pour ${r.saveData.nameB}.
-            `;
+                    ➡️ ${r.saveData.nameA} a ${(d.pA1*100).toFixed(1)}% de chances de marquer au moins 1 but, contre ${(d.pB1*100).toFixed(1)}% pour ${r.saveData.nameB}.<br>
+                    ➡️ ${r.saveData.nameA} a ${(d.pA2*100).toFixed(1)}% de chances de marquer au moins 2 buts, contre ${(d.pB2*100).toFixed(1)}% pour ${r.saveData.nameB}.
+                `;
 
             // Côtes
             const o = d.odds;
             document.getElementById('oddsGrid').innerHTML = `
-                <div class="result-card"><div class="result-label">1 (${r.saveData.nameA})</div><div class="result-value">${o.winA.toFixed(2)}</div></div>
-                <div class="result-card"><div class="result-label">Nul</div><div class="result-value">${o.draw.toFixed(2)}</div></div>
-                <div class="result-card"><div class="result-label">2 (${r.saveData.nameB})</div><div class="result-value">${o.winB.toFixed(2)}</div></div>
-                <div class="result-card"><div class="result-label">Over 2.5</div><div class="result-value">${o.over25.toFixed(2)}</div></div>
-                <div class="result-card"><div class="result-label">BTTS</div><div class="result-value">${o.btts.toFixed(2)}</div></div>
-            `;
+                    <div class="result-card"><div class="result-label">1 (${r.saveData.nameA})</div><div class="result-value">${o.winA.toFixed(2)}</div></div>
+                    <div class="result-card"><div class="result-label">Nul</div><div class="result-value">${o.draw.toFixed(2)}</div></div>
+                    <div class="result-card"><div class="result-label">2 (${r.saveData.nameB})</div><div class="result-value">${o.winB.toFixed(2)}</div></div>
+                    <div class="result-card"><div class="result-label">Over 2.5</div><div class="result-value">${o.over25.toFixed(2)}</div></div>
+                    <div class="result-card"><div class="result-label">BTTS</div><div class="result-value">${o.btts.toFixed(2)}</div></div>
+                `;
 
             // Résumé
             document.getElementById('summaryText').textContent = d.summary;
@@ -817,7 +840,7 @@
 
         function loadDemo() {
             document.getElementById('nameA').value = 'POR';
-            document.getElementById('goalsScoredA').value = '1.4';
+            document.getElementById('goalsScoredA').value = '1.9';
             document.getElementById('goalsConcededA').value = '0.6';
             document.getElementById('nameB').value = 'UZB';
             document.getElementById('goalsScoredB').value = '1.0';
