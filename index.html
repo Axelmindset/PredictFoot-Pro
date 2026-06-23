@@ -1,453 +1,233 @@
+Essaie cette version plus simple. J'ai enlevé tout ce qui pouvait bloquer.
+
 ```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse de Match - xG System</title>
+    <title>Analyse de Match</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a2e;
-            color: #e0e0e0;
-            padding: 15px;
-        }
-        .container { max-width: 750px; margin: 0 auto; }
-        h1 {
-            text-align: center;
-            color: #00d2ff;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-        .match-input {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .team-card {
-            background: #16213e;
-            border-radius: 10px;
-            padding: 15px;
-            border: 2px solid #0f3460;
-        }
-        .team-card h2 {
-            color: #e94560;
-            margin-bottom: 10px;
-            font-size: 16px;
-            text-align: center;
-        }
-        .team-card h2.team-b { color: #00d2ff; }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid #0f3460;
-        }
-        .stat-row label { font-size: 12px; flex: 1; }
-        .stat-row input {
-            width: 45px;
-            padding: 5px;
-            border: 1px solid #0f3460;
-            border-radius: 5px;
-            background: #1a1a2e;
-            color: #fff;
-            text-align: center;
-            font-size: 14px;
-        }
-        .stat-row input:focus { outline: none; border-color: #e94560; }
-        .btn-analyze {
-            grid-column: 1 / -1;
-            padding: 12px;
-            background: linear-gradient(135deg, #e94560, #00d2ff);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .btn-analyze:active { transform: scale(0.98); }
-        .result {
-            background: #16213e;
-            border-radius: 10px;
-            padding: 15px;
-            border: 2px solid #0f3460;
-            margin-top: 15px;
-            display: none;
-        }
-        .result.active { display: block; }
-        .xgglobal {
-            background: #00ff88;
-            color: #000;
-            text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-        .block {
-            background: #0f3460;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-        .block h3 { color: #00d2ff; margin-bottom: 6px; font-size: 14px; }
-        .block p { font-size: 13px; line-height: 1.5; }
-        .croisement-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 6px;
-        }
-        .croisement-table th, .croisement-table td {
-            padding: 5px 6px;
-            text-align: center;
-            border: 1px solid #1a1a2e;
-        }
-        .croisement-table th { background: #e94560; color: #fff; }
-        .highlight-a { background: #ff8c00; color: #000; font-weight: bold; }
-        .highlight-b { background: #00aaff; color: #000; font-weight: bold; }
-        .signal {
-            background: #00aaff;
-            color: #000;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 8px;
-        }
-        .top3 {
-            font-size: 15px;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 6px;
-        }
+        body { background: #1a1a2e; color: #fff; font-family: Arial; padding: 10px; }
+        input { width: 50px; padding: 5px; margin: 3px; background: #0f3460; color: #fff; border: 1px solid #00d2ff; border-radius: 5px; text-align: center; }
+        button { padding: 15px; background: #e94560; color: #fff; border: none; border-radius: 10px; font-size: 18px; width: 100%; margin: 10px 0; cursor: pointer; }
+        .team { background: #16213e; padding: 15px; margin: 10px 0; border-radius: 10px; }
+        .result { background: #0f3460; padding: 15px; margin: 10px 0; border-radius: 10px; display: none; }
+        .green { background: #00ff88; color: #000; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+        td, th { border: 1px solid #1a1a2e; padding: 5px; text-align: center; }
+        th { background: #e94560; }
+        .orange { background: #ff8c00; color: #000; font-weight: bold; }
+        .blue { background: #00aaff; color: #000; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚽ ANALYSE DE MATCH</h1>
-        
-        <div class="match-input">
-            <div class="team-card">
-                <h2>Équipe A</h2>
-                <div class="stat-row"><label>A gagné le match</label><input type="number" id="a1" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>Les deux équipes marquent</label><input type="number" id="a2" min="0" max="5" value="1"></div>
-                <div class="stat-row"><label>Plus de 2,5 buts</label><input type="number" id="a3" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>Marquera le premier but</label><input type="number" id="a4" min="0" max="5" value="4"></div>
-                <div class="stat-row"><label>A encaissé le premier but</label><input type="number" id="a5" min="0" max="5" value="0"></div>
-                <div class="stat-row"><label>Nul ou victoire</label><input type="number" id="a6" min="0" max="5" value="5"></div>
-                <div class="stat-row"><label>Vainqueur de la 1re mi-temps</label><input type="number" id="a7" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>Clean sheets</label><input type="number" id="a8" min="0" max="5" value="4"></div>
-            </div>
-            
-            <div class="team-card">
-                <h2 class="team-b">Équipe B</h2>
-                <div class="stat-row"><label>A gagné le match</label><input type="number" id="b1" min="0" max="5" value="2"></div>
-                <div class="stat-row"><label>Les deux équipes marquent</label><input type="number" id="b2" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>Plus de 2,5 buts</label><input type="number" id="b3" min="0" max="5" value="2"></div>
-                <div class="stat-row"><label>Marquera le premier but</label><input type="number" id="b4" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>A encaissé le premier but</label><input type="number" id="b5" min="0" max="5" value="2"></div>
-                <div class="stat-row"><label>Nul ou victoire</label><input type="number" id="b6" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>Vainqueur de la 1re mi-temps</label><input type="number" id="b7" min="0" max="5" value="1"></div>
-                <div class="stat-row"><label>Clean sheets</label><input type="number" id="b8" min="0" max="5" value="0"></div>
-            </div>
-            
-            <button class="btn-analyze" onclick="analyze()">ANALYSER LE MATCH</button>
-        </div>
-        
-        <div class="result" id="result"></div>
-    </div>
 
-    <script>
-        function getVal(id) {
-            var v = parseInt(document.getElementById(id).value);
-            return isNaN(v) ? 0 : v;
-        }
-        
-        function factorial(n) {
-            if (n <= 1) return 1;
-            return n * factorial(n - 1);
-        }
-        
-        function poisson(k, xG) {
-            if (xG <= 0) xG = 0.01;
-            return (Math.pow(xG, k) * Math.exp(-xG)) / factorial(k);
-        }
-        
-        function calcOffensive(d) {
-            var pts = 0;
-            if (d[0] === 5) pts += 3; else if (d[0] === 4) pts += 2; else if (d[0] === 3) pts += 1;
-            if (d[5] === 5) pts += 3; else if (d[5] === 4) pts += 2; else if (d[5] === 3) pts += 1;
-            if (d[6] === 5) pts += 3; else if (d[6] === 4) pts += 2; else if (d[6] === 3) pts += 1;
-            if (d[4] === 0) pts += 2;
-            if (d[1] === 5) pts += 4; else if (d[1] === 4) pts += 3; else if (d[1] === 3) pts += 2; else if (d[1] === 2) pts += 1;
-            if (d[3] === 5) pts += 5; else if (d[3] === 4) pts += 4; else if (d[3] === 3) pts += 2;
-            if (d[2] === 5) pts += 4; else if (d[2] === 4) pts += 3; else if (d[2] === 3) pts += 1;
-            return pts;
-        }
-        
-        function calcDefensive(d) {
-            var pts = 0;
-            if (d[0] === 5) pts += 3; else if (d[0] === 4) pts += 2; else if (d[0] === 3) pts += 1;
-            if (d[7] === 5) pts += 5; else if (d[7] === 4) pts += 4; else if (d[7] === 3) pts += 3; else if (d[7] === 2) pts += 1;
-            if (d[5] === 5) pts += 4; else if (d[5] === 4) pts += 3; else if (d[5] === 3) pts += 1;
-            if (d[6] === 5) pts += 2; else if (d[6] === 4) pts += 1; else if (d[6] === 3) pts += 1;
-            if (d[4] === 0) pts += 2; else if (d[4] === 1) pts -= 1; else if (d[4] === 2) pts -= 2; else if (d[4] >= 3) pts -= 3;
-            if (d[1] === 0) pts += 2; else if (d[1] === 1) pts += 1; else if (d[1] === 2) pts += 0; else if (d[1] === 3) pts -= 1; else if (d[1] === 4) pts -= 2; else if (d[1] === 5) pts -= 3;
-            if (d[2] === 5) pts += 2; else if (d[2] === 4) pts += 1; else if (d[2] === 3) pts += 1;
-            return pts;
-        }
-        
-        function table15(type, pct) {
-            var tables = {
-                off: [
-                    [65,28,6,1,0,0], [50,35,12,3,0,0], [35,35,20,8,2,0],
-                    [25,30,26,13,4,2], [15,27,30,18,8,2], [10,22,28,23,12,5], [5,15,25,28,18,9]
-                ],
-                def: [
-                    [5,12,22,28,20,13], [8,18,28,25,16,5], [12,25,30,20,10,3],
-                    [20,30,28,15,5,2], [28,35,22,10,4,1], [40,35,18,5,2,0], [55,30,12,3,0,0]
-                ]
-            };
-            var row = 0;
-            if (pct < 15) row = 0;
-            else if (pct < 30) row = 1;
-            else if (pct < 45) row = 2;
-            else if (pct < 60) row = 3;
-            else if (pct < 75) row = 4;
-            else if (pct < 90) row = 5;
-            else row = 6;
-            return tables[type][row];
-        }
-        
-        function conditionsSpeciales(d) {
-            var off = 0, def = 0;
-            var vic = d[0], btts = d[1], over = d[2], ouvre = d[3], enc = d[4], vn = d[5], mt = d[6], clean = d[7];
-            if (btts <= 1 && clean >= 3 && vn === 5) { off += 2; def += 5; }
-            if (clean >= 4 && vic >= 4 && vn === 5 && mt >= 3) { off += 5; def += 6; }
-            if (clean >= 4 && vic >= 4 && vn === 5 && ouvre === 4) { off += 5; def += 4; }
-            if (vic >= 4 && ouvre >= 4 && clean >= 3 && mt >= 3) { off += 5; def += 4; }
-            if (ouvre === 5 && vic === 5 && btts >= 3) { off += 6; def += 3; }
-            if (vic === 5 && ouvre === 5 && over >= 4) { off += 5; def += 5; }
-            if (over >= 3 && clean >= 2 && vic >= 4) { off += 4; def += 4; }
-            if (btts >= 2 && enc >= 2 && vn <= 4) { def -= 4; }
-            if (clean === 0 && enc >= 3 && vn <= 2) { off -= 3; def -= 5; }
-            if (enc >= 2 && vn === 5) { off += 2; def += 2; }
-            if (btts === 2 && enc === 1) { def += 5; }
-            if (btts === 1 && enc === 1 && clean >= 3 && vic >= 3) { def += 5; }
-            return { off: off, def: def };
-        }
-        
-        function synergies(d) {
-            var off = 0, def = 0;
-            var vic = d[0], btts = d[1], over = d[2], ouvre = d[3], enc = d[4], vn = d[5], mt = d[6], clean = d[7];
-            if (ouvre >= 4 && mt >= 3) off += 3;
-            if (ouvre >= 4 && vic >= 4) off += 2;
-            if (over >= 4 && vic >= 4) off += 2;
-            if (over >= 4 && btts === 2) off += 1;
-            if (clean >= 3 && vn >= 4) def += 4;
-            if (clean >= 3 && vic >= 4) { off += 1; def += 2; }
-            if (clean >= 3 && mt >= 3) def += 2;
-            if (enc === 1 && vn >= 4) { off += 1; def += 1; }
-            if (vic >= 4 && vn >= 4) { off += 1; def += 1; }
-            return { off: off, def: def };
-        }
-        
-        function arrondirButs(xG) {
-            if (xG < 0.5) return 0;
-            if (xG < 1.5) return 1;
-            if (xG < 2.5) return 2;
-            if (xG < 3.5) return 3;
-            if (xG < 4.5) return 4;
-            return 5;
-        }
-        
-        function analyze() {
-            var A = [getVal('a1'), getVal('a2'), getVal('a3'), getVal('a4'), getVal('a5'), getVal('a6'), getVal('a7'), getVal('a8')];
-            var B = [getVal('b1'), getVal('b2'), getVal('b3'), getVal('b4'), getVal('b5'), getVal('b6'), getVal('b7'), getVal('b8')];
-            
-            var offA = calcOffensive(A);
-            var defA = calcDefensive(A);
-            var offB = calcOffensive(B);
-            var defB = calcDefensive(B);
-            
-            var condA = conditionsSpeciales(A);
-            var condB = conditionsSpeciales(B);
-            var synA = synergies(A);
-            var synB = synergies(B);
-            
-            offA += condA.off + synA.off;
-            defA += condA.def + synA.def;
-            offB += condB.off + synB.off;
-            defB += condB.def + synB.def;
-            
-            var xGA = 0.2 + offA * 0.15;
-            var xGAA = 2.0 - defA * 0.095;
-            if (xGAA < 0.1) xGAA = 0.1;
-            var xGB = 0.2 + offB * 0.15;
-            var xGAB = 2.0 - defB * 0.095;
-            if (xGAB < 0.1) xGAB = 0.1;
-            
-            var xGadjA = xGA * (xGAB / 2.0);
-            var xGadjB = xGB * (xGAA / 2.0);
-            
-            var scoreA = arrondirButs(xGadjA);
-            var scoreB = arrondirButs(xGadjB);
-            
-            var capA = (A[2] + A[1] + A[3] + A[0] + A[6]) / 25 * 100;
-            var capB = (B[2] + B[1] + B[3] + B[0] + B[6]) / 25 * 100;
-            
-            var tabA = table15('off', capA);
-            var tabB = table15('off', capB);
-            
-            var probA = [], probB = [];
-            for (var k = 0; k < 6; k++) {
-                probA.push(Math.round(((poisson(k, xGadjA) * 100) + tabA[k]) / 2 * 10) / 10);
-                probB.push(Math.round(((poisson(k, xGadjB) * 100) + tabB[k]) / 2 * 10) / 10);
-            }
-            
-            var defCapA = (A[7] + (5 - A[1]) + (5 - A[4]) + A[5]) / 20 * 100;
-            var defCapB = (B[7] + (5 - B[1]) + (5 - B[4]) + B[5]) / 20 * 100;
-            
-            var encA = table15('def', defCapA);
-            var encB = table15('def', defCapB);
-            
-            var croisA = [], croisB = [];
-            for (var k = 0; k < 4; k++) {
-                croisA.push(Math.round((probA[k] * encB[k]) / 100 * 10) / 10);
-                croisB.push(Math.round((probB[k] * encA[k]) / 100 * 10) / 10);
-            }
-            
-            var btts = Math.round((probA[1] + probB[1]) / 2 * 10) / 10;
-            
-            var p0 = probA[0] * probB[0] / 100;
-            var p1 = (probA[1] * probB[0] + probA[0] * probB[1]) / 100;
-            var p2 = (probA[2] * probB[0] + probA[1] * probB[1] + probA[0] * probB[2]) / 100;
-            var p3 = (probA[3] * probB[0] + probA[2] * probB[1] + probA[1] * probB[2] + probA[0] * probB[3]) / 100;
-            
-            var over05 = Math.round((1 - p0) * 1000) / 10;
-            var over15 = Math.round((1 - p0 - p1) * 1000) / 10;
-            var over25 = Math.round((1 - p0 - p1 - p2) * 1000) / 10;
-            var over35 = Math.round((1 - p0 - p1 - p2 - p3) * 1000) / 10;
-            
-            var xGGlobal = Math.round((0 * p0 + 1 * p1 + 2 * p2 + 3 * p3 + 4 * (1 - p0 - p1 - p2 - p3)) * 100) / 100;
-            
-            var scores = [];
-            for (var i = 0; i < 4; i++) {
-                for (var j = 0; j < 4; j++) {
-                    scores.push({ i: i, j: j, p: Math.round(probA[i] * probB[j]) / 100 });
-                }
-            }
-            scores.sort(function(a, b) { return b.p - a.p; });
-            var top3 = scores.slice(0, 3);
-            
-            var diff = offA - offB;
-            var vA, vN, vB;
-            if (diff > 20) { vA = 75; vN = 18; vB = 7; }
-            else if (diff >= 15) { vA = 70; vN = 20; vB = 10; }
-            else if (diff >= 10) { vA = 60; vN = 25; vB = 15; }
-            else if (diff >= 5) { vA = 50; vN = 30; vB = 20; }
-            else if (diff >= 0) { vA = 40; vN = 33; vB = 27; }
-            else if (diff >= -4) { vA = 27; vN = 33; vB = 40; }
-            else if (diff >= -9) { vA = 20; vN = 30; vB = 50; }
-            else if (diff >= -14) { vA = 15; vN = 25; vB = 60; }
-            else if (diff >= -20) { vA = 10; vN = 20; vB = 70; }
-            else { vA = 7; vN = 18; vB = 75; }
-            
-            var firstA = Math.round((A[3] + A[6]) / (A[3] + A[6] + B[3] + B[6]) * 100);
-            var firstB = 100 - firstA;
-            
-            var cote1 = Math.round(100 / vA * 100) / 100;
-            var coteN = Math.round(100 / vN * 100) / 100;
-            var cote2 = Math.round(100 / vB * 100) / 100;
-            var coteOver = Math.round(100 / over25 * 100) / 100;
-            var coteBTTS = Math.round(100 / btts * 100) / 100;
-            
-            var highlightA = -1, highlightB = -1;
-            for (var k = 0; k < 4; k++) {
-                if (Math.abs(probA[k] - encB[k]) <= 5 && probA[k] > 10 && highlightA === -1) highlightA = k;
-                if (Math.abs(probB[k] - encA[k]) <= 5 && probB[k] > 10 && highlightB === -1) highlightB = k;
-            }
-            
-            var signal = '';
-            var hasSignal = false;
-            if (Math.abs(probA[1] - probB[1]) <= 5) {
-                var hasBTTS = false;
-                for (var s = 0; s < top3.length; s++) {
-                    if (top3[s].i >= 1 && top3[s].j >= 1) { hasBTTS = true; break; }
-                }
-                if (hasBTTS) {
-                    signal = '🔵 MIROIR DE MARQUER : Équipe A ' + probA[1] + '% • Équipe B ' + probB[1] + '% | Score BTTS dans le top 3';
-                    hasSignal = true;
-                }
-            }
-            
-            var html = '';
-            html += '<div class="xgglobal">🟢 xG GLOBAL : ' + xGGlobal.toFixed(2) + '</div>';
-            
-            html += '<div class="block">';
-            html += '<h3>📊 xG DU MATCH</h3>';
-            html += '<p>Équipe A : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2.0) = ' + xGadjA.toFixed(2) + '<br>';
-            html += 'Équipe B : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2.0) = ' + xGadjB.toFixed(2) + '<br>';
-            html += '🎯 SCORE PROBABLE : ' + scoreA + '-' + scoreB + '</p>';
-            html += '</div>';
-            
-            html += '<div class="block">';
-            html += '<h3>📈 PROBABILITÉS</h3>';
-            html += '<p>🏆 1N2 : Équipe A ' + vA + '% | Nul ' + vN + '% | Équipe B ' + vB + '%<br>';
-            html += '📈 OVER 2.5 : ' + over25 + '% | ⚽ BTTS : ' + btts + '%<br>';
-            html += '⏱️ 1ER BUT : Équipe A ' + firstA + '% | Équipe B ' + firstB + '%</p>';
-            html += '</div>';
-            
-            html += '<div class="block">';
-            html += '<h3>💰 CÔTES</h3>';
-            html += '<p>1 : ' + cote1 + ' | N : ' + coteN + ' | 2 : ' + cote2 + ' | Over 2.5 : ' + coteOver + ' | BTTS : ' + coteBTTS + '</p>';
-            html += '</div>';
-            
-            html += '<div class="block">';
-            html += '<h3>🔄 CROISEMENT</h3>';
-            html += '<p style="font-size:11px;color:#aaa;">Équipe A</p>';
-            html += '<table class="croisement-table">';
-            html += '<tr><th>Buts</th><th>Marque</th><th>B encaisse</th><th>Croisement</th></tr>';
-            for (var k = 0; k < 4; k++) {
-                var cls = (highlightA === k) ? ' class="highlight-a"' : '';
-                html += '<tr' + cls + '><td>' + k + '</td><td>' + probA[k] + '%</td><td>' + encB[k] + '%</td><td>' + croisA[k] + '%</td></tr>';
-            }
-            html += '</table>';
-            html += '<p style="font-size:11px;color:#aaa;margin-top:8px;">Équipe B</p>';
-            html += '<table class="croisement-table">';
-            html += '<tr><th>Buts</th><th>Marque</th><th>A encaisse</th><th>Croisement</th></tr>';
-            for (var k = 0; k < 4; k++) {
-                var cls = (highlightB === k) ? ' class="highlight-b"' : '';
-                html += '<tr' + cls + '><td>' + k + '</td><td>' + probB[k] + '%</td><td>' + encA[k] + '%</td><td>' + croisB[k] + '%</td></tr>';
-            }
-            html += '</table>';
-            html += '<p style="font-size:10px;margin-top:4px;">🟠 = A trouve chemin dans B | 🔵 = B trouve chemin dans A</p>';
-            html += '</div>';
-            
-            html += '<div class="block">';
-            html += '<h3>🎯 TOP 3 SCORES</h3>';
-            html += '<p class="top3">';
-            for (var s = 0; s < top3.length; s++) {
-                html += top3[s].i + '-' + top3[s].j + ' : ' + (top3[s].p * 100).toFixed(1) + '%';
-                if (s < 2) html += ' | ';
-            }
-            html += '</p>';
-            html += '</div>';
-            
-            if (hasSignal) {
-                html += '<div class="signal">' + signal + '</div>';
-            }
-            
-            document.getElementById('result').innerHTML = html;
-            document.getElementById('result').className = 'result active';
-        }
-    </script>
+    <h2 style="text-align:center;color:#00d2ff;">⚽ ANALYSE DE MATCH</h2>
+    
+    <div class="team">
+        <h3 style="color:#e94560;">Équipe A</h3>
+        A gagné le match <input id="a1" value="3"><br>
+        Les deux équipes marquent <input id="a2" value="1"><br>
+        Plus de 2,5 buts <input id="a3" value="3"><br>
+        Marquera le premier but <input id="a4" value="4"><br>
+        A encaissé le premier but <input id="a5" value="0"><br>
+        Nul ou victoire <input id="a6" value="5"><br>
+        Vainqueur 1re mi-temps <input id="a7" value="3"><br>
+        Clean sheets <input id="a8" value="4"><br>
+    </div>
+    
+    <div class="team">
+        <h3 style="color:#00d2ff;">Équipe B</h3>
+        A gagné le match <input id="b1" value="2"><br>
+        Les deux équipes marquent <input id="b2" value="3"><br>
+        Plus de 2,5 buts <input id="b3" value="2"><br>
+        Marquera le premier but <input id="b4" value="3"><br>
+        A encaissé le premier but <input id="b5" value="2"><br>
+        Nul ou victoire <input id="b6" value="3"><br>
+        Vainqueur 1re mi-temps <input id="b7" value="1"><br>
+        Clean sheets <input id="b8" value="0"><br>
+    </div>
+    
+    <button onclick="calculer()">ANALYSER LE MATCH</button>
+    
+    <div class="result" id="resultat"></div>
+
+<script>
+function g(id) { return parseInt(document.getElementById(id).value) || 0; }
+
+function factorial(n) { var r = 1; for (var i = 2; i <= n; i++) r *= i; return r; }
+
+function poisson(k, x) { return Math.pow(x, k) * Math.exp(-x) / factorial(k); }
+
+function off(d) {
+    var p = 0;
+    var b = [[0,0,0,1,2,3],[0,0,1,2,3,4],[0,0,0,1,3,4],[0,0,0,2,4,5],[2,0,0,0,0,0],[0,0,0,1,2,3],[0,0,0,1,2,3]];
+    for (var i = 0; i < 7; i++) p += b[i][d[i]];
+    return p;
+}
+
+function def(d) {
+    var p = 0;
+    var b = [[0,0,0,1,2,3],[0,0,1,3,4,5],[0,0,0,1,3,4],[0,0,0,1,1,2],[2,0,-1,-2,-3,-3],[2,1,0,-1,-2,-3],[0,0,0,1,1,2]];
+    for (var i = 0; i < 7; i++) p += b[i][d[i]];
+    return p;
+}
+
+function tab15(t, pct) {
+    var T = {
+        o: [[65,28,6,1,0,0],[50,35,12,3,0,0],[35,35,20,8,2,0],[25,30,26,13,4,2],[15,27,30,18,8,2],[10,22,28,23,12,5],[5,15,25,28,18,9]],
+        d: [[5,12,22,28,20,13],[8,18,28,25,16,5],[12,25,30,20,10,3],[20,30,28,15,5,2],[28,35,22,10,4,1],[40,35,18,5,2,0],[55,30,12,3,0,0]]
+    };
+    var r = pct < 15 ? 0 : pct < 30 ? 1 : pct < 45 ? 2 : pct < 60 ? 3 : pct < 75 ? 4 : pct < 90 ? 5 : 6;
+    return T[t][r];
+}
+
+function conditions(d) {
+    var o = 0, f = 0;
+    if (d[1] <= 1 && d[7] >= 3 && d[5] === 5) { o += 2; f += 5; }
+    if (d[7] >= 4 && d[0] >= 4 && d[5] === 5 && d[6] >= 3) { o += 5; f += 6; }
+    if (d[7] >= 4 && d[0] >= 4 && d[5] === 5 && d[3] === 4) { o += 5; f += 4; }
+    if (d[0] >= 4 && d[3] >= 4 && d[7] >= 3 && d[6] >= 3) { o += 5; f += 4; }
+    if (d[3] === 5 && d[0] === 5 && d[1] >= 3) { o += 6; f += 3; }
+    if (d[0] === 5 && d[3] === 5 && d[2] >= 4) { o += 5; f += 5; }
+    if (d[2] >= 3 && d[7] >= 2 && d[0] >= 4) { o += 4; f += 4; }
+    if (d[1] >= 2 && d[4] >= 2 && d[5] <= 4) { f -= 4; }
+    if (d[7] === 0 && d[4] >= 3 && d[5] <= 2) { o -= 3; f -= 5; }
+    if (d[4] >= 2 && d[5] === 5) { o += 2; f += 2; }
+    if (d[1] === 2 && d[4] === 1) { f += 5; }
+    if (d[1] === 1 && d[4] === 1 && d[7] >= 3 && d[0] >= 3) { f += 5; }
+    return [o, f];
+}
+
+function synergies(d) {
+    var o = 0, f = 0;
+    if (d[3] >= 4 && d[6] >= 3) o += 3;
+    if (d[3] >= 4 && d[0] >= 4) o += 2;
+    if (d[2] >= 4 && d[0] >= 4) o += 2;
+    if (d[2] >= 4 && d[1] === 2) o += 1;
+    if (d[7] >= 3 && d[5] >= 4) f += 4;
+    if (d[7] >= 3 && d[0] >= 4) { o += 1; f += 2; }
+    if (d[7] >= 3 && d[6] >= 3) f += 2;
+    if (d[4] === 1 && d[5] >= 4) { o += 1; f += 1; }
+    if (d[0] >= 4 && d[5] >= 4) { o += 1; f += 1; }
+    return [o, f];
+}
+
+function arrondir(x) {
+    if (x < 0.5) return 0; if (x < 1.5) return 1; if (x < 2.5) return 2;
+    if (x < 3.5) return 3; if (x < 4.5) return 4; return 5;
+}
+
+function calculer() {
+    var A = [g('a1'),g('a2'),g('a3'),g('a4'),g('a5'),g('a6'),g('a7'),g('a8')];
+    var B = [g('b1'),g('b2'),g('b3'),g('b4'),g('b5'),g('b6'),g('b7'),g('b8')];
+    
+    var oA = off([A[0],A[1],A[2],A[3],A[4],A[5],A[6]]);
+    var dA = def([A[0],A[7],A[5],A[6],A[4],A[1],A[2]]);
+    var oB = off([B[0],B[1],B[2],B[3],B[4],B[5],B[6]]);
+    var dB = def([B[0],B[7],B[5],B[6],B[4],B[1],B[2]]);
+    
+    var cA = conditions(A), cB = conditions(B);
+    var sA = synergies(A), sB = synergies(B);
+    
+    oA += cA[0] + sA[0]; dA += cA[1] + sA[1];
+    oB += cB[0] + sB[0]; dB += cB[1] + sB[1];
+    
+    var xGA = 0.2 + oA * 0.15;
+    var xGAA = 2.0 - dA * 0.095; if (xGAA < 0.1) xGAA = 0.1;
+    var xGB = 0.2 + oB * 0.15;
+    var xGAB = 2.0 - dB * 0.095; if (xGAB < 0.1) xGAB = 0.1;
+    
+    var adjA = xGA * (xGAB / 2.0);
+    var adjB = xGB * (xGAA / 2.0);
+    
+    var scA = arrondir(adjA), scB = arrondir(adjB);
+    
+    var capA = (A[2]+A[1]+A[3]+A[0]+A[6])/25*100;
+    var capB = (B[2]+B[1]+B[3]+B[0]+B[6])/25*100;
+    
+    var tAo = tab15('o', capA), tBo = tab15('o', capB);
+    
+    var pA = [], pB = [];
+    for (var k = 0; k < 6; k++) {
+        pA.push(((poisson(k, adjA)*100) + tAo[k]) / 2);
+        pB.push(((poisson(k, adjB)*100) + tBo[k]) / 2);
+    }
+    
+    var dcA = (A[7]+(5-A[1])+(5-A[4])+A[5])/20*100;
+    var dcB = (B[7]+(5-B[1])+(5-B[4])+B[5])/20*100;
+    
+    var eA = tab15('d', dcA), eB = tab15('d', dcB);
+    
+    var crA = [], crB = [];
+    for (var k = 0; k < 4; k++) {
+        crA.push(pA[k] * eB[k] / 100);
+        crB.push(pB[k] * eA[k] / 100);
+    }
+    
+    var btts = (pA[1] + pB[1]) / 2;
+    
+    var p0 = pA[0]*pB[0]/100, p1 = (pA[1]*pB[0]+pA[0]*pB[1])/100;
+    var p2 = (pA[2]*pB[0]+pA[1]*pB[1]+pA[0]*pB[2])/100;
+    var p3 = (pA[3]*pB[0]+pA[2]*pB[1]+pA[1]*pB[2]+pA[0]*pB[3])/100;
+    
+    var ov25 = (1-p0-p1-p2)*100;
+    var xGG = 0*p0+1*p1+2*p2+3*p3+4*(1-p0-p1-p2-p3);
+    
+    var scores = [];
+    for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) scores.push({i:i,j:j,p:pA[i]*pB[j]/100});
+    scores.sort(function(a,b){return b.p-a.p;});
+    var top3 = scores.slice(0,3);
+    
+    var diff = oA - oB;
+    var vA,vN,vB;
+    if (diff>20){vA=75;vN=18;vB=7;}else if(diff>=15){vA=70;vN=20;vB=10;}else if(diff>=10){vA=60;vN=25;vB=15;}
+    else if(diff>=5){vA=50;vN=30;vB=20;}else if(diff>=0){vA=40;vN=33;vB=27;}else if(diff>=-4){vA=27;vN=33;vB=40;}
+    else if(diff>=-9){vA=20;vN=30;vB=50;}else if(diff>=-14){vA=15;vN=25;vB=60;}else if(diff>=-20){vA=10;vN=20;vB=70;}else{vA=7;vN=18;vB=75;}
+    
+    var firstA = Math.round((A[3]+A[6])/(A[3]+A[6]+B[3]+B[6])*100);
+    
+    var hA = -1, hB = -1;
+    for (var k = 0; k < 4; k++) {
+        if (Math.abs(pA[k]-eB[k])<=5 && pA[k]>10 && hA===-1) hA = k;
+        if (Math.abs(pB[k]-eA[k])<=5 && pB[k]>10 && hB===-1) hB = k;
+    }
+    
+    var sig = '';
+    if (Math.abs(pA[1]-pB[1])<=5 && (top3[0].i>=1&&top3[0].j>=1 || top3[1].i>=1&&top3[1].j>=1 || top3[2].i>=1&&top3[2].j>=1)) {
+        sig = '🔵 MIROIR DE MARQUER : A ' + pA[1].toFixed(1) + '% • B ' + pB[1].toFixed(1) + '% | Score BTTS dans le top 3';
+    }
+    
+    var html = '<div class="green">🟢 xG GLOBAL : ' + xGG.toFixed(2) + '</div>';
+    html += '<p>📊 <b>xG DU MATCH</b><br>A : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2) = ' + adjA.toFixed(2) + '<br>B : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2) = ' + adjB.toFixed(2) + '<br>🎯 <b>SCORE : ' + scA + '-' + scB + '</b></p>';
+    html += '<p>📈 <b>PROBABILITÉS</b><br>1N2 : A ' + vA + '% | N ' + vN + '% | B ' + vB + '%<br>OVER 2.5 : ' + ov25.toFixed(1) + '% | BTTS : ' + btts.toFixed(1) + '%<br>1ER BUT : A ' + firstA + '% | B ' + (100-firstA) + '%</p>';
+    html += '<p>💰 <b>CÔTES</b><br>1 : ' + (100/vA).toFixed(2) + ' | N : ' + (100/vN).toFixed(2) + ' | 2 : ' + (100/vB).toFixed(2) + ' | Over 2.5 : ' + (100/ov25).toFixed(2) + ' | BTTS : ' + (100/btts).toFixed(2) + '</p>';
+    
+    html += '<p>🔄 <b>CROISEMENT</b></p>';
+    html += '<table><tr><th>Buts</th><th>A marque</th><th>B encaisse</th><th>Croisement</th></tr>';
+    for (var k = 0; k < 4; k++) {
+        var c = (hA===k) ? ' class="orange"' : '';
+        html += '<tr' + c + '><td>' + k + '</td><td>' + pA[k].toFixed(1) + '%</td><td>' + eB[k] + '%</td><td>' + crA[k].toFixed(1) + '%</td></tr>';
+    }
+    html += '</table>';
+    html += '<table><tr><th>Buts</th><th>B marque</th><th>A encaisse</th><th>Croisement</th></tr>';
+    for (var k = 0; k < 4; k++) {
+        var c = (hB===k) ? ' class="blue"' : '';
+        html += '<tr' + c + '><td>' + k + '</td><td>' + pB[k].toFixed(1) + '%</td><td>' + eA[k] + '%</td><td>' + crB[k].toFixed(1) + '%</td></tr>';
+    }
+    html += '</table>';
+    
+    html += '<p>🎯 <b>TOP 3 :</b> ';
+    for (var s = 0; s < 3; s++) html += top3[s].i + '-' + top3[s].j + ' ' + (top3[s].p*100).toFixed(1) + '%' + (s<2?' | ':'');
+    html += '</p>';
+    
+    if (sig) html += '<p style="background:#00aaff;color:#000;padding:8px;border-radius:5px;">' + sig + '</p>';
+    
+    document.getElementById('resultat').innerHTML = html;
+    document.getElementById('resultat').style.display = 'block';
+}
+</script>
 </body>
 </html>
 ```
