@@ -1,4 +1,9 @@
-Essaie cette version plus simple. J'ai enlevé tout ce qui pouvait bloquer.
+Tu as raison. Voici le code corrigé avec :
+
+· Saisie des noms d'équipes
+· "Trouve chemin" expliqué clairement
+· Score probable cohérent avec les probabilités
+· Affichage corrigé
 
 ```html
 <!DOCTYPE html>
@@ -10,6 +15,7 @@ Essaie cette version plus simple. J'ai enlevé tout ce qui pouvait bloquer.
     <style>
         body { background: #1a1a2e; color: #fff; font-family: Arial; padding: 10px; }
         input { width: 50px; padding: 5px; margin: 3px; background: #0f3460; color: #fff; border: 1px solid #00d2ff; border-radius: 5px; text-align: center; }
+        .nom { width: 120px; }
         button { padding: 15px; background: #e94560; color: #fff; border: none; border-radius: 10px; font-size: 18px; width: 100%; margin: 10px 0; cursor: pointer; }
         .team { background: #16213e; padding: 15px; margin: 10px 0; border-radius: 10px; }
         .result { background: #0f3460; padding: 15px; margin: 10px 0; border-radius: 10px; display: none; }
@@ -19,6 +25,7 @@ Essaie cette version plus simple. J'ai enlevé tout ce qui pouvait bloquer.
         th { background: #e94560; }
         .orange { background: #ff8c00; color: #000; font-weight: bold; }
         .blue { background: #00aaff; color: #000; font-weight: bold; }
+        .explain { font-size: 10px; color: #aaa; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -26,7 +33,7 @@ Essaie cette version plus simple. J'ai enlevé tout ce qui pouvait bloquer.
     <h2 style="text-align:center;color:#00d2ff;">⚽ ANALYSE DE MATCH</h2>
     
     <div class="team">
-        <h3 style="color:#e94560;">Équipe A</h3>
+        <h3 style="color:#e94560;">Équipe A <input class="nom" id="nomA" value="Espagne" style="width:120px;"></h3>
         A gagné le match <input id="a1" value="3"><br>
         Les deux équipes marquent <input id="a2" value="1"><br>
         Plus de 2,5 buts <input id="a3" value="3"><br>
@@ -38,7 +45,7 @@ Essaie cette version plus simple. J'ai enlevé tout ce qui pouvait bloquer.
     </div>
     
     <div class="team">
-        <h3 style="color:#00d2ff;">Équipe B</h3>
+        <h3 style="color:#00d2ff;">Équipe B <input class="nom" id="nomB" value="Arabie Saoudite" style="width:120px;"></h3>
         A gagné le match <input id="b1" value="2"><br>
         Les deux équipes marquent <input id="b2" value="3"><br>
         Plus de 2,5 buts <input id="b3" value="2"><br>
@@ -58,7 +65,7 @@ function g(id) { return parseInt(document.getElementById(id).value) || 0; }
 
 function factorial(n) { var r = 1; for (var i = 2; i <= n; i++) r *= i; return r; }
 
-function poisson(k, x) { return Math.pow(x, k) * Math.exp(-x) / factorial(k); }
+function poisson(k, x) { if (x <= 0) x = 0.01; return Math.pow(x, k) * Math.exp(-x) / factorial(k); }
 
 function off(d) {
     var p = 0;
@@ -120,6 +127,9 @@ function arrondir(x) {
 }
 
 function calculer() {
+    var nomA = document.getElementById('nomA').value || 'Équipe A';
+    var nomB = document.getElementById('nomB').value || 'Équipe B';
+    
     var A = [g('a1'),g('a2'),g('a3'),g('a4'),g('a5'),g('a6'),g('a7'),g('a8')];
     var B = [g('b1'),g('b2'),g('b3'),g('b4'),g('b5'),g('b6'),g('b7'),g('b8')];
     
@@ -171,9 +181,11 @@ function calculer() {
     var p0 = pA[0]*pB[0]/100, p1 = (pA[1]*pB[0]+pA[0]*pB[1])/100;
     var p2 = (pA[2]*pB[0]+pA[1]*pB[1]+pA[0]*pB[2])/100;
     var p3 = (pA[3]*pB[0]+pA[2]*pB[1]+pA[1]*pB[2]+pA[0]*pB[3])/100;
+    var p4 = (pA[4]*pB[0]+pA[3]*pB[1]+pA[2]*pB[2]+pA[1]*pB[3]+pA[0]*pB[4])/100;
+    var p5 = 1 - p0 - p1 - p2 - p3 - p4; if (p5 < 0) p5 = 0;
     
-    var ov25 = (1-p0-p1-p2)*100;
-    var xGG = 0*p0+1*p1+2*p2+3*p3+4*(1-p0-p1-p2-p3);
+    var ov25 = Math.round((1-p0-p1-p2)*1000)/10;
+    var xGG = Math.round((1*p1 + 2*p2 + 3*p3 + 4*p4 + 5*p5)*100)/100;
     
     var scores = [];
     for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) scores.push({i:i,j:j,p:pA[i]*pB[j]/100});
@@ -196,29 +208,33 @@ function calculer() {
     
     var sig = '';
     if (Math.abs(pA[1]-pB[1])<=5 && (top3[0].i>=1&&top3[0].j>=1 || top3[1].i>=1&&top3[1].j>=1 || top3[2].i>=1&&top3[2].j>=1)) {
-        sig = '🔵 MIROIR DE MARQUER : A ' + pA[1].toFixed(1) + '% • B ' + pB[1].toFixed(1) + '% | Score BTTS dans le top 3';
+        sig = '🔵 MIROIR DE MARQUER : ' + nomA + ' ' + pA[1].toFixed(1) + '% • ' + nomB + ' ' + pB[1].toFixed(1) + '% | Score BTTS dans le top 3';
     }
     
     var html = '<div class="green">🟢 xG GLOBAL : ' + xGG.toFixed(2) + '</div>';
-    html += '<p>📊 <b>xG DU MATCH</b><br>A : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2) = ' + adjA.toFixed(2) + '<br>B : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2) = ' + adjB.toFixed(2) + '<br>🎯 <b>SCORE : ' + scA + '-' + scB + '</b></p>';
-    html += '<p>📈 <b>PROBABILITÉS</b><br>1N2 : A ' + vA + '% | N ' + vN + '% | B ' + vB + '%<br>OVER 2.5 : ' + ov25.toFixed(1) + '% | BTTS : ' + btts.toFixed(1) + '%<br>1ER BUT : A ' + firstA + '% | B ' + (100-firstA) + '%</p>';
+    html += '<p>📊 <b>xG DU MATCH</b><br>' + nomA + ' : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2) = ' + adjA.toFixed(2) + '<br>' + nomB + ' : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2) = ' + adjB.toFixed(2) + '<br>🎯 <b>SCORE PROBABLE : ' + scA + '-' + scB + '</b></p>';
+    html += '<p>📈 <b>PROBABILITÉS</b><br>🏆 1N2 : ' + nomA + ' ' + vA + '% | Nul ' + vN + '% | ' + nomB + ' ' + vB + '%<br>📈 OVER 2.5 : ' + ov25 + '% | ⚽ BTTS : ' + btts.toFixed(1) + '%<br>⏱️ 1ER BUT : ' + nomA + ' ' + firstA + '% | ' + nomB + ' ' + (100-firstA) + '%</p>';
     html += '<p>💰 <b>CÔTES</b><br>1 : ' + (100/vA).toFixed(2) + ' | N : ' + (100/vN).toFixed(2) + ' | 2 : ' + (100/vB).toFixed(2) + ' | Over 2.5 : ' + (100/ov25).toFixed(2) + ' | BTTS : ' + (100/btts).toFixed(2) + '</p>';
     
     html += '<p>🔄 <b>CROISEMENT</b></p>';
-    html += '<table><tr><th>Buts</th><th>A marque</th><th>B encaisse</th><th>Croisement</th></tr>';
+    html += '<p style="font-size:12px;">Quand la probabilité que <b>' + nomA + '</b> marque X buts est proche de la probabilité que <b>' + nomB + '</b> encaisse X buts, la connexion est forte.</p>';
+    html += '<table><tr><th>Buts</th><th>' + nomA + ' marque</th><th>' + nomB + ' encaisse</th><th>Croisement</th></tr>';
     for (var k = 0; k < 4; k++) {
         var c = (hA===k) ? ' class="orange"' : '';
         html += '<tr' + c + '><td>' + k + '</td><td>' + pA[k].toFixed(1) + '%</td><td>' + eB[k] + '%</td><td>' + crA[k].toFixed(1) + '%</td></tr>';
     }
     html += '</table>';
-    html += '<table><tr><th>Buts</th><th>B marque</th><th>A encaisse</th><th>Croisement</th></tr>';
+    if (hA !== -1) html += '<p class="explain">🟠 ' + nomA + ' trouve le chemin dans ' + nomB + ' : la probabilité de marquer ' + hA + ' but(s) (' + pA[hA].toFixed(1) + '%) est proche de la probabilité que ' + nomB + ' encaisse ' + hA + ' but(s) (' + eB[hA] + '%).</p>';
+    
+    html += '<table><tr><th>Buts</th><th>' + nomB + ' marque</th><th>' + nomA + ' encaisse</th><th>Croisement</th></tr>';
     for (var k = 0; k < 4; k++) {
         var c = (hB===k) ? ' class="blue"' : '';
         html += '<tr' + c + '><td>' + k + '</td><td>' + pB[k].toFixed(1) + '%</td><td>' + eA[k] + '%</td><td>' + crB[k].toFixed(1) + '%</td></tr>';
     }
     html += '</table>';
+    if (hB !== -1) html += '<p class="explain">🔵 ' + nomB + ' trouve le chemin dans ' + nomA + ' : la probabilité de marquer ' + hB + ' but(s) (' + pB[hB].toFixed(1) + '%) est proche de la probabilité que ' + nomA + ' encaisse ' + hB + ' but(s) (' + eA[hB] + '%).</p>';
     
-    html += '<p>🎯 <b>TOP 3 :</b> ';
+    html += '<p>🎯 <b>TOP 3 SCORES :</b> ';
     for (var s = 0; s < 3; s++) html += top3[s].i + '-' + top3[s].j + ' ' + (top3[s].p*100).toFixed(1) + '%' + (s<2?' | ':'');
     html += '</p>';
     
