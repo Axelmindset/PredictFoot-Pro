@@ -6,153 +6,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analyse de Match - xG System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #1a1a2e;
             color: #e0e0e0;
-            padding: 20px;
+            padding: 15px;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 750px; margin: 0 auto; }
         h1 {
             text-align: center;
             color: #00d2ff;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 15px;
+            font-size: 20px;
         }
         .match-input {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         .team-card {
             background: #16213e;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 15px;
             border: 2px solid #0f3460;
         }
         .team-card h2 {
             color: #e94560;
-            margin-bottom: 15px;
-            font-size: 18px;
+            margin-bottom: 10px;
+            font-size: 16px;
             text-align: center;
         }
-        .team-card h2.team-b {
-            color: #00d2ff;
-        }
+        .team-card h2.team-b { color: #00d2ff; }
         .stat-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px solid #0f3460;
         }
-        .stat-row label {
-            font-size: 13px;
-            flex: 1;
-        }
+        .stat-row label { font-size: 12px; flex: 1; }
         .stat-row input {
-            width: 50px;
-            padding: 6px;
+            width: 45px;
+            padding: 5px;
             border: 1px solid #0f3460;
-            border-radius: 6px;
+            border-radius: 5px;
             background: #1a1a2e;
             color: #fff;
             text-align: center;
             font-size: 14px;
         }
-        .stat-row input:focus {
-            outline: none;
-            border-color: #e94560;
-        }
+        .stat-row input:focus { outline: none; border-color: #e94560; }
         .btn-analyze {
             grid-column: 1 / -1;
-            padding: 14px;
+            padding: 12px;
             background: linear-gradient(135deg, #e94560, #00d2ff);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        .btn-analyze:hover {
-            transform: scale(1.02);
-        }
-        .btn-analyze:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .btn-analyze:active { transform: scale(0.98); }
         .result {
             background: #16213e;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 15px;
             border: 2px solid #0f3460;
-            margin-top: 20px;
+            margin-top: 15px;
             display: none;
         }
-        .result.active {
-            display: block;
-        }
+        .result.active { display: block; }
         .xgglobal {
             background: #00ff88;
             color: #000;
             text-align: center;
             padding: 10px;
             border-radius: 8px;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .block {
             background: #0f3460;
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
         }
-        .block h3 {
-            color: #00d2ff;
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-        .block p {
-            font-size: 14px;
-            line-height: 1.6;
-        }
+        .block h3 { color: #00d2ff; margin-bottom: 6px; font-size: 14px; }
+        .block p { font-size: 13px; line-height: 1.5; }
         .croisement-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
-            margin-top: 8px;
+            font-size: 12px;
+            margin-top: 6px;
         }
         .croisement-table th, .croisement-table td {
-            padding: 6px 8px;
+            padding: 5px 6px;
             text-align: center;
             border: 1px solid #1a1a2e;
         }
-        .croisement-table th {
-            background: #e94560;
-            color: #fff;
-        }
-        .croisement-table .highlight-a {
-            background: #ff8c00;
-            color: #000;
-            font-weight: bold;
-        }
-        .croisement-table .highlight-b {
-            background: #00aaff;
-            color: #000;
-            font-weight: bold;
-        }
+        .croisement-table th { background: #e94560; color: #fff; }
+        .highlight-a { background: #ff8c00; color: #000; font-weight: bold; }
+        .highlight-b { background: #00aaff; color: #000; font-weight: bold; }
         .signal {
             background: #00aaff;
             color: #000;
@@ -163,54 +121,52 @@
             margin-top: 8px;
         }
         .top3 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             text-align: center;
-            margin-top: 8px;
+            margin-top: 6px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚽ ANALYSE DE MATCH - xG SYSTEM</h1>
+        <h1>⚽ ANALYSE DE MATCH</h1>
         
         <div class="match-input">
             <div class="team-card">
-                <h2>🅰️ Équipe A</h2>
-                <div class="stat-row"><label>1. A gagné le match</label><input type="number" id="a1" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>2. Les deux équipes marquent</label><input type="number" id="a2" min="0" max="5" value="1"></div>
-                <div class="stat-row"><label>3. Plus de 2,5 buts</label><input type="number" id="a3" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>4. Marquera le premier but</label><input type="number" id="a4" min="0" max="5" value="4"></div>
-                <div class="stat-row"><label>5. A encaissé le premier but</label><input type="number" id="a5" min="0" max="5" value="0"></div>
-                <div class="stat-row"><label>6. Nul ou victoire</label><input type="number" id="a6" min="0" max="5" value="5"></div>
-                <div class="stat-row"><label>7. Vainqueur de la 1re mi-temps</label><input type="number" id="a7" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>8. Clean sheets</label><input type="number" id="a8" min="0" max="5" value="4"></div>
+                <h2>Équipe A</h2>
+                <div class="stat-row"><label>A gagné le match</label><input type="number" id="a1" min="0" max="5" value="3"></div>
+                <div class="stat-row"><label>Les deux équipes marquent</label><input type="number" id="a2" min="0" max="5" value="1"></div>
+                <div class="stat-row"><label>Plus de 2,5 buts</label><input type="number" id="a3" min="0" max="5" value="3"></div>
+                <div class="stat-row"><label>Marquera le premier but</label><input type="number" id="a4" min="0" max="5" value="4"></div>
+                <div class="stat-row"><label>A encaissé le premier but</label><input type="number" id="a5" min="0" max="5" value="0"></div>
+                <div class="stat-row"><label>Nul ou victoire</label><input type="number" id="a6" min="0" max="5" value="5"></div>
+                <div class="stat-row"><label>Vainqueur de la 1re mi-temps</label><input type="number" id="a7" min="0" max="5" value="3"></div>
+                <div class="stat-row"><label>Clean sheets</label><input type="number" id="a8" min="0" max="5" value="4"></div>
             </div>
             
             <div class="team-card">
-                <h2 class="team-b">🅱️ Équipe B</h2>
-                <div class="stat-row"><label>1. A gagné le match</label><input type="number" id="b1" min="0" max="5" value="2"></div>
-                <div class="stat-row"><label>2. Les deux équipes marquent</label><input type="number" id="b2" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>3. Plus de 2,5 buts</label><input type="number" id="b3" min="0" max="5" value="2"></div>
-                <div class="stat-row"><label>4. Marquera le premier but</label><input type="number" id="b4" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>5. A encaissé le premier but</label><input type="number" id="b5" min="0" max="5" value="2"></div>
-                <div class="stat-row"><label>6. Nul ou victoire</label><input type="number" id="b6" min="0" max="5" value="3"></div>
-                <div class="stat-row"><label>7. Vainqueur de la 1re mi-temps</label><input type="number" id="b7" min="0" max="5" value="1"></div>
-                <div class="stat-row"><label>8. Clean sheets</label><input type="number" id="b8" min="0" max="5" value="0"></div>
+                <h2 class="team-b">Équipe B</h2>
+                <div class="stat-row"><label>A gagné le match</label><input type="number" id="b1" min="0" max="5" value="2"></div>
+                <div class="stat-row"><label>Les deux équipes marquent</label><input type="number" id="b2" min="0" max="5" value="3"></div>
+                <div class="stat-row"><label>Plus de 2,5 buts</label><input type="number" id="b3" min="0" max="5" value="2"></div>
+                <div class="stat-row"><label>Marquera le premier but</label><input type="number" id="b4" min="0" max="5" value="3"></div>
+                <div class="stat-row"><label>A encaissé le premier but</label><input type="number" id="b5" min="0" max="5" value="2"></div>
+                <div class="stat-row"><label>Nul ou victoire</label><input type="number" id="b6" min="0" max="5" value="3"></div>
+                <div class="stat-row"><label>Vainqueur de la 1re mi-temps</label><input type="number" id="b7" min="0" max="5" value="1"></div>
+                <div class="stat-row"><label>Clean sheets</label><input type="number" id="b8" min="0" max="5" value="0"></div>
             </div>
             
-            <button class="btn-analyze" onclick="analyze()">🔍 ANALYSER LE MATCH</button>
+            <button class="btn-analyze" onclick="analyze()">ANALYSER LE MATCH</button>
         </div>
         
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        function getVal(id) { return parseInt(document.getElementById(id).value) || 0; }
-        
-        function poisson(k, xG) {
-            if (xG <= 0) xG = 0.01;
-            return (Math.pow(xG, k) * Math.exp(-xG)) / factorial(k);
+        function getVal(id) {
+            var v = parseInt(document.getElementById(id).value);
+            return isNaN(v) ? 0 : v;
         }
         
         function factorial(n) {
@@ -218,40 +174,37 @@
             return n * factorial(n - 1);
         }
         
-        function calcOffensive(vic, clean, vn, mt, enc, btts, ouvre, over) {
-            let pts = 0;
-            const bar = {
-                vic: [0,0,0,1,2,3], vn: [0,0,0,1,2,3], mt: [0,0,0,1,2,3],
-                enc: [2,0,0,0,0,0], btts: [0,0,1,2,3,4], ouvre: [0,0,0,2,4,5], over: [0,0,0,1,3,4]
-            };
-            pts += bar.vic[vic] || 0;
-            pts += bar.vn[vn] || 0;
-            pts += bar.mt[mt] || 0;
-            pts += bar.enc[enc] || 0;
-            pts += bar.btts[btts] || 0;
-            pts += bar.ouvre[ouvre] || 0;
-            pts += bar.over[over] || 0;
+        function poisson(k, xG) {
+            if (xG <= 0) xG = 0.01;
+            return (Math.pow(xG, k) * Math.exp(-xG)) / factorial(k);
+        }
+        
+        function calcOffensive(d) {
+            var pts = 0;
+            if (d[0] === 5) pts += 3; else if (d[0] === 4) pts += 2; else if (d[0] === 3) pts += 1;
+            if (d[5] === 5) pts += 3; else if (d[5] === 4) pts += 2; else if (d[5] === 3) pts += 1;
+            if (d[6] === 5) pts += 3; else if (d[6] === 4) pts += 2; else if (d[6] === 3) pts += 1;
+            if (d[4] === 0) pts += 2;
+            if (d[1] === 5) pts += 4; else if (d[1] === 4) pts += 3; else if (d[1] === 3) pts += 2; else if (d[1] === 2) pts += 1;
+            if (d[3] === 5) pts += 5; else if (d[3] === 4) pts += 4; else if (d[3] === 3) pts += 2;
+            if (d[2] === 5) pts += 4; else if (d[2] === 4) pts += 3; else if (d[2] === 3) pts += 1;
             return pts;
         }
         
-        function calcDefensive(vic, clean, vn, mt, enc, btts, ouvre, over) {
-            let pts = 0;
-            const bar = {
-                vic: [0,0,0,1,2,3], clean: [0,0,1,3,4,5], vn: [0,0,0,1,3,4], mt: [0,0,0,1,1,2],
-                enc: [2,0,-1,-2,-3,-3], btts: [2,1,0,-1,-2,-3], over: [0,0,0,1,1,2]
-            };
-            pts += bar.vic[vic] || 0;
-            pts += bar.clean[clean] || 0;
-            pts += bar.vn[vn] || 0;
-            pts += bar.mt[mt] || 0;
-            pts += bar.enc[enc] || 0;
-            pts += bar.btts[btts] || 0;
-            pts += bar.over[over] || 0;
+        function calcDefensive(d) {
+            var pts = 0;
+            if (d[0] === 5) pts += 3; else if (d[0] === 4) pts += 2; else if (d[0] === 3) pts += 1;
+            if (d[7] === 5) pts += 5; else if (d[7] === 4) pts += 4; else if (d[7] === 3) pts += 3; else if (d[7] === 2) pts += 1;
+            if (d[5] === 5) pts += 4; else if (d[5] === 4) pts += 3; else if (d[5] === 3) pts += 1;
+            if (d[6] === 5) pts += 2; else if (d[6] === 4) pts += 1; else if (d[6] === 3) pts += 1;
+            if (d[4] === 0) pts += 2; else if (d[4] === 1) pts -= 1; else if (d[4] === 2) pts -= 2; else if (d[4] >= 3) pts -= 3;
+            if (d[1] === 0) pts += 2; else if (d[1] === 1) pts += 1; else if (d[1] === 2) pts += 0; else if (d[1] === 3) pts -= 1; else if (d[1] === 4) pts -= 2; else if (d[1] === 5) pts -= 3;
+            if (d[2] === 5) pts += 2; else if (d[2] === 4) pts += 1; else if (d[2] === 3) pts += 1;
             return pts;
         }
         
-        function table15(t, pct) {
-            const tables = {
+        function table15(type, pct) {
+            var tables = {
                 off: [
                     [65,28,6,1,0,0], [50,35,12,3,0,0], [35,35,20,8,2,0],
                     [25,30,26,13,4,2], [15,27,30,18,8,2], [10,22,28,23,12,5], [5,15,25,28,18,9]
@@ -261,7 +214,7 @@
                     [20,30,28,15,5,2], [28,35,22,10,4,1], [40,35,18,5,2,0], [55,30,12,3,0,0]
                 ]
             };
-            let row = 0;
+            var row = 0;
             if (pct < 15) row = 0;
             else if (pct < 30) row = 1;
             else if (pct < 45) row = 2;
@@ -269,11 +222,12 @@
             else if (pct < 75) row = 4;
             else if (pct < 90) row = 5;
             else row = 6;
-            return tables[t][row];
+            return tables[type][row];
         }
         
-        function conditionsSpeciales(vic, btts, over, ouvre, enc, vn, mt, clean) {
-            let off = 0, def = 0;
+        function conditionsSpeciales(d) {
+            var off = 0, def = 0;
+            var vic = d[0], btts = d[1], over = d[2], ouvre = d[3], enc = d[4], vn = d[5], mt = d[6], clean = d[7];
             if (btts <= 1 && clean >= 3 && vn === 5) { off += 2; def += 5; }
             if (clean >= 4 && vic >= 4 && vn === 5 && mt >= 3) { off += 5; def += 6; }
             if (clean >= 4 && vic >= 4 && vn === 5 && ouvre === 4) { off += 5; def += 4; }
@@ -286,11 +240,12 @@
             if (enc >= 2 && vn === 5) { off += 2; def += 2; }
             if (btts === 2 && enc === 1) { def += 5; }
             if (btts === 1 && enc === 1 && clean >= 3 && vic >= 3) { def += 5; }
-            return { off, def };
+            return { off: off, def: def };
         }
         
-        function synergies(vic, btts, over, ouvre, enc, vn, mt, clean) {
-            let off = 0, def = 0;
+        function synergies(d) {
+            var off = 0, def = 0;
+            var vic = d[0], btts = d[1], over = d[2], ouvre = d[3], enc = d[4], vn = d[5], mt = d[6], clean = d[7];
             if (ouvre >= 4 && mt >= 3) off += 3;
             if (ouvre >= 4 && vic >= 4) off += 2;
             if (over >= 4 && vic >= 4) off += 2;
@@ -300,7 +255,7 @@
             if (clean >= 3 && mt >= 3) def += 2;
             if (enc === 1 && vn >= 4) { off += 1; def += 1; }
             if (vic >= 4 && vn >= 4) { off += 1; def += 1; }
-            return { off, def };
+            return { off: off, def: def };
         }
         
         function arrondirButs(xG) {
@@ -313,89 +268,86 @@
         }
         
         function analyze() {
-            const A = [getVal('a1'), getVal('a2'), getVal('a3'), getVal('a4'), getVal('a5'), getVal('a6'), getVal('a7'), getVal('a8')];
-            const B = [getVal('b1'), getVal('b2'), getVal('b3'), getVal('b4'), getVal('b5'), getVal('b6'), getVal('b7'), getVal('b8')];
+            var A = [getVal('a1'), getVal('a2'), getVal('a3'), getVal('a4'), getVal('a5'), getVal('a6'), getVal('a7'), getVal('a8')];
+            var B = [getVal('b1'), getVal('b2'), getVal('b3'), getVal('b4'), getVal('b5'), getVal('b6'), getVal('b7'), getVal('b8')];
             
-            const [vicA, bttsA, overA, ouvreA, encA, vnA, mtA, cleanA] = A;
-            const [vicB, bttsB, overB, ouvreB, encB, vnB, mtB, cleanB] = B;
+            var offA = calcOffensive(A);
+            var defA = calcDefensive(A);
+            var offB = calcOffensive(B);
+            var defB = calcDefensive(B);
             
-            let offA = calcOffensive(vicA, cleanA, vnA, mtA, encA, bttsA, ouvreA, overA);
-            let defA = calcDefensive(vicA, cleanA, vnA, mtA, encA, bttsA, ouvreA, overA);
-            let offB = calcOffensive(vicB, cleanB, vnB, mtB, encB, bttsB, ouvreB, overB);
-            let defB = calcDefensive(vicB, cleanB, vnB, mtB, encB, bttsB, ouvreB, overB);
-            
-            const condA = conditionsSpeciales(vicA, bttsA, overA, ouvreA, encA, vnA, mtA, cleanA);
-            const condB = conditionsSpeciales(vicB, bttsB, overB, ouvreB, encB, vnB, mtB, cleanB);
-            const synA = synergies(vicA, bttsA, overA, ouvreA, encA, vnA, mtA, cleanA);
-            const synB = synergies(vicB, bttsB, overB, ouvreB, encB, vnB, mtB, cleanB);
+            var condA = conditionsSpeciales(A);
+            var condB = conditionsSpeciales(B);
+            var synA = synergies(A);
+            var synB = synergies(B);
             
             offA += condA.off + synA.off;
             defA += condA.def + synA.def;
             offB += condB.off + synB.off;
             defB += condB.def + synB.def;
             
-            let xGA = 0.2 + offA * 0.15;
-            let xGAA = 2.0 - defA * 0.095;
+            var xGA = 0.2 + offA * 0.15;
+            var xGAA = 2.0 - defA * 0.095;
             if (xGAA < 0.1) xGAA = 0.1;
-            let xGB = 0.2 + offB * 0.15;
-            let xGAB = 2.0 - defB * 0.095;
+            var xGB = 0.2 + offB * 0.15;
+            var xGAB = 2.0 - defB * 0.095;
             if (xGAB < 0.1) xGAB = 0.1;
             
-            let xGadjA = xGA * (xGAB / 2.0);
-            let xGadjB = xGB * (xGAA / 2.0);
+            var xGadjA = xGA * (xGAB / 2.0);
+            var xGadjB = xGB * (xGAA / 2.0);
             
-            let scoreA = arrondirButs(xGadjA);
-            let scoreB = arrondirButs(xGadjB);
+            var scoreA = arrondirButs(xGadjA);
+            var scoreB = arrondirButs(xGadjB);
             
-            let capA = (overA + bttsA + ouvreA + vicA + mtA) / 25 * 100;
-            let capB = (overB + bttsB + ouvreB + vicB + mtB) / 25 * 100;
+            var capA = (A[2] + A[1] + A[3] + A[0] + A[6]) / 25 * 100;
+            var capB = (B[2] + B[1] + B[3] + B[0] + B[6]) / 25 * 100;
             
-            let tabA = table15('off', capA);
-            let tabB = table15('off', capB);
+            var tabA = table15('off', capA);
+            var tabB = table15('off', capB);
             
-            let probA = [], probB = [];
-            for (let k = 0; k < 6; k++) {
+            var probA = [], probB = [];
+            for (var k = 0; k < 6; k++) {
                 probA.push(Math.round(((poisson(k, xGadjA) * 100) + tabA[k]) / 2 * 10) / 10);
                 probB.push(Math.round(((poisson(k, xGadjB) * 100) + tabB[k]) / 2 * 10) / 10);
             }
             
-            let defCapA = (cleanA + (5 - bttsA) + (5 - encA) + vnA) / 20 * 100;
-            let defCapB = (cleanB + (5 - bttsB) + (5 - encB) + vnB) / 20 * 100;
+            var defCapA = (A[7] + (5 - A[1]) + (5 - A[4]) + A[5]) / 20 * 100;
+            var defCapB = (B[7] + (5 - B[1]) + (5 - B[4]) + B[5]) / 20 * 100;
             
-            let encA = table15('def', defCapA);
-            let encB = table15('def', defCapB);
+            var encA = table15('def', defCapA);
+            var encB = table15('def', defCapB);
             
-            let croisA = [], croisB = [];
-            for (let k = 0; k < 4; k++) {
+            var croisA = [], croisB = [];
+            for (var k = 0; k < 4; k++) {
                 croisA.push(Math.round((probA[k] * encB[k]) / 100 * 10) / 10);
                 croisB.push(Math.round((probB[k] * encA[k]) / 100 * 10) / 10);
             }
             
-            let btts = Math.round((probA[1] + probB[1]) / 2 * 10) / 10;
+            var btts = Math.round((probA[1] + probB[1]) / 2 * 10) / 10;
             
-            let p0 = Math.round(probA[0] * probB[0]) / 100;
-            let p1 = (probA[1] * probB[0] + probA[0] * probB[1]) / 100;
-            let p2 = (probA[2] * probB[0] + probA[1] * probB[1] + probA[0] * probB[2]) / 100;
-            let p3 = (probA[3] * probB[0] + probA[2] * probB[1] + probA[1] * probB[2] + probA[0] * probB[3]) / 100;
+            var p0 = probA[0] * probB[0] / 100;
+            var p1 = (probA[1] * probB[0] + probA[0] * probB[1]) / 100;
+            var p2 = (probA[2] * probB[0] + probA[1] * probB[1] + probA[0] * probB[2]) / 100;
+            var p3 = (probA[3] * probB[0] + probA[2] * probB[1] + probA[1] * probB[2] + probA[0] * probB[3]) / 100;
             
-            let over05 = Math.round((1 - p0) * 1000) / 10;
-            let over15 = Math.round((1 - p0 - p1) * 1000) / 10;
-            let over25 = Math.round((1 - p0 - p1 - p2) * 1000) / 10;
-            let over35 = Math.round((1 - p0 - p1 - p2 - p3) * 1000) / 10;
+            var over05 = Math.round((1 - p0) * 1000) / 10;
+            var over15 = Math.round((1 - p0 - p1) * 1000) / 10;
+            var over25 = Math.round((1 - p0 - p1 - p2) * 1000) / 10;
+            var over35 = Math.round((1 - p0 - p1 - p2 - p3) * 1000) / 10;
             
-            let xGGlobal = Math.round((0 * p0 + 1 * p1 + 2 * p2 + 3 * p3 + 4 * (1 - p0 - p1 - p2 - p3 - 0.02) + 5 * 0.02) * 100) / 100;
+            var xGGlobal = Math.round((0 * p0 + 1 * p1 + 2 * p2 + 3 * p3 + 4 * (1 - p0 - p1 - p2 - p3)) * 100) / 100;
             
-            let scores = [];
-            for (let i = 0; i < 4; i++) {
-                for (let j = 0; j < 4; j++) {
-                    scores.push({ i, j, p: Math.round(probA[i] * probB[j]) / 100 });
+            var scores = [];
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    scores.push({ i: i, j: j, p: Math.round(probA[i] * probB[j]) / 100 });
                 }
             }
-            scores.sort((a, b) => b.p - a.p);
-            let top3 = scores.slice(0, 3);
+            scores.sort(function(a, b) { return b.p - a.p; });
+            var top3 = scores.slice(0, 3);
             
-            let diff = offA - offB;
-            let vA, vN, vB;
+            var diff = offA - offB;
+            var vA, vN, vB;
             if (diff > 20) { vA = 75; vN = 18; vB = 7; }
             else if (diff >= 15) { vA = 70; vN = 20; vB = 10; }
             else if (diff >= 10) { vA = 60; vN = 25; vB = 15; }
@@ -407,86 +359,93 @@
             else if (diff >= -20) { vA = 10; vN = 20; vB = 70; }
             else { vA = 7; vN = 18; vB = 75; }
             
-            let firstA = Math.round((ouvreA + mtA) / (ouvreA + mtA + ouvreB + mtB) * 100);
-            let firstB = 100 - firstA;
+            var firstA = Math.round((A[3] + A[6]) / (A[3] + A[6] + B[3] + B[6]) * 100);
+            var firstB = 100 - firstA;
             
-            let cote1 = Math.round(100 / vA * 100) / 100;
-            let coteN = Math.round(100 / vN * 100) / 100;
-            let cote2 = Math.round(100 / vB * 100) / 100;
-            let coteOver = Math.round(100 / over25 * 100) / 100;
-            let coteBTTS = Math.round(100 / btts * 100) / 100;
+            var cote1 = Math.round(100 / vA * 100) / 100;
+            var coteN = Math.round(100 / vN * 100) / 100;
+            var cote2 = Math.round(100 / vB * 100) / 100;
+            var coteOver = Math.round(100 / over25 * 100) / 100;
+            var coteBTTS = Math.round(100 / btts * 100) / 100;
             
-            let highlightA = -1, highlightB = -1;
-            for (let k = 0; k < 4; k++) {
-                if (Math.abs(probA[k] - encB[k]) <= 5 && probA[k] > 10) highlightA = k;
-                if (Math.abs(probB[k] - encA[k]) <= 5 && probB[k] > 10) highlightB = k;
+            var highlightA = -1, highlightB = -1;
+            for (var k = 0; k < 4; k++) {
+                if (Math.abs(probA[k] - encB[k]) <= 5 && probA[k] > 10 && highlightA === -1) highlightA = k;
+                if (Math.abs(probB[k] - encA[k]) <= 5 && probB[k] > 10 && highlightB === -1) highlightB = k;
             }
             
-            let signal = '';
-            let hasSignal = false;
+            var signal = '';
+            var hasSignal = false;
             if (Math.abs(probA[1] - probB[1]) <= 5) {
-                let hasBTTS = top3.some(s => (s.i >= 1 && s.j >= 1));
+                var hasBTTS = false;
+                for (var s = 0; s < top3.length; s++) {
+                    if (top3[s].i >= 1 && top3[s].j >= 1) { hasBTTS = true; break; }
+                }
                 if (hasBTTS) {
-                    signal = `🔵 MIROIR DE MARQUER : Équipe A ${probA[1]}% • Équipe B ${probB[1]}% | Score BTTS dans le top 3`;
+                    signal = '🔵 MIROIR DE MARQUER : Équipe A ' + probA[1] + '% • Équipe B ' + probB[1] + '% | Score BTTS dans le top 3';
                     hasSignal = true;
                 }
             }
             
-            let html = `
-                <div class="xgglobal">🟢 xG GLOBAL : ${xGGlobal.toFixed(2)}</div>
-                
-                <div class="block">
-                    <h3>📊 xG DU MATCH</h3>
-                    <p>Équipe A : ${xGA.toFixed(2)} × (${xGAB.toFixed(2)}/2.0) = ${xGadjA.toFixed(2)}<br>
-                    Équipe B : ${xGB.toFixed(2)} × (${xGAA.toFixed(2)}/2.0) = ${xGadjB.toFixed(2)}<br>
-                    🎯 SCORE PROBABLE : ${scoreA}-${scoreB}</p>
-                </div>
-                
-                <div class="block">
-                    <h3>📈 PROBABILITÉS</h3>
-                    <p>🏆 1N2 : Équipe A ${vA}% | Nul ${vN}% | Équipe B ${vB}%<br>
-                    📈 OVER 2.5 : ${over25}% | ⚽ BTTS : ${btts}%<br>
-                    ⏱️ 1ER BUT : Équipe A ${firstA}% | Équipe B ${firstB}%</p>
-                </div>
-                
-                <div class="block">
-                    <h3>💰 CÔTES</h3>
-                    <p>1 : ${cote1} | N : ${coteN} | 2 : ${cote2} | Over 2.5 : ${coteOver} | BTTS : ${coteBTTS}</p>
-                </div>
-                
-                <div class="block">
-                    <h3>🔄 CROISEMENT</h3>
-                    <p style="font-size:12px;color:#aaa;">Équipe A</p>
-                    <table class="croisement-table">
-                        <tr><th>Buts</th><th>Marque</th><th>B encaisse</th><th>Croisement</th></tr>
-                        ${[0,1,2,3].map(k => `
-                            <tr class="${highlightA === k ? 'highlight-a' : ''}">
-                                <td>${k}</td><td>${probA[k]}%</td><td>${encB[k]}%</td><td>${croisA[k]}%</td>
-                            </tr>
-                        `).join('')}
-                    </table>
-                    <p style="font-size:12px;color:#aaa;margin-top:10px;">Équipe B</p>
-                    <table class="croisement-table">
-                        <tr><th>Buts</th><th>Marque</th><th>A encaisse</th><th>Croisement</th></tr>
-                        ${[0,1,2,3].map(k => `
-                            <tr class="${highlightB === k ? 'highlight-b' : ''}">
-                                <td>${k}</td><td>${probB[k]}%</td><td>${encA[k]}%</td><td>${croisB[k]}%</td>
-                            </tr>
-                        `).join('')}
-                    </table>
-                    <p style="font-size:11px;margin-top:5px;">🟠 = A trouve chemin dans B | 🔵 = B trouve chemin dans A</p>
-                </div>
-                
-                <div class="block">
-                    <h3>🎯 TOP 3 SCORES</h3>
-                    <p class="top3">${top3.map(s => `${s.i}-${s.j} : ${(s.p*100).toFixed(1)}%`).join(' | ')}</p>
-                </div>
-                
-                ${hasSignal ? `<div class="signal">${signal}</div>` : ''}
-            `;
+            var html = '';
+            html += '<div class="xgglobal">🟢 xG GLOBAL : ' + xGGlobal.toFixed(2) + '</div>';
+            
+            html += '<div class="block">';
+            html += '<h3>📊 xG DU MATCH</h3>';
+            html += '<p>Équipe A : ' + xGA.toFixed(2) + ' × (' + xGAB.toFixed(2) + '/2.0) = ' + xGadjA.toFixed(2) + '<br>';
+            html += 'Équipe B : ' + xGB.toFixed(2) + ' × (' + xGAA.toFixed(2) + '/2.0) = ' + xGadjB.toFixed(2) + '<br>';
+            html += '🎯 SCORE PROBABLE : ' + scoreA + '-' + scoreB + '</p>';
+            html += '</div>';
+            
+            html += '<div class="block">';
+            html += '<h3>📈 PROBABILITÉS</h3>';
+            html += '<p>🏆 1N2 : Équipe A ' + vA + '% | Nul ' + vN + '% | Équipe B ' + vB + '%<br>';
+            html += '📈 OVER 2.5 : ' + over25 + '% | ⚽ BTTS : ' + btts + '%<br>';
+            html += '⏱️ 1ER BUT : Équipe A ' + firstA + '% | Équipe B ' + firstB + '%</p>';
+            html += '</div>';
+            
+            html += '<div class="block">';
+            html += '<h3>💰 CÔTES</h3>';
+            html += '<p>1 : ' + cote1 + ' | N : ' + coteN + ' | 2 : ' + cote2 + ' | Over 2.5 : ' + coteOver + ' | BTTS : ' + coteBTTS + '</p>';
+            html += '</div>';
+            
+            html += '<div class="block">';
+            html += '<h3>🔄 CROISEMENT</h3>';
+            html += '<p style="font-size:11px;color:#aaa;">Équipe A</p>';
+            html += '<table class="croisement-table">';
+            html += '<tr><th>Buts</th><th>Marque</th><th>B encaisse</th><th>Croisement</th></tr>';
+            for (var k = 0; k < 4; k++) {
+                var cls = (highlightA === k) ? ' class="highlight-a"' : '';
+                html += '<tr' + cls + '><td>' + k + '</td><td>' + probA[k] + '%</td><td>' + encB[k] + '%</td><td>' + croisA[k] + '%</td></tr>';
+            }
+            html += '</table>';
+            html += '<p style="font-size:11px;color:#aaa;margin-top:8px;">Équipe B</p>';
+            html += '<table class="croisement-table">';
+            html += '<tr><th>Buts</th><th>Marque</th><th>A encaisse</th><th>Croisement</th></tr>';
+            for (var k = 0; k < 4; k++) {
+                var cls = (highlightB === k) ? ' class="highlight-b"' : '';
+                html += '<tr' + cls + '><td>' + k + '</td><td>' + probB[k] + '%</td><td>' + encA[k] + '%</td><td>' + croisB[k] + '%</td></tr>';
+            }
+            html += '</table>';
+            html += '<p style="font-size:10px;margin-top:4px;">🟠 = A trouve chemin dans B | 🔵 = B trouve chemin dans A</p>';
+            html += '</div>';
+            
+            html += '<div class="block">';
+            html += '<h3>🎯 TOP 3 SCORES</h3>';
+            html += '<p class="top3">';
+            for (var s = 0; s < top3.length; s++) {
+                html += top3[s].i + '-' + top3[s].j + ' : ' + (top3[s].p * 100).toFixed(1) + '%';
+                if (s < 2) html += ' | ';
+            }
+            html += '</p>';
+            html += '</div>';
+            
+            if (hasSignal) {
+                html += '<div class="signal">' + signal + '</div>';
+            }
             
             document.getElementById('result').innerHTML = html;
-            document.getElementById('result').classList.add('active');
+            document.getElementById('result').className = 'result active';
         }
     </script>
 </body>
