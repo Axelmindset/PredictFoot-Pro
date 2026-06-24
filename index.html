@@ -313,6 +313,7 @@
 <script>
     // ============================================================
     //  FORMULES DÉFINITIVES (75% Poisson / 25% Tableau 15)
+    //  Version avec case 5+ = complémentaire
     // ============================================================
 
     function computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA) {
@@ -364,20 +365,73 @@
         return Math.pow(lambda, k) * Math.exp(-lambda) / fact;
     }
 
+    // Poisson avec case 5+ = complémentaire (pas de case 6)
     function poissonProbs(lambda) {
         const probs = [];
-        for (let k = 0; k <= 5; k++) {
-            probs.push(poisson(lambda, k));
+        let sum = 0;
+        for (let k = 0; k <= 4; k++) {
+            const p = poisson(lambda, k);
+            probs.push(p);
+            sum += p;
         }
+        probs.push(1 - sum);
         return probs;
     }
 
-    // ÉTAPE 7 : 75% Poisson / 25% Tableau 15
+    // Moyenne pondérée 75/25
     function combineProbs(poissonProbs, tableauProbs) {
         return poissonProbs.map((p, i) => (p * 0.75) + (tableauProbs[i] * 0.25));
     }
 
+    // ============================================================
+    //  FONCTION MAÎTRESSE : MATRICE DES SCORES
+    // ============================================================
+
+    function genererMatriceScores(finalA, finalB) {
+        const scores = [];
+        let winA = 0, draw = 0, winB = 0;
+        let over25 = 0;
+        let totalSum = 0;
+
+        for (let i = 0; i <= 5; i++) {
+            scores[i] = [];
+            for (let j = 0; j <= 5; j++) {
+                const prob = finalA[i] * finalB[j];
+                scores[i][j] = prob;
+                totalSum += prob;
+
+                if (i > j) winA += prob;
+                else if (i === j) draw += prob;
+                else winB += prob;
+
+                if (i + j >= 3) over25 += prob;
+            }
+        }
+
+        // Normalisation (si écart > 0.001)
+        if (Math.abs(totalSum - 1) > 0.001) {
+            for (let i = 0; i <= 5; i++) {
+                for (let j = 0; j <= 5; j++) {
+                    scores[i][j] /= totalSum;
+                }
+            }
+            winA /= totalSum;
+            draw /= totalSum;
+            winB /= totalSum;
+            over25 /= totalSum;
+        }
+
+        const btts = (1 - finalA[0]) * (1 - finalB[0]);
+
+        return { scores, winA, draw, winB, over25, btts, totalSum };
+    }
+
+    // ============================================================
+    //  ANALYSE COMPLÈTE (16 étapes)
+    // ============================================================
+
     function analyzeMatch(nameA, nameB, goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB) {
+        // Étape 1 à 6
         const { xgA, xgB } = computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA);
         const { xgaA, xgaB } = computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA);
         const { adjA, adjB, moyXGA } = confront(xgA, xgB, xgaA, xgaB);
@@ -389,78 +443,75 @@
         const finalA = combineProbs(poissonA, tabA);
         const finalB = combineProbs(poissonB, tabB);
 
-        // 1N2
-        let winA = 0, draw = 0, winB = 0;
+        // Étape 8 à 11 : Matrice
+        const matrix = genererMatriceScores(finalA, finalB);
+
+        // Étape 12 : Top 3
+        const list = [];
         for (let i = 0; i <= 5; i++) {
             for (let j = 0; j <= 5; j++) {
-                const prob = finalA[i] * finalB[j];
-                if (i > j) winA += prob;
-                else if (i === j) draw += prob;
-                else winB += prob;
+                list.push({ score: `${i}-${j}`, prob: matrix.scores[i][j] });
             }
         }
+        list.sort((a, b) => b.prob - a.prob);
+        const top3 = list.slice(0, 3);
 
-        // Over 2.5 (seulement)
-        let under25 = 0;
-        for (let i = 0; i <= 2; i++) {
-            for (let j = 0; j <= 2; j++) {
-                if (i + j <= 2) under25 += finalA[i] * finalB[j];
-            }
-        }
-        const over25 = 1 - under25;
+        // Étape 13 : Bon Sens
+        const pA1 = 1 - finalA[0];
+        const pA2 = 1 - finalA[0] - finalA[1];
+        const pA3 = 1 - finalA[0] - finalA[1] - finalA[2];
+        const pB1 = 1 - finalB[0];
+        const pB2 = 1 - finalB[0] - finalB[1];
+        const pB3 = 1 - finalB[0] - finalB[1] - finalB[2];
 
-        // BTTS
-        const probA1 = 1 - finalA[0];
-        const probB1 = 1 - finalB[0];
-        const btts = probA1 * probB1;
-
-        // Top 3
-        const scores = [];
-        for (let i = 0; i <= 5; i++) {
-            for (let j = 0; j <= 5; j++) {
-                const prob = finalA[i] * finalB[j];
-                if (prob > 0.001) scores.push({ score: `${i}-${j}`, prob });
-            }
-        }
-        scores.sort((a, b) => b.prob - a.prob);
-        const top3 = scores.slice(0, 3);
-
-        // Côtes
+        // Étape 11 : Côtes
         const odds = {
-            winA: 1 / winA,
-            draw: 1 / draw,
-            winB: 1 / winB,
-            over25: 1 / over25,
-            btts: 1 / btts
+            winA: 1 / matrix.winA,
+            draw: 1 / matrix.draw,
+            winB: 1 / matrix.winB,
+            over25: 1 / matrix.over25,
+            btts: 1 / matrix.btts
         };
 
-        // Bon Sens
-        const pA1 = 1 - finalA[0];
-        const pA2 = finalA[2] + finalA[3] + finalA[4] + finalA[5];
-        const pA3 = finalA[3] + finalA[4] + finalA[5];
-        const pB1 = 1 - finalB[0];
-        const pB2 = finalB[2] + finalB[3] + finalB[4] + finalB[5];
-        const pB3 = finalB[3] + finalB[4] + finalB[5];
+        // Étape 14 : Score probable
+        const maxProbScore = top3.length ? top3[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
 
-        const maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
-
+        // Étape 15 : Pronostic sûr
         let safeBet = "";
-        if (winA > 0.55) safeBet = `Victoire ${nameA}`;
-        else if (winB > 0.55) safeBet = `Victoire ${nameB}`;
-        else if (over25 > 0.55) safeBet = "Over 2.5";
-        else if (btts > 0.55) safeBet = "BTTS oui";
+        if (matrix.winA > 0.55) safeBet = `Victoire ${nameA}`;
+        else if (matrix.winB > 0.55) safeBet = `Victoire ${nameB}`;
+        else if (matrix.over25 > 0.55) safeBet = "Over 2.5";
+        else if (matrix.btts > 0.55) safeBet = "BTTS oui";
         else safeBet = "Match serré, peu de buts";
 
+        // Étape 16 : Résumé
         let summary = `${nameA} (${xgA.toFixed(2)} xG) affronte ${nameB} (${xgB.toFixed(2)} xG). `;
-        if (winA > 0.55) summary += `${nameA} est favori. `;
-        else if (winB > 0.55) summary += `${nameB} est favori. `;
+        if (matrix.winA > 0.55) summary += `${nameA} est favori. `;
+        else if (matrix.winB > 0.55) summary += `${nameB} est favori. `;
         else summary += `Match équilibré. `;
         summary += `Score probable : ${maxProbScore}. `;
-        summary += `Over 2.5 : ${over25 > 0.5 ? 'OUI' : 'NON'}. BTTS : ${btts > 0.5 ? 'OUI' : 'NON'}.`;
+        summary += `Over 2.5 : ${matrix.over25 > 0.5 ? 'OUI' : 'NON'}. BTTS : ${matrix.btts > 0.5 ? 'OUI' : 'NON'}.`;
 
         return {
-            saveData: { nameA, nameB, xgA, xgB, adjA, adjB, winA, winB, draw, over25, btts, safeBet, top3, maxProbScore, pA1, pA2, pA3, pB1, pB2, pB3, summary, odds },
-            display: { xgA, xgB, adjA, adjB, winA, winB, draw, over25, btts, safeBet, top3, maxProbScore, pA1, pA2, pA3, pB1, pB2, pB3, summary, odds, finalA, finalB }
+            saveData: {
+                nameA, nameB, xgA, xgB, adjA, adjB,
+                winA: matrix.winA, winB: matrix.winB, draw: matrix.draw,
+                over25: matrix.over25, btts: matrix.btts,
+                safeBet, maxProbScore, top3,
+                pA1, pA2, pA3, pB1, pB2, pB3,
+                summary, odds
+            },
+            display: {
+                xgA, xgB, adjA, adjB,
+                finalA, finalB,
+                matrix,
+                top3,
+                pA1, pA2, pA3, pB1, pB2, pB3,
+                odds,
+                safeBet,
+                maxProbScore,
+                summary
+            }
         };
     }
 
@@ -492,10 +543,10 @@
         const d = r.display;
 
         document.getElementById('kpiGrid').innerHTML = `
-            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.winA * 100).toFixed(1)}%</div></div>
-            <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.draw * 100).toFixed(1)}%</div></div>
-            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.winB * 100).toFixed(1)}%</div></div>
-            <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.over25 * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.matrix.winA * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.matrix.draw * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.matrix.winB * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.matrix.over25 * 100).toFixed(1)}%</div></div>
         `;
 
         document.getElementById('safeBet').textContent = d.safeBet;
@@ -567,18 +618,17 @@
     function savePrediction() {
         if (!currentResult) { showToast("❌ Lancez d'abord une analyse", true); return; }
         const r = currentResult.saveData;
-        const d = currentResult.display;
         const entry = {
             date: new Date().toLocaleString(),
             nameA: r.nameA,
             nameB: r.nameB,
             score: r.maxProbScore,
             safeBet: r.safeBet,
-            over25: d.over25 > 0.5 ? 'OUI' : 'NON',
-            btts: d.btts > 0.5 ? 'OUI' : 'NON',
-            winA: (d.winA * 100).toFixed(1),
-            winB: (d.winB * 100).toFixed(1),
-            draw: (d.draw * 100).toFixed(1)
+            over25: r.over25 > 0.5 ? 'OUI' : 'NON',
+            btts: r.btts > 0.5 ? 'OUI' : 'NON',
+            winA: (r.winA * 100).toFixed(1),
+            winB: (r.winB * 100).toFixed(1),
+            draw: (r.draw * 100).toFixed(1)
         };
         let history = JSON.parse(localStorage.getItem('predictFootHistory') || '[]');
         history.unshift(entry);
@@ -594,13 +644,13 @@
             `⚽ *PRONOSTIC ${r.nameA} vs ${r.nameB}* ⚽\n` +
             `📊 xG : ${r.nameA} ${r.xgA.toFixed(2)} | ${r.nameB} ${r.xgB.toFixed(2)}\n` +
             `🎯 Score probable : ${r.maxProbScore}\n` +
-            `🏆 ${r.nameA} ${(d.winA*100).toFixed(1)}% | Nul ${(d.draw*100).toFixed(1)}% | ${r.nameB} ${(d.winB*100).toFixed(1)}%\n` +
-            `📈 Over 2.5 : ${(d.over25*100).toFixed(1)}% | ⚽ BTTS : ${(d.btts*100).toFixed(1)}%\n` +
+            `🏆 ${r.nameA} ${(r.winA*100).toFixed(1)}% | Nul ${(r.draw*100).toFixed(1)}% | ${r.nameB} ${(r.winB*100).toFixed(1)}%\n` +
+            `📈 Over 2.5 : ${(r.over25*100).toFixed(1)}% | ⚽ BTTS : ${(r.btts*100).toFixed(1)}%\n` +
             `🔒 Pronostic sûr : ${r.safeBet}\n` +
-            `🧠 ${r.nameA} ≥1 but : ${(d.pA1*100).toFixed(1)}% | ≥2 buts : ${(d.pA2*100).toFixed(1)}%\n` +
-            `🧠 ${r.nameB} ≥1 but : ${(d.pB1*100).toFixed(1)}% | ≥2 buts : ${(d.pB2*100).toFixed(1)}%\n` +
-            `🎲 Top 3 : ${d.top3.map(s => `${s.score} (${(s.prob*100).toFixed(1)}%)`).join(' | ')}\n` +
-            `💰 Côtes : 1 ${d.odds.winA.toFixed(2)} | N ${d.odds.draw.toFixed(2)} | 2 ${d.odds.winB.toFixed(2)}`;
+            `🧠 ${r.nameA} ≥1 but : ${(r.pA1*100).toFixed(1)}% | ≥2 buts : ${(r.pA2*100).toFixed(1)}%\n` +
+            `🧠 ${r.nameB} ≥1 but : ${(r.pB1*100).toFixed(1)}% | ≥2 buts : ${(r.pB2*100).toFixed(1)}%\n` +
+            `🎲 Top 3 : ${r.top3.map(s => `${s.score} (${(s.prob*100).toFixed(1)}%)`).join(' | ')}\n` +
+            `💰 Côtes : 1 ${r.odds.winA.toFixed(2)} | N ${r.odds.draw.toFixed(2)} | 2 ${r.odds.winB.toFixed(2)}`;
         navigator.clipboard.writeText(text).then(() => showToast("✅ Texte copié !")).catch(() => showToast("❌ Erreur de copie", true));
     }
 
