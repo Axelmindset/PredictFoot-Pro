@@ -233,7 +233,7 @@
         const probB1 = 1 - finalB[0];
         const btts = probA1 * probB1;
 
-        // TOP 3 SCORES (CORRIGÉ)
+        // TOP 3 SCORES
         const scores = [];
         for (let i = 0; i <= 6; i++) {
             for (let j = 0; j <= 6; j++) {
@@ -244,7 +244,7 @@
         scores.sort((a, b) => b.prob - a.prob);
         const top3 = scores.slice(0, 3);
 
-        // SCORE PROBABLE (CORRIGÉ)
+        // SCORE PROBABLE
         const maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
 
         // Côtes
