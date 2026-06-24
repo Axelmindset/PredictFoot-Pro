@@ -65,7 +65,7 @@
 <div class="container">
     <div class="header">
         <h1>⚽ PrédictFoot Pro</h1>
-        <span>v2.2 · xG System</span>
+        <span>v2.3 · xG System</span>
     </div>
 
     <div class="card">
@@ -78,7 +78,7 @@
             </div>
             <div>
                 <div class="field-group"><label>✈️ Équipe B</label><input type="text" id="nameB" placeholder="Nom" value="UZB" /></div>
-                <div class="field-group"><label>Buts marqués / match</label><input type="number" id="goalsScoredB" value="3.1" step="0.1" /></div>
+                <div class="field-group"><label>Buts marqués / match</label><input type="number" id="goalsScoredB" value="4.5" step="0.1" /></div>
                 <div class="field-group"><label>Buts encaissés / match</label><input type="number" id="goalsConcededB" value="1.6" step="0.1" /></div>
             </div>
         </div>
@@ -244,8 +244,25 @@
         scores.sort((a, b) => b.prob - a.prob);
         const top3 = scores.slice(0, 3);
 
-        // SCORE PROBABLE
-        const maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
+        // SCORE PROBABLE (FORCÉ SI NÉCESSAIRE)
+        let maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
+        // Si le score probable est 0-0 mais que les xG ajustés sont > 1, on le corrige
+        if (maxProbScore === "0-0" && (adjA > 1 || adjB > 1)) {
+            const forcedScore = `${Math.round(adjA)}-${Math.round(adjB)}`;
+            // Vérifier que le score forcé existe dans la liste des scores
+            const exists = scores.some(s => s.score === forcedScore);
+            if (exists) {
+                maxProbScore = forcedScore;
+            } else {
+                // Sinon, prendre le score le plus probable après 0-0
+                for (let s of scores) {
+                    if (s.score !== "0-0") {
+                        maxProbScore = s.score;
+                        break;
+                    }
+                }
+            }
+        }
 
         // Côtes
         const odds = {
@@ -418,7 +435,7 @@
         document.getElementById('goalsScoredA').value = '0.6';
         document.getElementById('goalsConcededA').value = '1.8';
         document.getElementById('nameB').value = 'UZB';
-        document.getElementById('goalsScoredB').value = '3.1';
+        document.getElementById('goalsScoredB').value = '4.5';
         document.getElementById('goalsConcededB').value = '1.6';
         showToast("⚡ Démo chargée !");
     }
