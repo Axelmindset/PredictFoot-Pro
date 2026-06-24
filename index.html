@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Test - Étapes 1 à 4</title>
+    <title>⚽ PrédictFoot Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,73 +17,89 @@
             justify-content: center;
             align-items: center;
         }
-        .container { max-width: 700px; width: 100%; margin: 0 auto; }
+        .container { max-width: 750px; width: 100%; margin: 0 auto; }
         .header {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .header h1 {
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: 700;
             background: linear-gradient(135deg, #10b981, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header p { color: #94a3b8; font-size: 14px; margin-top: 4px; }
+        .header span {
+            font-size: 14px;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid #2d3a4f;
+        }
         .card {
             background: #141c2b;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             border: 1px solid #1e2a3d;
             box-shadow: 0 8px 30px rgba(0,0,0,0.4);
         }
         .card-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 16px;
-            color: #e2e8f0;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            color: #e2e8f0;
         }
         .card-title i { color: #10b981; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .field-group { margin-bottom: 12px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .field-group { margin-bottom: 16px; }
         .field-group label {
             display: block;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #94a3b8;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .field-group input {
             width: 100%;
-            padding: 10px 14px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
             border: 1px solid #1e2a3d;
             background: #0f172a;
             color: #f1f5f9;
             font-size: 16px;
             font-weight: 500;
-            transition: border 0.2s;
+            transition: border 0.2s, box-shadow 0.2s;
         }
         .field-group input:focus {
             border-color: #10b981;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
         }
         .btn {
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 40px;
             font-weight: 600;
             font-size: 16px;
             border: none;
             cursor: pointer;
-            transition: transform 0.15s;
+            transition: transform 0.15s, box-shadow 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .btn:active { transform: scale(0.97); }
         .btn-primary {
@@ -91,7 +107,7 @@
             color: white;
             width: 100%;
             justify-content: center;
-            padding: 14px;
+            padding: 16px;
         }
         .btn-secondary {
             background: #1e293b;
@@ -101,6 +117,48 @@
             justify-content: center;
             padding: 14px;
         }
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            flex: 1;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        #results { display: none; animation: fadeIn 0.5s ease; }
+        #results.show { display: block; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .result-card {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #1e2a3d;
+        }
+        .result-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        .result-value { font-size: 24px; font-weight: 700; color: #f1f5f9; }
+        .badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .badge-green { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981; }
+        .badge-blue { background: rgba(59,130,246,0.2); color: #3b82f6; border: 1px solid #3b82f6; }
+        .badge-orange { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        .badge-pink { background: rgba(236,72,153,0.2); color: #ec4899; border: 1px solid #ec4899; }
+        .badge-gray { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid #64748b; }
         .result-box {
             background: #0f172a;
             border-radius: 12px;
@@ -120,29 +178,69 @@
         .result-line .value { font-weight: 600; color: #10b981; }
         .result-line .value.orange { color: #f59e0b; }
         .result-line .value.blue { color: #3b82f6; }
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-        .badge-green { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981; }
-        .badge-blue { background: rgba(59,130,246,0.2); color: #3b82f6; border: 1px solid #3b82f6; }
-        .badge-orange { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid #f59e0b; }
-        .formula-box {
+        .result-line .value.pink { color: #ec4899; }
+        .top3-item {
             background: #0f172a;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            color: #94a3b8;
-            border-left: 3px solid #10b981;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #1e2a3d;
         }
-        @media (max-width: 600px) {
-            .grid-2 { grid-template-columns: 1fr; }
+        .top3-score { font-size: 28px; font-weight: 700; color: #f1f5f9; }
+        .top3-prob { font-size: 14px; color: #94a3b8; margin-top: 4px; }
+        .bonsens-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .bonsens-table th, .bonsens-table td {
+            padding: 10px 14px;
+            text-align: center;
+            border-bottom: 1px solid #1e2a3d;
+        }
+        .bonsens-table th {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .bonsens-table td {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .bonsens-table .team-name { text-align: left; font-weight: 600; color: #e2e8f0; }
+        .bonsens-table .highlight-cell { color: #10b981; }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 16px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            border-left: 4px solid #10b981;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999;
+            max-width: 400px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.error { border-left-color: #ef4444; }
+
+        @media (max-width: 700px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
+            .header h1 { font-size: 20px; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .grid-4, .grid-5 { grid-template-columns: 1fr; }
+            .result-value { font-size: 20px; }
         }
     </style>
 </head>
@@ -150,8 +248,8 @@
 
 <div class="container">
     <div class="header">
-        <h1>⚽ Test xG – Étapes 1 à 4</h1>
-        <p>Valide les formules jusqu'à la capacité offensive</p>
+        <h1>⚽ PrédictFoot Pro</h1>
+        <span>v2.4 · xG System</span>
     </div>
 
     <div class="card">
@@ -168,42 +266,67 @@
                 <div class="field-group"><label>Buts encaissés / match</label><input type="number" id="goalsConcededB" value="1.6" step="0.1" /></div>
             </div>
         </div>
-        <div style="margin-top:16px;">
-            <button class="btn btn-primary" id="analyserBtn">🚀 Calculer</button>
-        </div>
-        <div style="margin-top:10px;">
-            <button class="btn btn-secondary" onclick="loadDemo()">⚡ Charger démo (POR vs UZB)</button>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+            <button class="btn btn-primary" id="analyserBtn">🚀 Analyser</button>
+            <button class="btn btn-secondary" onclick="loadDemo()">⚡ Démo</button>
         </div>
     </div>
 
     <div id="results">
+        <div class="grid-4" id="kpiGrid"></div>
         <div class="card">
-            <div class="card-title"><i>📐</i> Résultats (Étapes 1 à 4)</div>
-            <div id="resultContainer"></div>
+            <div class="grid-2">
+                <div><div class="result-label">🔒 Pronostic le plus sûr</div><div id="safeBet" style="font-size:28px; font-weight:700; color:#10b981; margin-top:6px;">--</div></div>
+                <div><div class="result-label">🎯 Score probable</div><div id="probableScore" style="font-size:28px; font-weight:700; margin-top:6px;">--</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>🎲</i> Scores les plus probables</div>
+            <div class="grid-3" id="top3Container"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>📈</i> Probabilités</div>
+            <div class="grid-2" id="probaGrid"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>🧠</i> Ce que le bon sens dit</div>
+            <div id="bonSensContainer"></div>
+            <div id="bonSensText" style="margin-top:14px; color:#94a3b8; font-size:14px; line-height:1.6;"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>💰</i> Côtes estimées</div>
+            <div class="grid-5" id="oddsGrid"></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><i>📋</i> Résumé du match</div>
+            <div id="summaryText" style="font-size:15px; line-height:1.7; color:#cbd5e1;"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" id="saveBtn">💾 Sauvegarder</button>
+            <button class="btn btn-secondary" id="whatsappBtn">📱 WhatsApp</button>
         </div>
     </div>
+
+    <div id="toast" class="toast"></div>
 </div>
 
 <script>
     // ============================================================
-    //  ÉTAPES 1 À 4 (seulement)
+    //  FORMULES DÉFINITIVES (75% Poisson / 25% Tableau 15)
     // ============================================================
 
-    // ÉTAPE 1 : xG
     function computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA) {
         const xgA = (goalsScoredA * goalsConcededB + goalsConcededB) / 2;
         const xgB = (goalsScoredB * goalsConcededA + goalsConcededA) / 2;
         return { xgA, xgB };
     }
 
-    // ÉTAPE 2 : xGA
     function computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA) {
         const xgaA = (goalsConcededA * goalsScoredB + goalsScoredB) / 2;
         const xgaB = (goalsConcededB * goalsScoredA + goalsScoredA) / 2;
         return { xgaA, xgaB };
     }
 
-    // ÉTAPE 3 : Confrontation
     function confront(xgA, xgB, xgaA, xgaB) {
         const moyXGA = (xgaA + xgaB) / 2;
         const adjA = xgA * (xgaB / moyXGA);
@@ -211,16 +334,141 @@
         return { adjA, adjB, moyXGA };
     }
 
-    // ÉTAPE 4 : Capacité offensive
     function computeCapacite(xgA, xgB) {
         const capA = xgA / (xgA + xgB);
         const capB = xgB / (xgA + xgB);
         return { capA, capB };
     }
 
+    function getTableau15(capacite) {
+        const table = [
+            { max: 14, probs: [0.85, 0.12, 0.02, 0.01, 0, 0] },
+            { max: 29, probs: [0.75, 0.18, 0.05, 0.02, 0, 0] },
+            { max: 44, probs: [0.65, 0.22, 0.09, 0.03, 0.01, 0] },
+            { max: 59, probs: [0.55, 0.25, 0.13, 0.05, 0.02, 0] },
+            { max: 74, probs: [0.45, 0.27, 0.16, 0.08, 0.03, 0.01] },
+            { max: 89, probs: [0.38, 0.28, 0.18, 0.10, 0.04, 0.02] },
+            { max: 100, probs: [0.32, 0.28, 0.20, 0.12, 0.05, 0.03] }
+        ];
+        const pct = Math.min(100, capacite * 100);
+        for (let row of table) {
+            if (pct <= row.max) return row.probs;
+        }
+        return table[table.length - 1].probs;
+    }
+
+    function poisson(lambda, k) {
+        if (k === 0) return Math.exp(-lambda);
+        let fact = 1;
+        for (let i = 2; i <= k; i++) fact *= i;
+        return Math.pow(lambda, k) * Math.exp(-lambda) / fact;
+    }
+
+    function poissonProbs(lambda) {
+        const probs = [];
+        for (let k = 0; k <= 5; k++) {
+            probs.push(poisson(lambda, k));
+        }
+        return probs;
+    }
+
+    // ÉTAPE 7 : 75% Poisson / 25% Tableau 15
+    function combineProbs(poissonProbs, tableauProbs) {
+        return poissonProbs.map((p, i) => (p * 0.75) + (tableauProbs[i] * 0.25));
+    }
+
+    function analyzeMatch(nameA, nameB, goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB) {
+        const { xgA, xgB } = computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA);
+        const { xgaA, xgaB } = computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA);
+        const { adjA, adjB, moyXGA } = confront(xgA, xgB, xgaA, xgaB);
+        const { capA, capB } = computeCapacite(xgA, xgB);
+        const tabA = getTableau15(capA);
+        const tabB = getTableau15(capB);
+        const poissonA = poissonProbs(adjA);
+        const poissonB = poissonProbs(adjB);
+        const finalA = combineProbs(poissonA, tabA);
+        const finalB = combineProbs(poissonB, tabB);
+
+        // 1N2
+        let winA = 0, draw = 0, winB = 0;
+        for (let i = 0; i <= 5; i++) {
+            for (let j = 0; j <= 5; j++) {
+                const prob = finalA[i] * finalB[j];
+                if (i > j) winA += prob;
+                else if (i === j) draw += prob;
+                else winB += prob;
+            }
+        }
+
+        // Over 2.5 (seulement)
+        let under25 = 0;
+        for (let i = 0; i <= 2; i++) {
+            for (let j = 0; j <= 2; j++) {
+                if (i + j <= 2) under25 += finalA[i] * finalB[j];
+            }
+        }
+        const over25 = 1 - under25;
+
+        // BTTS
+        const probA1 = 1 - finalA[0];
+        const probB1 = 1 - finalB[0];
+        const btts = probA1 * probB1;
+
+        // Top 3
+        const scores = [];
+        for (let i = 0; i <= 5; i++) {
+            for (let j = 0; j <= 5; j++) {
+                const prob = finalA[i] * finalB[j];
+                if (prob > 0.001) scores.push({ score: `${i}-${j}`, prob });
+            }
+        }
+        scores.sort((a, b) => b.prob - a.prob);
+        const top3 = scores.slice(0, 3);
+
+        // Côtes
+        const odds = {
+            winA: 1 / winA,
+            draw: 1 / draw,
+            winB: 1 / winB,
+            over25: 1 / over25,
+            btts: 1 / btts
+        };
+
+        // Bon Sens
+        const pA1 = 1 - finalA[0];
+        const pA2 = finalA[2] + finalA[3] + finalA[4] + finalA[5];
+        const pA3 = finalA[3] + finalA[4] + finalA[5];
+        const pB1 = 1 - finalB[0];
+        const pB2 = finalB[2] + finalB[3] + finalB[4] + finalB[5];
+        const pB3 = finalB[3] + finalB[4] + finalB[5];
+
+        const maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
+
+        let safeBet = "";
+        if (winA > 0.55) safeBet = `Victoire ${nameA}`;
+        else if (winB > 0.55) safeBet = `Victoire ${nameB}`;
+        else if (over25 > 0.55) safeBet = "Over 2.5";
+        else if (btts > 0.55) safeBet = "BTTS oui";
+        else safeBet = "Match serré, peu de buts";
+
+        let summary = `${nameA} (${xgA.toFixed(2)} xG) affronte ${nameB} (${xgB.toFixed(2)} xG). `;
+        if (winA > 0.55) summary += `${nameA} est favori. `;
+        else if (winB > 0.55) summary += `${nameB} est favori. `;
+        else summary += `Match équilibré. `;
+        summary += `Score probable : ${maxProbScore}. `;
+        summary += `Over 2.5 : ${over25 > 0.5 ? 'OUI' : 'NON'}. BTTS : ${btts > 0.5 ? 'OUI' : 'NON'}.`;
+
+        return {
+            saveData: { nameA, nameB, xgA, xgB, adjA, adjB, winA, winB, draw, over25, btts, safeBet, top3, maxProbScore, pA1, pA2, pA3, pB1, pB2, pB3, summary, odds },
+            display: { xgA, xgB, adjA, adjB, winA, winB, draw, over25, btts, safeBet, top3, maxProbScore, pA1, pA2, pA3, pB1, pB2, pB3, summary, odds, finalA, finalB }
+        };
+    }
+
     // ============================================================
     //  INTERFACE
     // ============================================================
+
+    let currentResult = null;
 
     function getValues() {
         const nameA = document.getElementById('nameA').value.trim() || 'A';
@@ -234,103 +482,72 @@
 
     function runAnalysis() {
         const { nameA, nameB, gsA, gcA, gsB, gcB } = getValues();
+        const result = analyzeMatch(nameA, nameB, gsA, gcA, gsB, gcB);
+        currentResult = result;
+        renderResults(result);
+        document.getElementById('results').classList.add('show');
+    }
 
-        // Étape 1
-        const { xgA, xgB } = computeXG(gsA, gcB, gsB, gcA);
-        // Étape 2
-        const { xgaA, xgaB } = computeXGA(gcA, gsB, gcB, gsA);
-        // Étape 3
-        const { adjA, adjB, moyXGA } = confront(xgA, xgB, xgaA, xgaB);
-        // Étape 4
-        const { capA, capB } = computeCapacite(xgA, xgB);
+    function renderResults(r) {
+        const d = r.display;
 
-        const container = document.getElementById('resultContainer');
-        container.innerHTML = `
+        document.getElementById('kpiGrid').innerHTML = `
+            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameA}</div><div class="result-value">${(d.winA * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🤝 Nul</div><div class="result-value">${(d.draw * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">🏆 Victoire ${r.saveData.nameB}</div><div class="result-value">${(d.winB * 100).toFixed(1)}%</div></div>
+            <div class="result-card"><div class="result-label">📈 Over 2.5</div><div class="result-value">${(d.over25 * 100).toFixed(1)}%</div></div>
+        `;
 
-            <!-- ÉTAPE 1 : xG -->
-            <div style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#10b981;">📐 ÉTAPE 1 : xG</span>
-                    <span class="badge badge-green">Validée</span>
-                </div>
-                <div class="formula-box">
-                    xG_${nameA} = (${gsA.toFixed(1)} × ${gcB.toFixed(1)} + ${gcB.toFixed(1)}) / 2 = ${xgA.toFixed(3)}
-                    <br>
-                    xG_${nameB} = (${gsB.toFixed(1)} × ${gcA.toFixed(1)} + ${gcA.toFixed(1)}) / 2 = ${xgB.toFixed(3)}
-                </div>
-                <div class="result-box">
-                    <div class="result-line"><span class="label">xG ${nameA}</span><span class="value">${xgA.toFixed(3)}</span></div>
-                    <div class="result-line"><span class="label">xG ${nameB}</span><span class="value">${xgB.toFixed(3)}</span></div>
+        document.getElementById('safeBet').textContent = d.safeBet;
+        document.getElementById('probableScore').textContent = d.maxProbScore;
+
+        document.getElementById('top3Container').innerHTML = d.top3.map(s => `
+            <div class="top3-item">
+                <div class="top3-score">${s.score}</div>
+                <div class="top3-prob">${(s.prob * 100).toFixed(1)}%</div>
+            </div>
+        `).join('');
+
+        document.getElementById('probaGrid').innerHTML = `
+            <div class="result-card">
+                <div class="result-label">${r.saveData.nameA}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                    ${d.finalA.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
                 </div>
             </div>
-
-            <!-- ÉTAPE 2 : xGA -->
-            <div style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#3b82f6;">📐 ÉTAPE 2 : xGA</span>
-                    <span class="badge badge-blue">Validée</span>
-                </div>
-                <div class="formula-box">
-                    xGA_${nameA} = (${gcA.toFixed(1)} × ${gsB.toFixed(1)} + ${gsB.toFixed(1)}) / 2 = ${xgaA.toFixed(3)}
-                    <br>
-                    xGA_${nameB} = (${gcB.toFixed(1)} × ${gsA.toFixed(1)} + ${gsA.toFixed(1)}) / 2 = ${xgaB.toFixed(3)}
-                </div>
-                <div class="result-box">
-                    <div class="result-line"><span class="label">xGA ${nameA}</span><span class="value">${xgaA.toFixed(3)}</span></div>
-                    <div class="result-line"><span class="label">xGA ${nameB}</span><span class="value">${xgaB.toFixed(3)}</span></div>
-                </div>
-            </div>
-
-            <!-- ÉTAPE 3 : Confrontation -->
-            <div style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#f59e0b;">📐 ÉTAPE 3 : Confrontation</span>
-                    <span class="badge badge-orange">Validée</span>
-                </div>
-                <div class="formula-box">
-                    Moyenne_xGA = (${xgaA.toFixed(3)} + ${xgaB.toFixed(3)}) / 2 = ${moyXGA.toFixed(3)}
-                    <br>
-                    xG_ajusté_${nameA} = ${xgA.toFixed(3)} × (${xgaB.toFixed(3)} / ${moyXGA.toFixed(3)}) = ${adjA.toFixed(3)}
-                    <br>
-                    xG_ajusté_${nameB} = ${xgB.toFixed(3)} × (${xgaA.toFixed(3)} / ${moyXGA.toFixed(3)}) = ${adjB.toFixed(3)}
-                </div>
-                <div class="result-box">
-                    <div class="result-line"><span class="label">xG ajusté ${nameA}</span><span class="value orange">${adjA.toFixed(3)}</span></div>
-                    <div class="result-line"><span class="label">xG ajusté ${nameB}</span><span class="value orange">${adjB.toFixed(3)}</span></div>
-                    <div class="result-line" style="border-top:2px solid #1e2a3d; margin-top:4px; padding-top:8px;">
-                        <span class="label">Différence</span>
-                        <span class="value blue">${(adjA - adjB).toFixed(3)}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ÉTAPE 4 : Capacité offensive -->
-            <div style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#ec4899;">📐 ÉTAPE 4 : Capacité offensive</span>
-                    <span class="badge badge-pink" style="background:rgba(236,72,153,0.2); color:#ec4899; border:1px solid #ec4899;">Validée</span>
-                </div>
-                <div class="formula-box">
-                    Capacité_${nameA} = ${xgA.toFixed(3)} / (${xgA.toFixed(3)} + ${xgB.toFixed(3)}) = ${(capA * 100).toFixed(1)}%
-                    <br>
-                    Capacité_${nameB} = ${xgB.toFixed(3)} / (${xgA.toFixed(3)} + ${xgB.toFixed(3)}) = ${(capB * 100).toFixed(1)}%
-                </div>
-                <div class="result-box">
-                    <div class="result-line"><span class="label">Capacité ${nameA}</span><span class="value blue">${(capA * 100).toFixed(1)}%</span></div>
-                    <div class="result-line"><span class="label">Capacité ${nameB}</span><span class="value blue">${(capB * 100).toFixed(1)}%</span></div>
-                </div>
-            </div>
-
-            <!-- RÉSUMÉ -->
-            <div style="margin-top:8px; padding:12px; background:#0f172a; border-radius:8px; border-left:3px solid #10b981;">
-                <div style="font-size:13px; color:#94a3b8;">
-                    <strong style="color:#e2e8f0;">📋 RÉSUMÉ (étapes 1 à 4) :</strong><br>
-                    ${nameA} : xG ${xgA.toFixed(2)} → xGA ${xgaA.toFixed(2)} → ajusté ${adjA.toFixed(2)} (${(capA*100).toFixed(1)}%)
-                    <br>
-                    ${nameB} : xG ${xgB.toFixed(2)} → xGA ${xgaB.toFixed(2)} → ajusté ${adjB.toFixed(2)} (${(capB*100).toFixed(1)}%)
+            <div class="result-card">
+                <div class="result-label">${r.saveData.nameB}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+                    ${d.finalB.map((p, i) => `<span class="badge ${p > 0.15 ? 'badge-green' : 'badge-gray'}">${i} but${i>1?'s':''} ${(p*100).toFixed(1)}%</span>`).join('')}
                 </div>
             </div>
         `;
+
+        document.getElementById('bonSensContainer').innerHTML = `
+            <table class="bonsens-table">
+                <thead><tr><th>Équipe</th><th>≥ 1 but</th><th>≥ 2 buts</th><th>≥ 3 buts</th></tr></thead>
+                <tbody>
+                    <tr><td class="team-name">${r.saveData.nameA}</td><td class="highlight-cell">${(d.pA1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pA2 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pA3 * 100).toFixed(1)}%</td></tr>
+                    <tr><td class="team-name">${r.saveData.nameB}</td><td class="highlight-cell">${(d.pB1 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pB2 * 100).toFixed(1)}%</td><td class="highlight-cell">${(d.pB3 * 100).toFixed(1)}%</td></tr>
+                </tbody>
+            </table>
+        `;
+        document.getElementById('bonSensText').innerHTML = `
+            ➡️ ${r.saveData.nameA} a ${(d.pA1*100).toFixed(1)}% de chances de marquer au moins 1 but, contre ${(d.pB1*100).toFixed(1)}% pour ${r.saveData.nameB}.<br>
+            ➡️ ${r.saveData.nameA} a ${(d.pA2*100).toFixed(1)}% de chances de marquer au moins 2 buts, contre ${(d.pB2*100).toFixed(1)}% pour ${r.saveData.nameB}.<br>
+            ➡️ ${r.saveData.nameA} a ${(d.pA3*100).toFixed(1)}% de chances de marquer au moins 3 buts, contre ${(d.pB3*100).toFixed(1)}% pour ${r.saveData.nameB}.
+        `;
+
+        const o = d.odds;
+        document.getElementById('oddsGrid').innerHTML = `
+            <div class="result-card"><div class="result-label">1 (${r.saveData.nameA})</div><div class="result-value">${o.winA.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">Nul</div><div class="result-value">${o.draw.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">2 (${r.saveData.nameB})</div><div class="result-value">${o.winB.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">Over 2.5</div><div class="result-value">${o.over25.toFixed(2)}</div></div>
+            <div class="result-card"><div class="result-label">BTTS</div><div class="result-value">${o.btts.toFixed(2)}</div></div>
+        `;
+
+        document.getElementById('summaryText').textContent = d.summary;
     }
 
     function loadDemo() {
@@ -343,10 +560,64 @@
         runAnalysis();
     }
 
-    document.getElementById('analyserBtn').addEventListener('click', runAnalysis);
+    // ============================================================
+    //  SAUVEGARDE / WHATSAPP
+    // ============================================================
 
-    // Auto-run au chargement
-    setTimeout(runAnalysis, 200);
+    function savePrediction() {
+        if (!currentResult) { showToast("❌ Lancez d'abord une analyse", true); return; }
+        const r = currentResult.saveData;
+        const d = currentResult.display;
+        const entry = {
+            date: new Date().toLocaleString(),
+            nameA: r.nameA,
+            nameB: r.nameB,
+            score: r.maxProbScore,
+            safeBet: r.safeBet,
+            over25: d.over25 > 0.5 ? 'OUI' : 'NON',
+            btts: d.btts > 0.5 ? 'OUI' : 'NON',
+            winA: (d.winA * 100).toFixed(1),
+            winB: (d.winB * 100).toFixed(1),
+            draw: (d.draw * 100).toFixed(1)
+        };
+        let history = JSON.parse(localStorage.getItem('predictFootHistory') || '[]');
+        history.unshift(entry);
+        localStorage.setItem('predictFootHistory', JSON.stringify(history));
+        showToast("✅ Pronostic sauvegardé !");
+    }
+
+    function shareWhatsApp() {
+        if (!currentResult) { showToast("❌ Lancez d'abord une analyse", true); return; }
+        const r = currentResult.saveData;
+        const d = currentResult.display;
+        const text =
+            `⚽ *PRONOSTIC ${r.nameA} vs ${r.nameB}* ⚽\n` +
+            `📊 xG : ${r.nameA} ${r.xgA.toFixed(2)} | ${r.nameB} ${r.xgB.toFixed(2)}\n` +
+            `🎯 Score probable : ${r.maxProbScore}\n` +
+            `🏆 ${r.nameA} ${(d.winA*100).toFixed(1)}% | Nul ${(d.draw*100).toFixed(1)}% | ${r.nameB} ${(d.winB*100).toFixed(1)}%\n` +
+            `📈 Over 2.5 : ${(d.over25*100).toFixed(1)}% | ⚽ BTTS : ${(d.btts*100).toFixed(1)}%\n` +
+            `🔒 Pronostic sûr : ${r.safeBet}\n` +
+            `🧠 ${r.nameA} ≥1 but : ${(d.pA1*100).toFixed(1)}% | ≥2 buts : ${(d.pA2*100).toFixed(1)}%\n` +
+            `🧠 ${r.nameB} ≥1 but : ${(d.pB1*100).toFixed(1)}% | ≥2 buts : ${(d.pB2*100).toFixed(1)}%\n` +
+            `🎲 Top 3 : ${d.top3.map(s => `${s.score} (${(s.prob*100).toFixed(1)}%)`).join(' | ')}\n` +
+            `💰 Côtes : 1 ${d.odds.winA.toFixed(2)} | N ${d.odds.draw.toFixed(2)} | 2 ${d.odds.winB.toFixed(2)}`;
+        navigator.clipboard.writeText(text).then(() => showToast("✅ Texte copié !")).catch(() => showToast("❌ Erreur de copie", true));
+    }
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast' + (isError ? ' error' : '');
+        setTimeout(() => toast.classList.add('show'), 50);
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    document.getElementById('analyserBtn').addEventListener('click', runAnalysis);
+    document.getElementById('saveBtn').addEventListener('click', savePrediction);
+    document.getElementById('whatsappBtn').addEventListener('click', shareWhatsApp);
+
+    setTimeout(runAnalysis, 300);
 </script>
 </body>
 </html>
