@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>PrédictFoot Pro - xG</title>
+    <title>⚽ PrédictFoot Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -59,11 +59,10 @@
             color: #e2e8f0;
         }
         .card-title i { color: #10b981; }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .field-group { margin-bottom: 16px; }
         .field-group label {
             display: block;
@@ -118,6 +117,11 @@
             justify-content: center;
             padding: 14px;
         }
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            flex: 1;
+        }
         .btn-group {
             display: flex;
             gap: 12px;
@@ -155,9 +159,6 @@
         .badge-orange { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid #f59e0b; }
         .badge-pink { background: rgba(236,72,153,0.2); color: #ec4899; border: 1px solid #ec4899; }
         .badge-gray { background: rgba(148,163,184,0.2); color: #94a3b8; border: 1px solid #64748b; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
         .result-box {
             background: #0f172a;
             border-radius: 12px;
@@ -210,21 +211,6 @@
         }
         .bonsens-table .team-name { text-align: left; font-weight: 600; color: #e2e8f0; }
         .bonsens-table .highlight-cell { color: #10b981; }
-
-        @media (max-width: 700px) {
-            .grid-2 { grid-template-columns: 1fr; }
-            .grid-3 { grid-template-columns: 1fr; }
-            .grid-4 { grid-template-columns: 1fr 1fr; }
-            .grid-5 { grid-template-columns: 1fr 1fr; }
-            .header h1 { font-size: 20px; }
-            .btn-group { flex-direction: column; }
-            .btn { width: 100%; justify-content: center; }
-        }
-        @media (max-width: 480px) {
-            .grid-4 { grid-template-columns: 1fr; }
-            .grid-5 { grid-template-columns: 1fr; }
-            .result-value { font-size: 20px; }
-        }
         .toast {
             position: fixed;
             bottom: 30px;
@@ -244,12 +230,23 @@
         }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.error { border-left-color: #ef4444; }
+
+        @media (max-width: 700px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
+            .header h1 { font-size: 20px; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .grid-4, .grid-5 { grid-template-columns: 1fr; }
+            .result-value { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-
     <div class="header">
         <h1>⚽ PrédictFoot Pro</h1>
         <span>v2.4 · xG System</span>
@@ -305,8 +302,8 @@
             <div id="summaryText" style="font-size:15px; line-height:1.7; color:#cbd5e1;"></div>
         </div>
         <div class="btn-group">
-            <button class="btn btn-success" id="saveBtn" style="flex:1;">💾 Sauvegarder</button>
-            <button class="btn btn-secondary" id="whatsappBtn" style="flex:1;">📱 WhatsApp</button>
+            <button class="btn btn-success" id="saveBtn">💾 Sauvegarder</button>
+            <button class="btn btn-secondary" id="whatsappBtn">📱 WhatsApp</button>
         </div>
     </div>
 
@@ -315,7 +312,7 @@
 
 <script>
     // ============================================================
-    //  FORMULES 1 À 9 (75/25, max 5 buts)
+    //  FORMULES DÉFINITIVES (75% Poisson / 25% Tableau 15)
     // ============================================================
 
     function computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA) {
@@ -375,7 +372,7 @@
         return probs;
     }
 
-    // ÉTAPE 7 : MOYENNE PONDÉRÉE (75% Poisson / 25% Tableau 15)
+    // ÉTAPE 7 : 75% Poisson / 25% Tableau 15
     function combineProbs(poissonProbs, tableauProbs) {
         return poissonProbs.map((p, i) => (p * 0.75) + (tableauProbs[i] * 0.25));
     }
@@ -417,7 +414,7 @@
         const probB1 = 1 - finalB[0];
         const btts = probA1 * probB1;
 
-        // Top 3 scores
+        // Top 3
         const scores = [];
         for (let i = 0; i <= 5; i++) {
             for (let j = 0; j <= 5; j++) {
@@ -445,10 +442,8 @@
         const pB2 = finalB[2] + finalB[3] + finalB[4] + finalB[5];
         const pB3 = finalB[3] + finalB[4] + finalB[5];
 
-        // Score probable
         const maxProbScore = scores.length ? scores[0].score : `${Math.round(adjA)}-${Math.round(adjB)}`;
 
-        // Pronostic sûr
         let safeBet = "";
         if (winA > 0.55) safeBet = `Victoire ${nameA}`;
         else if (winB > 0.55) safeBet = `Victoire ${nameB}`;
@@ -456,7 +451,6 @@
         else if (btts > 0.55) safeBet = "BTTS oui";
         else safeBet = "Match serré, peu de buts";
 
-        // Résumé
         let summary = `${nameA} (${xgA.toFixed(2)} xG) affronte ${nameB} (${xgB.toFixed(2)} xG). `;
         if (winA > 0.55) summary += `${nameA} est favori. `;
         else if (winB > 0.55) summary += `${nameB} est favori. `;
@@ -567,7 +561,7 @@
     }
 
     // ============================================================
-    //  SAUVEGARDE / WHATSAPP (simplifiées)
+    //  SAUVEGARDE / WHATSAPP
     // ============================================================
 
     function savePrediction() {
@@ -625,6 +619,5 @@
 
     setTimeout(runAnalysis, 300);
 </script>
-
 </body>
 </html>
