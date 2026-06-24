@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Test xG · xGA · Confrontation</title>
+    <title>Test xG - Étapes 1 à 10</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -118,7 +118,6 @@
             flex-wrap: wrap;
         }
         .btn-group .btn { flex: 1; }
-
         .result-box {
             background: #0f172a;
             border-radius: 12px;
@@ -139,7 +138,6 @@
         .result-value.orange { color: #f59e0b; }
         .result-value.blue { color: #3b82f6; }
         .result-value.pink { color: #ec4899; }
-
         .badge {
             display: inline-block;
             padding: 2px 10px;
@@ -152,7 +150,6 @@
         .badge-blue { background: rgba(59,130,246,0.2); color: #3b82f6; border: 1px solid #3b82f6; }
         .badge-orange { background: rgba(245,158,11,0.2); color: #f59e0b; border: 1px solid #f59e0b; }
         .badge-pink { background: rgba(236,72,153,0.2); color: #ec4899; border: 1px solid #ec4899; }
-
         .formula-box {
             background: #0f172a;
             border-radius: 8px;
@@ -163,27 +160,6 @@
             color: #94a3b8;
             border-left: 3px solid #10b981;
         }
-        .tableau {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-        .tableau th, .tableau td {
-            padding: 8px 10px;
-            text-align: center;
-            border-bottom: 1px solid #1e2a3d;
-        }
-        .tableau th {
-            background: #0f172a;
-            color: #94a3b8;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 11px;
-        }
-        .tableau td { color: #e2e8f0; }
-        .tableau .highlight { color: #10b981; font-weight: 600; }
-
         @media (max-width: 600px) {
             .grid-2 { grid-template-columns: 1fr; }
             .btn-group { flex-direction: column; }
@@ -193,10 +169,9 @@
 <body>
 
 <div class="container">
-
     <div class="header">
-        <h1>⚽ Test xG · 1N2 · Over 2.5</h1>
-        <p>Formules 1 à 9</p>
+        <h1>⚽ Test xG · 1N2 · BTTS</h1>
+        <p>Étapes 1 à 10</p>
     </div>
 
     <!-- ===== SAISIE ===== -->
@@ -204,32 +179,14 @@
         <div class="card-title"><i>📊</i> Données du match</div>
         <div class="grid-2">
             <div>
-                <div class="field-group">
-                    <label>🏠 Équipe A</label>
-                    <input type="text" id="nameA" value="POR" />
-                </div>
-                <div class="field-group">
-                    <label>Buts marqués / match</label>
-                    <input type="number" id="goalsScoredA" value="1.9" step="0.1" />
-                </div>
-                <div class="field-group">
-                    <label>Buts encaissés / match</label>
-                    <input type="number" id="goalsConcededA" value="0.6" step="0.1" />
-                </div>
+                <div class="field-group"><label>🏠 Équipe A</label><input type="text" id="nameA" value="POR" /></div>
+                <div class="field-group"><label>Buts marqués / match</label><input type="number" id="goalsScoredA" value="1.9" step="0.1" /></div>
+                <div class="field-group"><label>Buts encaissés / match</label><input type="number" id="goalsConcededA" value="0.6" step="0.1" /></div>
             </div>
             <div>
-                <div class="field-group">
-                    <label>✈️ Équipe B</label>
-                    <input type="text" id="nameB" value="UZB" />
-                </div>
-                <div class="field-group">
-                    <label>Buts marqués / match</label>
-                    <input type="number" id="goalsScoredB" value="1.0" step="0.1" />
-                </div>
-                <div class="field-group">
-                    <label>Buts encaissés / match</label>
-                    <input type="number" id="goalsConcededB" value="1.6" step="0.1" />
-                </div>
+                <div class="field-group"><label>✈️ Équipe B</label><input type="text" id="nameB" value="UZB" /></div>
+                <div class="field-group"><label>Buts marqués / match</label><input type="number" id="goalsScoredB" value="1.0" step="0.1" /></div>
+                <div class="field-group"><label>Buts encaissés / match</label><input type="number" id="goalsConcededB" value="1.6" step="0.1" /></div>
             </div>
         </div>
         <div style="margin-top:16px;">
@@ -252,24 +209,24 @@
 
 <script>
     // ============================================================
-    //  FORMULES 1 À 9
+    //  FORMULES 1 À 10
     // ============================================================
 
-    // FORMULE 1 : xG
+    // ÉTAPE 1 : xG
     function computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA) {
         const xgA = (goalsScoredA * goalsConcededB + goalsConcededB) / 2;
         const xgB = (goalsScoredB * goalsConcededA + goalsConcededA) / 2;
         return { xgA, xgB };
     }
 
-    // FORMULE 2 : xGA
+    // ÉTAPE 2 : xGA
     function computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA) {
         const xgaA = (goalsConcededA * goalsScoredB + goalsScoredB) / 2;
         const xgaB = (goalsConcededB * goalsScoredA + goalsScoredA) / 2;
         return { xgaA, xgaB };
     }
 
-    // FORMULE 3 : Confrontation
+    // ÉTAPE 3 : Confrontation
     function confront(xgA, xgB, xgaA, xgaB) {
         const moyXGA = (xgaA + xgaB) / 2;
         const adjA = xgA * (xgaB / moyXGA);
@@ -277,23 +234,23 @@
         return { adjA, adjB, moyXGA };
     }
 
-    // FORMULE 4 : Capacité offensive
+    // ÉTAPE 4 : Capacité offensive
     function computeCapacite(xgA, xgB) {
         const capA = xgA / (xgA + xgB);
         const capB = xgB / (xgA + xgB);
         return { capA, capB };
     }
 
-    // FORMULE 5 : Tableau 15
+    // ÉTAPE 5 : Tableau 15 (limité à 5 buts)
     function getTableau15(capacite) {
         const table = [
-            { max: 14, probs: [0.85, 0.12, 0.02, 0.01, 0, 0, 0] },
-            { max: 29, probs: [0.75, 0.18, 0.05, 0.02, 0, 0, 0] },
-            { max: 44, probs: [0.65, 0.22, 0.09, 0.03, 0.01, 0, 0] },
-            { max: 59, probs: [0.55, 0.25, 0.13, 0.05, 0.02, 0, 0] },
-            { max: 74, probs: [0.45, 0.27, 0.16, 0.08, 0.03, 0.01, 0] },
-            { max: 89, probs: [0.38, 0.28, 0.18, 0.10, 0.04, 0.02, 0] },
-            { max: 100, probs: [0.32, 0.28, 0.20, 0.12, 0.05, 0.03, 0] }
+            { max: 14, probs: [0.85, 0.12, 0.02, 0.01, 0, 0] },
+            { max: 29, probs: [0.75, 0.18, 0.05, 0.02, 0, 0] },
+            { max: 44, probs: [0.65, 0.22, 0.09, 0.03, 0.01, 0] },
+            { max: 59, probs: [0.55, 0.25, 0.13, 0.05, 0.02, 0] },
+            { max: 74, probs: [0.45, 0.27, 0.16, 0.08, 0.03, 0.01] },
+            { max: 89, probs: [0.38, 0.28, 0.18, 0.10, 0.04, 0.02] },
+            { max: 100, probs: [0.32, 0.28, 0.20, 0.12, 0.05, 0.03] }
         ];
         const pct = Math.min(100, capacite * 100);
         for (let row of table) {
@@ -302,7 +259,7 @@
         return table[table.length - 1].probs;
     }
 
-    // FORMULE 6 : Loi de Poisson
+    // ÉTAPE 6 : Loi de Poisson (limitée à 5 buts)
     function poisson(lambda, k) {
         if (k === 0) return Math.exp(-lambda);
         let fact = 1;
@@ -310,48 +267,46 @@
         return Math.pow(lambda, k) * Math.exp(-lambda) / fact;
     }
 
-    function poissonProbs(lambda, maxK = 6) {
+    function poissonProbs(lambda) {
         const probs = [];
-        for (let k = 0; k <= maxK; k++) {
+        for (let k = 0; k <= 5; k++) {
             probs.push(poisson(lambda, k));
         }
-        let sum = probs.reduce((a, b) => a + b, 0);
-        probs.push(1 - sum);
         return probs;
     }
 
-    // FORMULE 7 : Moyenne (Poisson + Tableau 15)
+    // ÉTAPE 7 : Moyenne pondérée (75% Poisson / 25% Tableau 15)
     function combineProbs(poissonProbs, tableauProbs) {
-        return poissonProbs.map((p, i) => (p + tableauProbs[i]) / 2);
+        return poissonProbs.map((p, i) => (p * 0.75) + (tableauProbs[i] * 0.25));
     }
 
     // ============================================================
-    //  ANALYSE COMPLÈTE (JUSQU'À L'ÉTAPE 9)
+    //  ANALYSE COMPLÈTE (ÉTAPES 1 À 10)
     // ============================================================
 
     function analyzeMatch(nameA, nameB, goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB) {
-        // 1. xG
+        // Étape 1
         const { xgA, xgB } = computeXG(goalsScoredA, goalsConcededB, goalsScoredB, goalsConcededA);
-        // 2. xGA
+        // Étape 2
         const { xgaA, xgaB } = computeXGA(goalsConcededA, goalsScoredB, goalsConcededB, goalsScoredA);
-        // 3. Confrontation
+        // Étape 3
         const { adjA, adjB, moyXGA } = confront(xgA, xgB, xgaA, xgaB);
-        // 4. Capacité offensive
+        // Étape 4
         const { capA, capB } = computeCapacite(xgA, xgB);
-        // 5. Tableau 15
+        // Étape 5
         const tabA = getTableau15(capA);
         const tabB = getTableau15(capB);
-        // 6. Poisson
+        // Étape 6
         const poissonA = poissonProbs(adjA);
         const poissonB = poissonProbs(adjB);
-        // 7. Moyenne
+        // Étape 7
         const finalA = combineProbs(poissonA, tabA);
         const finalB = combineProbs(poissonB, tabB);
 
-        // 8. 1N2
+        // Étape 8 : 1N2
         let winA = 0, draw = 0, winB = 0;
-        for (let i = 0; i <= 6; i++) {
-            for (let j = 0; j <= 6; j++) {
+        for (let i = 0; i <= 5; i++) {
+            for (let j = 0; j <= 5; j++) {
                 const prob = finalA[i] * finalB[j];
                 if (i > j) winA += prob;
                 else if (i === j) draw += prob;
@@ -359,7 +314,7 @@
             }
         }
 
-        // 9. Over 2.5
+        // Étape 9 : Over 2.5
         let under25 = 0;
         for (let i = 0; i <= 2; i++) {
             for (let j = 0; j <= 2; j++) {
@@ -367,6 +322,31 @@
             }
         }
         const over25 = 1 - under25;
+
+        // Étape 10 : BTTS
+        const probA1 = 1 - finalA[0];
+        const probB1 = 1 - finalB[0];
+        const btts = probA1 * probB1;
+
+        // Top 3 scores
+        const scores = [];
+        for (let i = 0; i <= 5; i++) {
+            for (let j = 0; j <= 5; j++) {
+                const prob = finalA[i] * finalB[j];
+                if (prob > 0.001) scores.push({ score: `${i}-${j}`, prob });
+            }
+        }
+        scores.sort((a, b) => b.prob - a.prob);
+        const top3 = scores.slice(0, 3);
+
+        // Côtes
+        const odds = {
+            winA: 1 / winA,
+            draw: 1 / draw,
+            winB: 1 / winB,
+            over25: 1 / over25,
+            btts: 1 / btts
+        };
 
         return {
             xgA, xgB, xgaA, xgaB, adjA, adjB, moyXGA,
@@ -376,8 +356,12 @@
             finalA, finalB,
             winA, draw, winB,
             over25, under25,
+            btts,
+            top3,
+            odds,
             nameA, nameB,
-            goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB
+            goalsScoredA, goalsConcededA, goalsScoredB, goalsConcededB,
+            adjA, adjB // xG ajustés
         };
     }
 
@@ -409,104 +393,53 @@
                     <span class="badge badge-green">Validées</span>
                 </div>
                 <div class="formula-box">
-                    xG_${nameA} = (${gsA.toFixed(1)} × ${gcB.toFixed(1)} + ${gcB.toFixed(1)}) / 2 = ${r.xgA.toFixed(3)}
+                    xG_${nameA} = ${r.xgA.toFixed(3)} | xG_${nameB} = ${r.xgB.toFixed(3)}
                     <br>
-                    xG_${nameB} = (${gsB.toFixed(1)} × ${gcA.toFixed(1)} + ${gcA.toFixed(1)}) / 2 = ${r.xgB.toFixed(3)}
-                    <br><br>
-                    xGA_${nameA} = (${gcA.toFixed(1)} × ${gsB.toFixed(1)} + ${gsB.toFixed(1)}) / 2 = ${r.xgaA.toFixed(3)}
+                    xGA_${nameA} = ${r.xgaA.toFixed(3)} | xGA_${nameB} = ${r.xgaB.toFixed(3)}
                     <br>
-                    xGA_${nameB} = (${gcB.toFixed(1)} × ${gsA.toFixed(1)} + ${gsA.toFixed(1)}) / 2 = ${r.xgaB.toFixed(3)}
-                    <br><br>
-                    Moyenne_xGA = (${r.xgaA.toFixed(3)} + ${r.xgaB.toFixed(3)}) / 2 = ${r.moyXGA.toFixed(3)}
+                    Moyenne_xGA = ${r.moyXGA.toFixed(3)}
                     <br>
-                    xG_ajusté_${nameA} = ${r.xgA.toFixed(3)} × (${r.xgaB.toFixed(3)} / ${r.moyXGA.toFixed(3)}) = ${r.adjA.toFixed(3)}
-                    <br>
-                    xG_ajusté_${nameB} = ${r.xgB.toFixed(3)} × (${r.xgaA.toFixed(3)} / ${r.moyXGA.toFixed(3)}) = ${r.adjB.toFixed(3)}
-                </div>
-                <div class="result-box">
-                    <div class="result-line"><span class="result-label">xG ${nameA}</span><span class="result-value">${r.xgA.toFixed(3)}</span></div>
-                    <div class="result-line"><span class="result-label">xG ${nameB}</span><span class="result-value">${r.xgB.toFixed(3)}</span></div>
-                    <div class="result-line"><span class="result-label">xGA ${nameA}</span><span class="result-value">${r.xgaA.toFixed(3)}</span></div>
-                    <div class="result-line"><span class="result-label">xGA ${nameB}</span><span class="result-value">${r.xgaB.toFixed(3)}</span></div>
-                    <div class="result-line" style="border-top:2px solid #1e2a3d; margin-top:4px; padding-top:8px;">
-                        <span class="result-label">xG ajusté ${nameA}</span>
-                        <span class="result-value orange">${r.adjA.toFixed(3)}</span>
-                    </div>
-                    <div class="result-line">
-                        <span class="result-label">xG ajusté ${nameB}</span>
-                        <span class="result-value orange">${r.adjB.toFixed(3)}</span>
-                    </div>
+                    xG_ajusté_${nameA} = ${r.adjA.toFixed(3)} | xG_ajusté_${nameB} = ${r.adjB.toFixed(3)}
                 </div>
             </div>
 
-            <!-- ===== ÉTAPES 4-5 ===== -->
+            <!-- ===== ÉTAPES 4-6 ===== -->
             <div style="margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#3b82f6;">📐 ÉTAPES 4-5 : Capacité offensive + Tableau 15</span>
+                    <span style="font-weight:600; color:#3b82f6;">📐 ÉTAPES 4-6 : Capacité, Tableau 15, Poisson</span>
                     <span class="badge badge-blue">Validées</span>
                 </div>
                 <div class="formula-box">
-                    Capacité_${nameA} = ${r.xgA.toFixed(3)} / (${r.xgA.toFixed(3)} + ${r.xgB.toFixed(3)}) = ${(r.capA * 100).toFixed(1)}%
+                    Capacité_${nameA} = ${(r.capA * 100).toFixed(1)}% | Capacité_${nameB} = ${(r.capB * 100).toFixed(1)}%
+                    <br><br>
+                    Tableau 15 ${nameA} (${(r.capA * 100).toFixed(1)}%) : ${r.tabA.map((p, i) => `${i} but: ${(p*100).toFixed(1)}%`).join(' | ')}
                     <br>
-                    Capacité_${nameB} = ${r.xgB.toFixed(3)} / (${r.xgA.toFixed(3)} + ${r.xgB.toFixed(3)}) = ${(r.capB * 100).toFixed(1)}%
-                </div>
-                <div class="result-box">
-                    <div class="result-line"><span class="result-label">Capacité ${nameA}</span><span class="result-value blue">${(r.capA * 100).toFixed(1)}%</span></div>
-                    <div class="result-line"><span class="result-label">Capacité ${nameB}</span><span class="result-value blue">${(r.capB * 100).toFixed(1)}%</span></div>
-                    <div style="margin-top:12px;">
-                        <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">Tableau 15 - ${nameA} (${(r.capA * 100).toFixed(1)}%)</div>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            ${r.tabA.map((p, i) => `<span class="badge ${p > 0.1 ? 'badge-green' : 'badge-gray'}">${i} but: ${(p*100).toFixed(1)}%</span>`).join('')}
-                        </div>
-                        <div style="font-size:13px; color:#94a3b8; margin:8px 0 6px 0;">Tableau 15 - ${nameB} (${(r.capB * 100).toFixed(1)}%)</div>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                            ${r.tabB.map((p, i) => `<span class="badge ${p > 0.1 ? 'badge-green' : 'badge-gray'}">${i} but: ${(p*100).toFixed(1)}%</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== ÉTAPE 6 ===== -->
-            <div style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#f59e0b;">📐 ÉTAPE 6 : Loi de Poisson</span>
-                    <span class="badge badge-orange">Validée</span>
-                </div>
-                <div class="result-box">
-                    <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">${nameA} (λ = ${r.adjA.toFixed(3)})</div>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        ${r.poissonA.map((p, i) => `<span class="badge ${p > 0.1 ? 'badge-orange' : 'badge-gray'}">${i} but: ${(p*100).toFixed(1)}%</span>`).join('')}
-                    </div>
-                    <div style="font-size:13px; color:#94a3b8; margin:8px 0 6px 0;">${nameB} (λ = ${r.adjB.toFixed(3)})</div>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        ${r.poissonB.map((p, i) => `<span class="badge ${p > 0.1 ? 'badge-orange' : 'badge-gray'}">${i} but: ${(p*100).toFixed(1)}%</span>`).join('')}
-                    </div>
+                    Tableau 15 ${nameB} (${(r.capB * 100).toFixed(1)}%) : ${r.tabB.map((p, i) => `${i} but: ${(p*100).toFixed(1)}%`).join(' | ')}
+                    <br><br>
+                    Poisson ${nameA} (λ=${r.adjA.toFixed(3)}) : ${r.poissonA.map((p, i) => `${i} but: ${(p*100).toFixed(1)}%`).join(' | ')}
+                    <br>
+                    Poisson ${nameB} (λ=${r.adjB.toFixed(3)}) : ${r.poissonB.map((p, i) => `${i} but: ${(p*100).toFixed(1)}%`).join(' | ')}
                 </div>
             </div>
 
             <!-- ===== ÉTAPE 7 ===== -->
             <div style="margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#ec4899;">📐 ÉTAPE 7 : Moyenne (Poisson + Tableau 15)</span>
-                    <span class="badge badge-pink">Validée</span>
+                    <span style="font-weight:600; color:#f59e0b;">📐 ÉTAPE 7 : Moyenne pondérée (75/25)</span>
+                    <span class="badge badge-orange">Validée</span>
                 </div>
-                <div class="result-box">
-                    <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">${nameA}</div>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        ${r.finalA.map((p, i) => `<span class="badge ${p > 0.1 ? 'badge-pink' : 'badge-gray'}">${i} but: ${(p*100).toFixed(1)}%</span>`).join('')}
-                    </div>
-                    <div style="font-size:13px; color:#94a3b8; margin:8px 0 6px 0;">${nameB}</div>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        ${r.finalB.map((p, i) => `<span class="badge ${p > 0.1 ? 'badge-pink' : 'badge-gray'}">${i} but: ${(p*100).toFixed(1)}%</span>`).join('')}
-                    </div>
+                <div class="formula-box">
+                    ${nameA} : ${r.finalA.map((p, i) => `${i} but: ${(p*100).toFixed(1)}%`).join(' | ')}
+                    <br>
+                    ${nameB} : ${r.finalB.map((p, i) => `${i} but: ${(p*100).toFixed(1)}%`).join(' | ')}
                 </div>
             </div>
 
-            <!-- ===== ÉTAPES 8-9 ===== -->
+            <!-- ===== ÉTAPES 8-10 ===== -->
             <div style="margin-bottom:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:600; color:#10b981;">📐 ÉTAPES 8-9 : 1N2 + Over 2.5</span>
-                    <span class="badge badge-green">Validées</span>
+                    <span style="font-weight:600; color:#ec4899;">📐 ÉTAPES 8-10 : 1N2, Over 2.5, BTTS</span>
+                    <span class="badge badge-pink">Validées</span>
                 </div>
                 <div class="result-box">
                     <div class="result-line"><span class="result-label">🏆 Victoire ${nameA}</span><span class="result-value">${(r.winA * 100).toFixed(1)}%</span></div>
@@ -517,9 +450,37 @@
                         <span class="result-value orange">${(r.over25 * 100).toFixed(1)}%</span>
                     </div>
                     <div class="result-line">
-                        <span class="result-label">📉 Under 2.5</span>
-                        <span class="result-value blue">${(r.under25 * 100).toFixed(1)}%</span>
+                        <span class="result-label">⚽ BTTS</span>
+                        <span class="result-value pink">${(r.btts * 100).toFixed(1)}%</span>
                     </div>
+                </div>
+            </div>
+
+            <!-- ===== TOP 3 ===== -->
+            <div style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:600; color:#10b981;">🎯 TOP 3 SCORES</span>
+                    <span class="badge badge-green">Validé</span>
+                </div>
+                <div class="result-box">
+                    ${r.top3.map((s, i) => `
+                        <div class="result-line"><span class="result-label">#${i+1}</span><span class="result-value">${s.score}</span><span class="result-value">${(s.prob * 100).toFixed(1)}%</span></div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <!-- ===== CÔTES ===== -->
+            <div style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:600; color:#3b82f6;">💰 CÔTES</span>
+                    <span class="badge badge-blue">Validé</span>
+                </div>
+                <div class="result-box">
+                    <div class="result-line"><span class="result-label">1 (${nameA})</span><span class="result-value">${r.odds.winA.toFixed(2)}</span></div>
+                    <div class="result-line"><span class="result-label">Nul</span><span class="result-value">${r.odds.draw.toFixed(2)}</span></div>
+                    <div class="result-line"><span class="result-label">2 (${nameB})</span><span class="result-value">${r.odds.winB.toFixed(2)}</span></div>
+                    <div class="result-line"><span class="result-label">Over 2.5</span><span class="result-value">${r.odds.over25.toFixed(2)}</span></div>
+                    <div class="result-line"><span class="result-label">BTTS</span><span class="result-value">${r.odds.btts.toFixed(2)}</span></div>
                 </div>
             </div>
 
@@ -533,7 +494,9 @@
                     <br><br>
                     🏆 1N2 : ${nameA} ${(r.winA*100).toFixed(1)}% | Nul ${(r.draw*100).toFixed(1)}% | ${nameB} ${(r.winB*100).toFixed(1)}%
                     <br>
-                    📈 Over 2.5 : ${(r.over25*100).toFixed(1)}%
+                    📈 Over 2.5 : ${(r.over25*100).toFixed(1)}% | ⚽ BTTS : ${(r.btts*100).toFixed(1)}%
+                    <br>
+                    🎯 Top 3 : ${r.top3.map(s => `${s.score} (${(s.prob*100).toFixed(1)}%)`).join(' | ')}
                 </div>
             </div>
         `;
@@ -554,6 +517,5 @@
     // Auto-run au chargement
     setTimeout(runAnalysis, 200);
 </script>
-
 </body>
 </html>
